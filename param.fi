@@ -1,0 +1,42 @@
+      integer nStation                    !maximum number of stations
+      parameter (nStation = 80)
+  
+      integer x_layer                     !maximum number of x_layers
+      parameter (x_layer  = 15)
+  
+      integer y_layer                     !maximum number of y_layers
+      parameter (y_layer  = 15)
+  
+      integer z_layer                     !maximum number of z_layers
+      parameter (z_layer  = 40)
+  
+      integer nrec_max                    !maximum number of recorded arrivals
+      parameter (nrec_max = 80)
+  
+      real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
+      common /p_over_s/   p_over_s
+c      parameter (p_over_s = 1.6700)       !VD..variabilni P/S pomer 11/93
+  
+      real    vair                        !velocity of sound wave in air
+      parameter (vair = 0.300)
+  
+      real    p_decrease                  !parameter of decreasing of step in
+      parameter (p_decrease = 2.)         !unsuccessful iteration
+  
+      real    pi                          !Ludolf number
+      parameter (pi = 3.1415926)
+  
+      integer max_models                  !number of default crustal models
+      parameter (max_models = 5)
+ 
+      integer luloc                       !lu for loc file
+      parameter (luloc = 14)
+  
+      real surf_ev
+      parameter (surf_ev = 1000.)         !switch for station delays
+                                          !depth of hypocenter < surf_ev -->
+                                          !use station delays
+  
+      integer lustart                     !lu for start file
+      parameter (lustart = 20)
+

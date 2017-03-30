@@ -1,0 +1,4 @@
+      integer           i_onset(nstation)   !array for creatinf of loc-file
+                                            !in 3D case
+      integer           i_channel(nstation) !numbers of channels for stations
+      common /onset/    i_onset,i_channel

@@ -1,0 +1,12 @@
+ 
+      real                v3(x_layer,y_layer,z_layer)
+      common /model_3d/   v3
+  
+      real                xl(x_layer-1)
+      real                yl(y_layer-1)
+      real                zl(z_layer-1)
+      integer             nxl
+      integer             nyl
+      integer             nzl
+      common /layers/     nxl,xl,nyl,yl,nzl,zl
+  

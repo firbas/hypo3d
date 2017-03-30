@@ -1,0 +1,25 @@
+#!/bin/bash
+
+all_model_file="/data/models/model_all_new.mod"
+
+[ $# -lt 3 ] && { printf "Pouziti: %s hyp_soubor hy3_soubor model [hypo3dInFile]\n" $(basename $0); exit; }
+[ ! -e $all_model_file ] && { echo "Nemou najit seznam vsech stanic $all_model_file"; exit; }
+[ ! -e "$1" ] && { printf "Nemohu najit hyp soubor %s\n" $1; exit; }
+[ ! -e "$3" ] && { printf "Nemohu najit model %s.\n" $3; exit; }
+[   -e "$4" ] && infile="< $4" || infile=""
+
+tmp=$(mktemp -t $(basename $3).XXXXXXXX)
+
+trap "rm -rf $tmp" SIGINT SIGKILL SIGTERM
+
+a=$(cut -f 1 -d" " $1|uniq|tr '\n' '|')
+b=${a%|}
+head -6 $3 > $tmp
+grep -c -E "$b" $all_model_file >> $tmp
+grep    -E "$b" $all_model_file >> $tmp
+grep -A10000 "/data/models" $3 >> $tmp
+
+command="hypo3d -i$1 -o$2 -m$tmp $infile"
+eval $command
+
+rm -rf $tmp

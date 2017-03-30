@@ -1,0 +1,2 @@
+      integer lulist
+      parameter (lulist = 13)             !lu for output listing

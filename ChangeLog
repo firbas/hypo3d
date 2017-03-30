@@ -1,0 +1,56 @@
+========================================================================
+2017-03-28 Zacherle
+
+search_cr_model.f:
+Rozsireno o moznost cist parameter reading_error.
+Zadava se jako volitelny 2. parametr na 5. radku souboru rychl. modelu.
+========================================================================
+2016-11-02 Vyslouzil
+
+hypo:
+Bash wrapper hypo sestavuje soubor rychlostniho modelu
+obsahujici jen nasazene stanice a spousti hypo3d.
+========================================================================
+2016-04-14 Vyslouzil
+
+magni.f:
+Zrusen      parameter (max_freq     = 25.0)
+a vyjmut test, zda frekvence neprekracuje max_freq
+========================================================================
+2013-07-28 Vyslouzil
+
+output.f:
+Pridano lat, lon ve vypisu hy3.
+
+xy2fi.f: novy soubor
+Prevod koordinat wgs84 do krovak transformacnim polynomem.
+========================================================================
+2010/03/01 Zacherle
+
+Syntakticke upravy pro preklad
+inpt_3d.f
+295c295
+<      >            "arrival in record ",i)') prog_name,i
+---
+>      >            "arrival in record ",i2)') prog_name,i
+sphere_step.f
+59c59
+< 		parameter (esc = 27)
+---
+> 		parameter (esc = char(27))
+
+Makefile
+FFLAGS=  -c -g -fd-lines-as-comments
+========================================================================
+
+Upravy programu HYPO3D
+
+30.3.2000 - provedena zmena ve strukture souboru s modelem 
+	    nemam blizsi informace  (zmenu provedl R. Julinek)	
+29.11.2002 - opravena chyba. Pokud byl zadan model, ktery neprislusel k dane
+             lokalite program se zacyklil
+           - program cyklil i v pripade, ze pocet radku v HYp souboru byl mensi
+             nez 3.
+           + Oprava byla provedena v modulu hypo.f pridanim dvou radku
+             call abort
+           - Zmenu provedl Ales Sitta 
