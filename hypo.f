@@ -44,7 +44,7 @@ c
 		include 'pname.fi'
 		include 'list.fi'
 		include 'model_3d.fi'
-		include 'onset.fi'
+c		include 'onset.fi'
 		include 'term.fi'
 c
 c  local variables

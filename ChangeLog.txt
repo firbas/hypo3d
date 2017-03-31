@@ -1,9 +1,33 @@
 ========================================================================
+2017-03-31 Zacherle
+
+Removed files containing code inaccessible:
+break.f
+clf_3d_1.f
+clf_3d_2.f
+gcov_0.sh
+hypomin.f
+parameter.fi
+pause.f
+rt_3d_l.f
+setfn.f
+show_matrix.f
+valid_arrival.f
+
+Removed unused common block:
+onset.fi
+========================================================================
 2017-03-28 Zacherle
 
 search_cr_model.f:
-Rozsireno o moznost cist parameter reading_error.
-Zadava se jako volitelny 2. parametr na 5. radku souboru rychl. modelu.
+Extended by the ability to read parameter reading_error
+and override its default value.
+The reading_error parameter value can optionally be specified
+by editing the velocity model line number 5th.
+On line 5, you can enter two parameters:
+        model_error as the first mandatory argument 
+        and reading_error as second optional argument.
+Both parameters are entered in seconds.
 ========================================================================
 2016-11-02 Vyslouzil
 
