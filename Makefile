@@ -1,5 +1,7 @@
 #FFLAGS=  -O0 -m32 -ffixed-line-length-170 -c -g -fd-lines-as-comments
-FFLAGS=  -O0 -ffixed-line-length-170 -c -g -fd-lines-as-comments
+#LDFLAGS= -m32
+FFLAGS=  -O0 -ffixed-line-length-170 -c -g -fd-lines-as-comments -fprofile-arcs -ftest-coverage
+LDFLAGS= -fprofile-arcs
 
 OBJ= hypo.o trans.o    \
  datum.o days.o abort.o real8_to_int.o  \
@@ -7,21 +9,21 @@ OBJ= hypo.o trans.o    \
  output.o sort_x.o create_dbfile.o   \
  sphere_step.o magni.o origin_time.o   \
  inpt_3d.o search_cr_model.o spline_in.o   \
- clf_3d_1.o   \
- clf_3d_2.o  rt_3d_l.o     \
  nearest_source.o sort_source.o pause.o   \
  dialog_1.o dialog_2.o dialog_2_1.o   \
- dialog_3.o rec_time_name.o valid_arrival.o   \
+ dialog_3.o rec_time_name.o \
  iter_1.o iter_2.o break.o cov_matrix.o rms_net_1.o rms_net_2.o spline_value.o   \
  show_matrix.o   \
  eigen.o minv.o  setfn.o\
  model.o xy2fl.o
 
-
+#unused
+# clf_3d_1.o clf_3d_2.o rt_3d_l.o    
+# valid_arrival.o   
 
 hypo3d: $(OBJ)
 #	gfortran -m32 $(OBJ)  -o hypo3d
-	gfortran  $(OBJ)  -o hypo3d
+	gfortran  $(LDFLAGS) $(OBJ)  -o hypo3d
 
 clean:
 	rm -f $(OBJ) core hypo3d
@@ -82,13 +84,13 @@ search_cr_model.o: search_cr_model.f error.fi
 spline_in.o: spline_in.f term.fi
 	gfortran $(FFLAGS) spline_in.f
 
-clf_3d_1.o: clf_3d_1.f param.fi data_dir.fi
-	gfortran $(FFLAGS) clf_3d_1.f
+#clf_3d_1.o: clf_3d_1.f param.fi data_dir.fi
+#	gfortran $(FFLAGS) clf_3d_1.f
 
-clf_3d_2.o: clf_3d_2.f  param.fi onset.fi
-	gfortran $(FFLAGS) clf_3d_2.f  
-rt_3d_l.o: rt_3d_l.f  param.fi list.fi term.fi
-	gfortran $(FFLAGS) rt_3d_l.f  
+#clf_3d_2.o: clf_3d_2.f  param.fi onset.fi
+#	gfortran $(FFLAGS) clf_3d_2.f  
+#rt_3d_l.o: rt_3d_l.f  param.fi list.fi term.fi
+#	gfortran $(FFLAGS) rt_3d_l.f  
 
 nearest_source.o: nearest_source.f source.fi pname.fi
 	gfortran $(FFLAGS) nearest_source.f
@@ -108,8 +110,8 @@ dialog_3.o: dialog_3.f pname.fi param.fi term.fi
 
 rec_time_name.o: rec_time_name.f param.fi pname.fi term.fi
 	gfortran $(FFLAGS) rec_time_name.f
-valid_arrival.o: valid_arrival.f pname.fi param.fi term.fi
-	gfortran $(FFLAGS) valid_arrival.f
+#valid_arrival.o: valid_arrival.f pname.fi param.fi term.fi
+#	gfortran $(FFLAGS) valid_arrival.f
 
 iter_1.o: iter_1.f param.fi pname.fi error.fi
 	gfortran $(FFLAGS) iter_1.f

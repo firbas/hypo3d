@@ -1,4 +1,6 @@
 hypo3d
-*.mod
-*.hyp
-*.hy3
+fort.*
+testdata/
+*.gcov
+*.gcno
+*.gcda
