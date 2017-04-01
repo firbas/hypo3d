@@ -55,8 +55,8 @@ c
 c
 c  local parameters
 c
-		character*1 esc
-		parameter (esc = char(27))
+c		character*1 esc
+c		parameter (esc = char(27))
 c
 c  global parameters
 c
@@ -111,11 +111,11 @@ c  set square root of rms of res.
 c
 		rmsres=sqrt(rmsres)
 c
-		if (i0.lt.10) then
-			 write (*,
-     >    '(1x,a,": ... calculating ",i2,". point from 10",a,"A")')
-     >    prog_name,i0+1,esc
-		endif
+c		if (i0.lt.10) then
+c			 write (*,
+c     >    '(1x,a,": ... calculating ",i2,". point from 10",a,"A")')
+c     >    prog_name,i0+1,esc
+c		endif
 c
 c  test on number of step
 c

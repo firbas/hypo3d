@@ -64,7 +64,7 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'data_dir.fi'
+c		include 'data_dir.fi'
 		include 'error.fi'
 c
 c  local variables

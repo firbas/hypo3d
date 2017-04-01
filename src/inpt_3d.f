@@ -64,8 +64,8 @@ c
 		include 'param.fi'
 		include 'pname.fi'
 		include 'model_3d.fi'
-		include 'data_dir.fi'
-		include 'model_dir.fi'
+c		include 'data_dir.fi'
+c		include 'model_dir.fi'
 		include 'term.fi'
 		include 'source.fi'
 c

@@ -56,7 +56,7 @@ c
 c
 		include 'list.fi'
 		include 'pname.fi'
-		include 'data_dir.fi'
+c		include 'data_dir.fi'
 		include 'term.fi'
 c
 c  local variables

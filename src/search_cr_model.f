@@ -73,7 +73,7 @@ c
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'model_dir.fi'
+c		include 'model_dir.fi'
 		include 'term.fi'
 		include 'error.fi'
 c

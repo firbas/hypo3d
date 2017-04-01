@@ -31,7 +31,7 @@ hypo3d: $(OBJ)
 	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
 
 clean:
-	rm $(OBJ) hypo3d
+	rm *.o hypo3d
 
 hypo.o: hypo.f min_shift.fi error.fi param.fi pname.fi list.fi \
 		model_3d.fi term.fi stmod.fi
@@ -69,11 +69,11 @@ velocity.o: velocity.f param.fi term.fi
 vl.o: vl.f param.fi term.fi
 	$(FC) $(FFLAGS) vl.f
 
-output.o: output.f param.fi pname.fi data_dir.fi error.fi
+output.o: output.f param.fi pname.fi error.fi
 	$(FC) $(FFLAGS) output.f
 sort_x.o: sort_x.f
 	$(FC) $(FFLAGS) sort_x.f
-create_dbfile.o: create_dbfile.f pname.fi data_dir.fi
+create_dbfile.o: create_dbfile.f pname.fi
 	$(FC) $(FFLAGS) create_dbfile.f
 
 sphere_step.o: sphere_step.f radius.fi list.fi term.fi pname.fi
@@ -83,7 +83,7 @@ magni.o: magni.f param.fi
 origin_time.o: origin_time.f param.fi
 	$(FC) $(FFLAGS) origin_time.f
 
-inpt_3d.o: inpt_3d.f param.fi pname.fi model_3d.fi data_dir.fi model_dir.fi term.fi source.fi
+inpt_3d.o: inpt_3d.f param.fi pname.fi model_3d.fi term.fi source.fi
 	$(FC) $(FFLAGS) inpt_3d.f
 search_cr_model.o: search_cr_model.f error.fi
 	$(FC) $(FFLAGS) search_cr_model.f
@@ -95,7 +95,7 @@ nearest_source.o: nearest_source.f source.fi pname.fi
 sort_source.o: sort_source.f source.fi
 	$(FC) $(FFLAGS) sort_source.f
 
-dialog_1.o: dialog_1.f list.fi pname.fi data_dir.fi term.fi
+dialog_1.o: dialog_1.f list.fi pname.fi term.fi
 	$(FC) $(FFLAGS) dialog_1.f
 dialog_2.o: dialog_2.f pname.fi term.fi
 	$(FC) $(FFLAGS) dialog_2.f
@@ -115,7 +115,7 @@ iter_2.o: iter_2.f param.fi
 
 cov_matrix.o: cov_matrix.f param.fi
 	$(FC) $(FFLAGS) cov_matrix.f
-rms_net_1.o: rms_net_1.f pname.fi list.fi data_dir.fi term.fi
+rms_net_1.o: rms_net_1.f pname.fi list.fi term.fi
 	$(FC) $(FFLAGS) rms_net_1.f
 rms_net_2.o: rms_net_2.f pname.fi list.fi term.fi
 	$(FC) $(FFLAGS) rms_net_2.f
