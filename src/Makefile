@@ -84,9 +84,9 @@ origin_time.o: origin_time.f param.fi
 	$(FC) $(FFLAGS) origin_time.f
 
 inpt_3d.o: inpt_3d.f param.fi pname.fi model_3d.fi
-	$(FC) $(FFLAGS) inpt_3d.f
+	$(FC) $(FFLAGS) -cpp inpt_3d.f
 search_cr_model.o: search_cr_model.f error.fi
-	$(FC) $(FFLAGS) search_cr_model.f
+	$(FC) $(FFLAGS) -cpp search_cr_model.f
 spline_in.o: spline_in.f 
 	$(FC) $(FFLAGS) spline_in.f
 

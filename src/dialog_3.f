@@ -77,11 +77,11 @@ cc      character*10    subdir              !name of subdirectory
 cc      character*1     letter_hp           !letter for hp tape
 cc      character*3     ch_fevent_number    !first event to localize
 cc      character*3     ch_levent_number    !last event to localize
-      character*1     interactive         !flag for interactive mode
-      character*1     chfix_depth         !flag for fixed depth
-      character*16    chfix_value         !value of fixed depth
-      character*6     sname               !name of file with start coord.
-      common /hnamch/ interactive,chfix_depth,chfix_value,sname
+cc      character*1     interactive         !flag for interactive mode
+cc      character*1     chfix_depth         !flag for fixed depth
+cc      character*16    chfix_value         !value of fixed depth
+cc      character*6     sname               !name of file with start coord.
+cc      common /hnamch/ interactive,chfix_depth,chfix_value,sname
 c
       logical         scan_depth
       real            scan_start
@@ -162,12 +162,12 @@ c  show menu
 c
 110   continue
 c
-      if (interactive.eq.'N') then
-c
-c  next menu
-c
-          go to 10
-      else
+cc      if (interactive.eq.'N') then
+ccc
+ccc  next menu
+ccc
+cc          go to 10
+cc      else
           write (*,'(1x,a,": M e n u")') prog_name
           write (*,'(1x,a,": ",
      >    "End of program            -  ''E''",/,9x,
@@ -179,7 +179,7 @@ c
 c
 cc          call clear_display
 c
-      endif
+cc      endif
 c
 cc      call CaseFold (answer)
 	 if(answer.eq.'n')answer='N'
@@ -222,47 +222,50 @@ c=============================================================================
 c
 10    continue
 c
-c
-      if (interactive.eq.'N') then
-          if (sname.eq.' ') then
-c
-c  start file not given ... default start point
-c
-              x_start=0.0
-              y_start=0.0
-              z_start=0.0
-          else
-c
-c  read start coord. from given start file
-c
-              read (lustart,*,iostat=ios) x_start,y_start,z_start
-c
-              if (ios.ne.0) then
-c
-c  report error
-c
-cc                  call ReportError (ios,'READ_START_FILE')
-c
-c  set default values
-c
-                  x_start=0.0
-                  y_start=0.0
-                  z_start=0.0
-              endif
-c
-          endif
-c
-          if (chfix_depth.eq.'Z') then
-c
-c  fixed depth mode
-c
-              fix_depth=.true.
-              read (chfix_value,*) z_start
-          endif
-c
-          go to 1000
-c
-      else
+
+ccc
+cc      if (interactive.eq.'N') then
+cc          if (sname.eq.' ') then
+ccc
+ccc  start file not given ... default start point
+ccc
+cc              x_start=0.0
+cc              y_start=0.0
+cc              z_start=0.0
+cc          else
+ccc
+ccc  read start coord. from given start file
+ccc
+cc              read (lustart,*,iostat=ios) x_start,y_start,z_start
+ccc
+cc              if (ios.ne.0) then
+ccc
+ccc  report error
+ccc
+cccc                  call ReportError (ios,'READ_START_FILE')
+ccc
+ccc  set default values
+ccc
+cc                  x_start=0.0
+cc                  y_start=0.0
+cc                  z_start=0.0
+cc              endif
+ccc
+cc          endif
+cc
+ccc
+cc          if (chfix_depth.eq.'Z') then
+ccc
+ccc  fixed depth mode
+ccc
+cc              fix_depth=.true.
+cc              read (chfix_value,*) z_start
+cc          endif
+ccc
+cc          go to 1000
+ccc
+cc      else
+
           write (*,'(1x,a,": M e n u")') prog_name
           write (*,'(1x,a,": ",
      >    "Scanned depth             -  ''S''",/,9x,
@@ -281,7 +284,9 @@ cc         call CaseFold (answer)
 	 if(answer.eq.'r')answer='R'
 	 if(answer.eq.'n')answer='N'
 c
-      endif
+
+cc      endif
+
 c
       if (answer.eq.'S') then
 c

@@ -2,6 +2,4 @@ hypo3d
 fort.*
 testdata/
 tests/
-*.gcov
-*.gcno
-*.gcda
+tmp/

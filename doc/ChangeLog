@@ -1,9 +1,26 @@
 ========================================================================
-2017-04-01 Zacherle
+2017-04-03 Zacherle v10.58
 
-Version 1.0 - original version currently used at the IPE MU.
+Procedures inaccessible or unused were discarded:
+1) Inaccessible mode "interactive='N'"
+   Edited: dialog_3.f hypo.f inpt_3d.f
+2) Batch processing of events
+   inpt_3d.f
+3) Default model choice
+   search_cr_model.f
+
+Additionally versions of the program was labeled 
+following the original Milan Werl numbering.
+Werl        01.00-09.00
+Sitta       09.nn
+Vyslouzil   10.00-10.49
+Git commits 10.51-10.58
+========================================================================
+2017-04-01 Zacherle v10.56
+
 Git project directory organized.
-Inaccessible code removed, without changing functionality.
+Inaccessible code removed. Functionality unchanged 
+compared to the version currently used at the IPE MU.
 
 Removed files containing code inaccessible:
 break.f
@@ -30,7 +47,7 @@ To orient in the code, cleaning of:
    common /hnami/ (sources)
 
 ========================================================================
-2017-03-28 Zacherle
+2017-03-28 Zacherle v10.50
 
 search_cr_model.f:
 Extended by the ability to read parameter reading_error
@@ -42,19 +59,19 @@ On line 5, you can enter two parameters:
         and reading_error as second optional argument.
 Both parameters are entered in seconds.
 ========================================================================
-2016-11-02 Vyslouzil
+2016-11-02 Vyslouzil v10.30
 
 hypo:
 Bash wrapper hypo sestavuje soubor rychlostniho modelu
 obsahujici jen nasazene stanice a spousti hypo3d.
 ========================================================================
-2016-04-14 Vyslouzil
+2016-04-14 Vyslouzil v10.20
 
 magni.f:
 Zrusen      parameter (max_freq     = 25.0)
 a vyjmut test, zda frekvence neprekracuje max_freq
 ========================================================================
-2013-07-28 Vyslouzil
+2013-07-28 Vyslouzil v10.10
 
 output.f:
 Pridano lat, lon ve vypisu hy3.
@@ -62,7 +79,7 @@ Pridano lat, lon ve vypisu hy3.
 xy2fi.f: novy soubor
 Prevod koordinat wgs84 do krovak transformacnim polynomem.
 ========================================================================
-2010/03/01 Zacherle
+2010/03/01 Zacherle v10.01
 
 Syntakticke upravy pro preklad
 inpt_3d.f
@@ -79,7 +96,7 @@ sphere_step.f
 Makefile
 FFLAGS=  -c -g -fd-lines-as-comments
 ========================================================================
-Ales Sitta 
+Ales Sitta wrote v09.nn
 
 30.3.2000 - provedena zmena ve strukture souboru s modelem 
 	    nemam blizsi informace  (zmenu provedl R. Julinek)	
@@ -88,3 +105,7 @@ Ales Sitta
            - program cyklil i v pripade, ze pocet radku v HYp souboru byl mensi
              nez 3.
            - Oprava byla provedena v modulu hypo.f pridanim dvou radku
+========================================================================
+1988-01-14 Milan Werl v09.00
+
+The original version v09.00, according to data in code.

@@ -15,6 +15,15 @@ The problem is solved in map coordinates S-JTSK Křovák EPSG:5513, but the unit
 * **Milan Werl** - 1986-1987 - Researcher and programmer for the most part of the code.
 * **Vladimír Dvořák** and **Libor Vejmělek** - 1996 - Porting program of HP minicomputer platform to SUN workstation.
 
+## Plans
+This project is intended for maintenance of code and documentation.
+HYPO3D program has been used for 30 years with minimal modifications. 
+Not expected to further development but for further use is needed:
+
+1. Reduce the ballast code for clarity.
+1. Fix some known bugs.
+1. Build program documentation.
+
 ## Licence
 HYPO3D is primarily designed for users in Institute of Physics of the Earth, Masaryk University in Brno.
 Potential users or contributors are welcome. 

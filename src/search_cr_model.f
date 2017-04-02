@@ -63,13 +63,13 @@ c
 c
 c  local parameters
 c
-		integer   nmodels
-		parameter (nmodels=7)               !number of crustal models
+cc		integer   nmodels
+cc		parameter (nmodels=7)               !number of crustal models
 c
 c  global parameters
 c
-		character*255    ch_model_name
-		common/chmodn/  ch_model_name
+cc		character*255    ch_model_name
+cc		common/chmodn/  ch_model_name
 c
 		include 'param.fi'
 		include 'pname.fi'
@@ -93,9 +93,11 @@ cc		integer         nl
 cc		integer         k
 cc      character*63    namr
 cc      character*16    crmod_default(max_models)
-      character*255    crmod_name   (nmodels)
-      character*4     rec_name
-c parameter_model_error,reading_error reading  
+
+cc      character*255    crmod_name   (nmodels)
+cc      character*4     rec_name
+
+c parameter model_error,reading_error reading  
       character*81 line
       real         t_errparam(2)
       integer      itep
@@ -143,13 +145,13 @@ c  *******************
 c
 c  models for user choice
 c
-      data crmod_name(1)/'BLAHUTOVICE_B'/
-      data crmod_name(2)/'BLAHUTOVICE_C'/
-      data crmod_name(3)/'BLAHUTOVICE_D'/
-      data crmod_name(4)/'KECEROVCE_B'/
-      data crmod_name(5)/'KECEROVCE_C'/
-      data crmod_name(6)/'KECEROVCE_D'/
-      data crmod_name(7)/'KECEROVCE_E'/
+cc      data crmod_name(1)/'BLAHUTOVICE_B'/
+cc      data crmod_name(2)/'BLAHUTOVICE_C'/
+cc      data crmod_name(3)/'BLAHUTOVICE_D'/
+cc      data crmod_name(4)/'KECEROVCE_B'/
+cc      data crmod_name(5)/'KECEROVCE_C'/
+cc      data crmod_name(6)/'KECEROVCE_D'/
+cc      data crmod_name(7)/'KECEROVCE_E'/
 c
 c=============================================================================
 c
@@ -188,7 +190,13 @@ cc      close (100)
 c
 c  test on chname
 c
-      if (chname.ne.' ') then
+
+
+cc      if (chname.ne.' ') then
+
+
+
+
 c
 c  chname not blanks ... no default model
 c
@@ -289,15 +297,18 @@ c Both parameters are entered in seconds.
           t_errparam(2)=-1
           read (lucrmod,'(A)',iostat=ios) line
           if (len_trim(line)==0) then
-              write(*,*) 'Invalid model file. Empty line for model_error and reading_error parameter.'
+              write(*,*) 'Invalid model file.'//
+     >       ' Empty line for model_error and reading_error parameter.'
               call Abort
           else
-              read (line,*,end=210, iostat=ios) (t_errparam(itep),itep=1,2)
+              read (line,*,end=210, iostat=ios) 
+     >             (t_errparam(itep),itep=1,2)
           endif
           goto 215
 210       continue
           if (ios.ne.-1) then
-          write(*,*) 'Error while loading model file, model_error or reading_error parameter.'
+          write(*,*) 'Error while loading model file, model_error'//
+     >               ' or reading_error parameter.'
           call Abort 
           endif
           itep=1
@@ -418,7 +429,12 @@ cc          call ReportError (ios,namr,'SEARCH_CR_MODEL')
           call Abort
 c
 120       continue
-      else
+
+
+
+
+cc      else
+#if 0
 c
 c  chname is equal to blanks ... search default crustal model for array
 c
@@ -635,7 +651,12 @@ cc          call ReportError (ios,namr,'SEARCH_CR_MODEL')
           call Abort
 c
 140       continue
-      endif
+
+#endif
+cc      endif
+
+
+
 c
       return
       end

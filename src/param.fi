@@ -26,8 +26,8 @@ c      parameter (p_over_s = 1.6700)       !VD..variabilni P/S pomer 11/93
       real    pi                          !Ludolf number
       parameter (pi = 3.1415926)
   
-      integer max_models                  !number of default crustal models
-      parameter (max_models = 5)
+c      integer max_models                  !number of default crustal models
+c      parameter (max_models = 5)
  
 c      integer luloc                       !lu for loc file
 c      parameter (luloc = 14)
@@ -37,6 +37,6 @@ c      parameter (luloc = 14)
                                           !depth of hypocenter < surf_ev -->
                                           !use station delays
   
-      integer lustart                     !lu for start file
-      parameter (lustart = 20)
+c      integer lustart                     !lu for start file
+c      parameter (lustart = 20)
 

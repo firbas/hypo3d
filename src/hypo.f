@@ -117,11 +117,12 @@ c
 c
 c  common for data for hypofile and noninteractive mode description
 c
-		character*1     interactive         !flag for interactive mode
-		character*1     chfix_depth         !flag for fixed depth
-		character*16    chfix_value         !value of fixed depth
-		character*6     sname               !name of file with start coord.
-		common /hnamch/ interactive,chfix_depth,chfix_value,sname
+
+cc		character*1     interactive         !flag for interactive mode
+cc		character*1     chfix_depth         !flag for fixed depth
+cc		character*16    chfix_value         !value of fixed depth
+cc		character*6     sname               !name of file with start coord.
+cc		common /hnamch/ interactive,chfix_depth,chfix_value,sname
 c
 c  common for length of subdirectory name
 c
@@ -1102,10 +1103,13 @@ c  max. number of iterations is maxIter
 c
 			 go to 30
 		else
-			 if (scan_depth .or. interactive.eq.'N') then
-			     if (interactive.eq.'N') then
-						z0=999.99
-			     endif
+			 if (scan_depth) then
+
+cc			 if (scan_depth .or. interactive.eq.'N') then
+cc			     if (interactive.eq.'N') then
+cc						z0=999.99
+cc			     endif
+
 c
 c  set values of coord. of epicenter
 c
@@ -1237,9 +1241,11 @@ c
 162   continue
 c  test on interactive mode
 c
-		if (interactive.eq.'N') then
-			 go to 163
-		endif
+
+cc		if (interactive.eq.'N') then
+cc			 go to 163
+cc		endif
+
 c
 c  show menu with rms of res. on sphere centered on the hypocenter
 c
@@ -1256,16 +1262,20 @@ c
 c
 c  test on interactive mode
 c
-		if (interactive.eq.'N') then
-			 i_menu=2
-		else
+
+cc		if (interactive.eq.'N') then
+cc			 i_menu=2
+cc		else
+
 c
 c  show menu
 c
 			 call dialog_2_1
      >    (endit,prt,scan_depth,i0,maxIter,rms_on_net,
      >    loc_write,rp,i_menu)
-		endif
+
+cc		endif
+
 c	
 		if (i_menu.eq.1) then
 c
@@ -1278,12 +1288,14 @@ c
 c
 c  test on interactive mode
 c
-			 if (interactive.eq.'N') then
-c
-c  next event to location
-c
-			     go to 10
-			 endif
+
+cc			 if (interactive.eq.'N') then
+ccc
+ccc  next event to location
+ccc
+cc			     go to 10
+cc			 endif
+
 c
 c  segment load
 c  next menu

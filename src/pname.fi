@@ -3,9 +3,10 @@
       character prog_name1*8
       character prog_name2*25
       parameter (long_prog_name='H Y P O 3 D')      !program name
-      parameter (prog_name='HYPO3D')      !program name
-      parameter (prog_name1='hypo3d.bin, ')   !first part of program name
-cc      parameter (prog_name2='rev. 09.00 88-01-14')
-cc    parameter (prog_name2='rev. jan 2000 - SUN v.')
-      parameter (prog_name2='rev. feb 2015 - Linux v.')
-                                          !second part of program name
+      parameter (prog_name='HYPO3D')                !program name
+      parameter (prog_name1='hypo3d.bin, ')         !first part of program name
+c      parameter (prog_name2='rev. 09.00 88-01-14')  !second part of program name
+c      parameter (prog_name2='rev. jan 2000 - SUN v.')
+c      parameter (prog_name2='rev. feb 2015 - Linux v.')
+      parameter (prog_name2='rev. 2017-04 - v.10.58')
+                                         

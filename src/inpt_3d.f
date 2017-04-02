@@ -115,15 +115,15 @@ cc		character*10    subdir              !name of subdirectory
 cc		character*1     letter_hp           !letter for hp tape
 cc		character*3     ch_fevent_number    !first event to localize
 cc		character*3     ch_levent_number    !last event to localize
-		character*1     interactive         !flag for interactive mode
-		character*1     chfix_depth         !flag for fixed depth
-		character*16    chfix_value         !value of fixed depth
-		character*6     sname               !name of file with start coord.
+cc		character*1     interactive         !flag for interactive mode
+cc		character*1     chfix_depth         !flag for fixed depth
+cc		character*16    chfix_value         !value of fixed depth
+cc		character*6     sname               !name of file with start coord.
 cc		character*3  ch_event_number        !!!
 cc		common /hnamch/ subdir,letter_hp,ch_fevent_number,
 cc     >                ch_levent_number,interactive,chfix_depth,
 cc     >                chfix_value,sname,ch_event_number
-		common /hnamch/ interactive,chfix_depth,chfix_value,sname
+cc		common /hnamch/ interactive,chfix_depth,chfix_value,sname
 c
 cc		integer             subdir_length   !length of subdir. name
 cc		logical             source_flag
@@ -182,14 +182,21 @@ c  *******************
 c
 c=============================================================================
 c
-		write(*,*) 'INP: Hypofile is  ', hypfn(1:lnblnk(hypfn)), n_loc
+                write(*,*) n_loc
+		write(*,*) 'INP: Hypofile is  ', hypfn(1:lnblnk(hypfn))
+                write(*,*) n_loc
 		ios = 0
 		event_number = 1
 c
-		if (n_loc.eq.1) then
-                         continue
+cc		if (n_loc.eq.1) then
+cc                         continue
 cc			 ch_event_number=ch_fevent_number
-		else
+cc		else
+
+
+
+#if 0
+
 c
 10        continue
 c
@@ -338,27 +345,37 @@ c
 c
 			 go to 999
 c
-		endif
-c
-c  open file with start coord. in the case of given name of file
-c
-		if (sname.ne.' ') then
-			 len1=lnblnk(sname)
-cc			 startnamr=lu21_data//subdir(1:subdir_length)//'/'//
-cc     >    sname(1:len1)//'.STRT'
-c
-cc			 open (lustart,file=startnamr,iostat=ios,status='OLD')
-C     >    use='NONEXCLUSIVE')
-			 if (ios.ne.0) then
-cc			     call ReportError(ios,startnamr,'INPT')
-			     call EXIT(1)
-			 endif
-		endif
+#endif
+cc		endif
+
+ccc
+ccc  open file with start coord. in the case of given name of file
+ccc
+cc		if (sname.ne.' ') then
+cc			 len1=lnblnk(sname)
+cccc			 startnamr=lu21_data//subdir(1:subdir_length)//'/'//
+cccc     >    sname(1:len1)//'.STRT'
+ccc
+cccc			 open (lustart,file=startnamr,iostat=ios,status='OLD')
+ccC     >    use='NONEXCLUSIVE')
+cc			 if (ios.ne.0) then
+cccc			     call ReportError(ios,startnamr,'INPT')
+cc			     call EXIT(1)
+cc			 endif
+cc		endif
+
 c
 c  create namr of given hypofile
 c
 cc		hyponamr=lu21_data//subdir(1:subdir_length)//'/'//letter_hp//
 cc    >ch_fevent_number//'.HYP'
+
+
+
+
+
+
+
 c
 c  open the hypofile ... it must exist! (status=old)
 c
@@ -379,6 +396,11 @@ c
 		endif
 c
 70    continue
+
+
+
+
+#if 0
 		if (ch_model_name.eq.' ') then
 c
 c  following comment part is used in version of program with choice of crustal
@@ -420,6 +442,10 @@ c
 			     endif
 			 endif
 		endif
+
+#endif
+
+
 c
 c  search for crustal model file, read in station data
 c
