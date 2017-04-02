@@ -49,7 +49,7 @@ c  global parameters
 c
 		include 'list.fi'
 		include 'pname.fi'
-		include 'term.fi'
+c		include 'term.fi'
 c
 c  local variables
 c

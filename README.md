@@ -12,10 +12,10 @@ The problem is solved in map coordinates S-JTSK Křovák EPSG:5513, but the unit
 
 ## Authors
 * **Petr Firbas** - 1986 - Initial work.
-* **Milan Werl** - 1986-1988 - Researcher and programmer for the most part of the code.
+* **Milan Werl** - 1986-1987 - Researcher and programmer for the most part of the code.
 * **Vladimír Dvořák** and **Libor Vejmělek** - 1996 - Porting program of HP minicomputer platform to SUN workstation.
 
 ## Licence
-HYPO3D is primarily designed for local users in Institute of Physics of the Earth, Masaryk University in Brno.
+HYPO3D is primarily designed for users in Institute of Physics of the Earth, Masaryk University in Brno.
 Potential users or contributors are welcome. 
-But note that this is working repository and this is not an end-user distribution. 
+But note that this is working repository and this is not an end-user release. 

@@ -62,7 +62,7 @@ c  global parameters
 c
 		include 'radius.fi'
 		include 'list.fi'
-		include 'term.fi'
+c		include 'term.fi'
 		include 'pname.fi'
 c
 c  local variables

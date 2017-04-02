@@ -2,7 +2,7 @@ c
 C$ema /sur/
 		subroutine spline_value (IN,R,ZD,NDER)
 c
-		include 'term.fi'
+c		include 'term.fi'
 c
 c  Parameter IN has in program HYPO3D value 0 ... input parameter
 c  Parameter R  ... input array with coordinates x, y

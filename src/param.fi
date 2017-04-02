@@ -29,8 +29,8 @@ c      parameter (p_over_s = 1.6700)       !VD..variabilni P/S pomer 11/93
       integer max_models                  !number of default crustal models
       parameter (max_models = 5)
  
-      integer luloc                       !lu for loc file
-      parameter (luloc = 14)
+c      integer luloc                       !lu for loc file
+c      parameter (luloc = 14)
   
       real surf_ev
       parameter (surf_ev = 1000.)         !switch for station delays

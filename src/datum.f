@@ -65,7 +65,7 @@ c
 c
 c  global parameters
 c
-      include 'term.fi'
+c      include 'term.fi'
 c
 c  local variables
 c

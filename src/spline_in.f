@@ -5,7 +5,7 @@ c
 c  input of data for spline surface
 c  written by lk
 c
-		include 'term.fi'
+c		include 'term.fi'
 c
 		character*(*) namr
 		character*255 surfn

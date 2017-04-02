@@ -65,7 +65,7 @@ c  include files ... global constants, variables
 c
 		include 'param.fi'
 		include 'list.fi'
-		include 'term.fi'
+c		include 'term.fi'
 c
 c  input parameters
 c

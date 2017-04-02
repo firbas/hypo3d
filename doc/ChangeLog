@@ -1,13 +1,15 @@
 ========================================================================
-2017-03-31 Zacherle
+2017-04-01 Zacherle
+
+Version 1.0 - original version currently used at the IPE MU.
+Git project directory organized.
+Inaccessible code removed, without changing functionality.
 
 Removed files containing code inaccessible:
 break.f
 clf_3d_1.f
 clf_3d_2.f
-gcov_0.sh
 hypomin.f
-parameter.fi
 pause.f
 rt_3d_l.f
 setfn.f
@@ -15,7 +17,18 @@ show_matrix.f
 valid_arrival.f
 
 Removed unused common block:
-onset.fi
+onset.fi parameter.fi data_dir.fi model_dir.fi
+
+To orient in the code, cleaning of:
+1) arguments.f parameter.fi
+2) Unused code
+   nearest_source.f sort_source.f source.fi
+3) Text terminal units
+   term.fi, common /trm/
+4) Unused common blocks
+   common /hnamch/ (subdir)
+   common /hnami/ (sources)
+
 ========================================================================
 2017-03-28 Zacherle
 
@@ -66,8 +79,7 @@ sphere_step.f
 Makefile
 FFLAGS=  -c -g -fd-lines-as-comments
 ========================================================================
-
-Upravy programu HYPO3D
+Ales Sitta 
 
 30.3.2000 - provedena zmena ve strukture souboru s modelem 
 	    nemam blizsi informace  (zmenu provedl R. Julinek)	
@@ -75,6 +87,4 @@ Upravy programu HYPO3D
              lokalite program se zacyklil
            - program cyklil i v pripade, ze pocet radku v HYp souboru byl mensi
              nez 3.
-           + Oprava byla provedena v modulu hypo.f pridanim dvou radku
-             call abort
-           - Zmenu provedl Ales Sitta 
+           - Oprava byla provedena v modulu hypo.f pridanim dvou radku

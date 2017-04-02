@@ -14,7 +14,7 @@ c
 		implicit none
 c
 		include 'param.fi'
-		include 'term.fi'
+c		include 'term.fi'
 c
 		integer i,j
 		integer nl

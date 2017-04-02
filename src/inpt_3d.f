@@ -66,8 +66,8 @@ c
 		include 'model_3d.fi'
 c		include 'data_dir.fi'
 c		include 'model_dir.fi'
-		include 'term.fi'
-		include 'source.fi'
+c		include 'term.fi'
+c		include 'source.fi'
 c
 c  local variables
 c
@@ -125,9 +125,9 @@ cc     >                ch_levent_number,interactive,chfix_depth,
 cc     >                chfix_value,sname,ch_event_number
 		common /hnamch/ interactive,chfix_depth,chfix_value,sname
 c
-		integer             subdir_length   !length of subdir. name
-		logical             source_flag
-		common /hnami/      subdir_length,source_flag
+cc		integer             subdir_length   !length of subdir. name
+cc		logical             source_flag
+cc		common /hnami/      subdir_length,source_flag
 c
 		integer             nrec
 		real                xstat(nStation)
@@ -439,12 +439,12 @@ C use='NONEXCLUSIVE'
 c
 c  test on errors, set or reset flags
 c
-		if (ios.ne.0) then
+c		if (ios.ne.0) then
 cc			 call ReportError(ios,'SOURCE','INPT')
-			 source_flag=.false.
-		else
-			 source_flag=.true.
-		endif
+c			 source_flag=.false.
+c		else
+c			 source_flag=.true.
+c		endif
 c
 c  write the message  ...  read crustal model
 c

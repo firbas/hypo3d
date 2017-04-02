@@ -74,7 +74,7 @@ c
 		include 'param.fi'
 		include 'pname.fi'
 c		include 'model_dir.fi'
-		include 'term.fi'
+c		include 'term.fi'
 		include 'error.fi'
 c
 c  local variables
@@ -107,9 +107,9 @@ cc      character*3     ch_event_number
 cc      character*10    subdir
 cc     common /hnamch/ subdir,letter_hp,ch_event_number
 c
-      integer         subdir_length
-		logical             source_flag
-		common /hnami/      subdir_length,source_flag
+cc      integer         subdir_length
+cc		logical             source_flag
+cc		common /hnami/      subdir_length,source_flag
 c
       integer         nrec
       real            xstat(nStation)

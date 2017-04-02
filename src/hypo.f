@@ -45,7 +45,7 @@ c
 		include 'list.fi'
 		include 'model_3d.fi'
 c		include 'onset.fi'
-		include 'term.fi'
+c		include 'term.fi'
 c
 c  local variables
 c
@@ -125,9 +125,9 @@ c
 c
 c  common for length of subdirectory name
 c
-		integer             subdir_length   !length of subdir. name
-		logical             source_flag
-		common /hnami/      subdir_length,source_flag
+cc		integer             subdir_length   !length of subdir. name
+cc		logical             source_flag
+cc		common /hnami/      subdir_length,source_flag
 c
 c  common for time data
 c
@@ -1170,15 +1170,16 @@ c
 c  output data
 c
 			 if (i0.lt.maxIter) then
-			     call output(lulist,luterm)
+			     call output(lulist,0)
+c			     call output(lulist,luterm)
 c
 c  test on interactive mode
 c
-			     if (interactive.ne.'N') then
-c  show known sources nearby hypocenter
-c
-						call nearest_source (source_flag,x0,y0,z0)
-			     endif
+c			     if (interactive.ne.'N') then
+cc  show known sources nearby hypocenter
+cc
+c						call nearest_source (source_flag,x0,y0,z0)
+c			     endif
 c
 c  show matrix in the case of interactive mode
 c

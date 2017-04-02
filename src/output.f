@@ -119,18 +119,18 @@ c
       integer             key(nrec_max)   !key field
       common /stmod/      key
 c
-      character*255        subdir
-      character*1         letter_hp
+cc      character*255        subdir
+cc      character*1         letter_hp
 cc      character*30        chtemp
-      character*3         ch_event_number
+cc      character*3         ch_event_number
 cc      common /hnamch/     subdir,letter_hp,chtemp,ch_event_number
 	character*255      hypfn
 	character*255      modfn
 	common /hymofn/ hypfn,modfn
 c
-      integer             subdir_length
-		logical             source_flag
-		common /hnami/      subdir_length,source_flag
+cc      integer             subdir_length
+cc		logical             source_flag
+cc		common /hnami/      subdir_length,source_flag
 c
       real                amp(nrec_max)
       real                freq(nrec_max)
@@ -235,9 +235,9 @@ c  *******************
 c
 c=============================================================================
 c
-		subdir = ''
-		letter_hp = ''
-		ch_event_number = ''
+cc		subdir = ''
+cc		letter_hp = ''
+cc		ch_event_number = ''
 c
       xp=x0
       yp=y0
@@ -432,8 +432,8 @@ c
 c
 		write (lulist,'(/,8x," program                 :",a)')
      >prog_name1//prog_name2
-		write (lulist,'(  8x," event                   :",a)')
-     >subdir(1:subdir_length)//'/'//letter_hp//ch_event_number
+cc		write (lulist,'(  8x," event                   :",a)')
+cc     >subdir(1:subdir_length)//'/'//letter_hp//ch_event_number
 		write (lulist,'(  8x," model                   :",a)')
      >ch_model_name
 		write (lulist,'(  8x," model error             :",f5.3," s")')

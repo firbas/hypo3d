@@ -82,9 +82,9 @@ cc      common /hnamch/ subdir,letter_hp,ch_fevent_number,
 cc     >                ch_levent_number,interactive,chfix_depth,
 cc     >                chfix_value,sname
 c
-      integer             subdir_length       !length of subdir. name
-		logical             source_flag
-		common /hnami/      subdir_length,source_flag
+cc      integer             subdir_length       !length of subdir. name
+cc		logical             source_flag
+cc		common /hnami/      subdir_length,source_flag
 c
 c  functions  ...  none
 c
