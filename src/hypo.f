@@ -469,7 +469,7 @@ c
 					 
 c  input of hypofile, crustal model, initialize of spline surface common
 c
-		call inpt(n_of_location)
+		call i_hyp_mod(n_of_location)
 
 		if (nrec .lt. 3) then
 			 write (*,

@@ -11,7 +11,7 @@ OBJ= hypo.o trans.o    \
  td_all.o rt_3d.o term.o layer.o lt.o sort_d.o search_l.o velocity.o vl.o   \
  output.o sort_x.o create_dbfile.o   \
  sphere_step.o magni.o origin_time.o   \
- inpt_3d.o search_cr_model.o spline_in.o   \
+ i_hyp_mod.o read_model.o spline_in.o   \
  dialog_1.o dialog_2.o dialog_2_1.o   \
  dialog_3.o rec_time_name.o \
  iter_1.o iter_2.o cov_matrix.o rms_net_1.o rms_net_2.o spline_value.o   \
@@ -26,6 +26,9 @@ OBJ= hypo.o trans.o    \
 # setfn.o
 # break.o
 # nearest_source.o sort_source.o
+# search_cr_model.o
+# inpt_3d.o
+
 
 hypo3d: $(OBJ)
 	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
@@ -83,17 +86,12 @@ magni.o: magni.f param.fi
 origin_time.o: origin_time.f param.fi
 	$(FC) $(FFLAGS) origin_time.f
 
-inpt_3d.o: inpt_3d.f param.fi pname.fi model_3d.fi
-	$(FC) $(FFLAGS) -cpp inpt_3d.f
-search_cr_model.o: search_cr_model.f error.fi
-	$(FC) $(FFLAGS) -cpp search_cr_model.f
+i_hyp_mod.o: i_hyp_mod.f param.fi pname.fi model_3d.fi
+	$(FC) $(FFLAGS) i_hyp_mod.f
+read_model.o: read_model.f error.fi
+	$(FC) $(FFLAGS) read_model.f
 spline_in.o: spline_in.f 
 	$(FC) $(FFLAGS) spline_in.f
-
-#nearest_source.o: nearest_source.f source.fi pname.fi
-#	$(FC) $(FFLAGS) nearest_source.f
-#sort_source.o: sort_source.f source.fi
-#	$(FC) $(FFLAGS) sort_source.f
 
 dialog_1.o: dialog_1.f list.fi pname.fi 
 	$(FC) $(FFLAGS) dialog_1.f
