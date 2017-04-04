@@ -2,7 +2,6 @@ c
 C$ema /sur/
 		subroutine spline_value (IN,R,ZD,NDER)
 c
-c		include 'term.fi'
 c
 c  Parameter IN has in program HYPO3D value 0 ... input parameter
 c  Parameter R  ... input array with coordinates x, y
@@ -58,14 +57,8 @@ c mw
 		RETURN
 12    write (*,'("Spline_value: Error - 1D surface.")')
 		call Abort
-c  12 CALL CURV2D(R(1),ZD(1),ZD(2),ZD(4),
-c    *            NX(IM),X(MXS),W(MWS),VX(1,MXS),SIGMA(IM))
-c     RETURN
 13    write (*,'("Spline_value: Error - 1D surface.")')
 		call Abort
-c  13 CALL CURV2D(R(2),ZD(1),ZD(3),ZD(6),
-c    *            NY(IM),Y(MYS),W(MWS),VY(1,MYS),SIGMA(IM))
-c     RETURN
 14    CALL SURFBD(R(1),R(2),ZD(1),ZD(2),ZD(3),ZD(4),ZD(5),ZD(6),
      *            NX(IM),NY(IM),X(MXS),Y(MYS),W(MWS),
      *            VX(1,MXS),VY(1,MYS),SIGMA(IM))

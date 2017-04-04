@@ -58,8 +58,6 @@ c
 c
 		include 'pname.fi'
 		include 'list.fi'
-c		include 'data_dir.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -118,14 +116,6 @@ c
       real            t0
       common /otime/  year,month,day,hour,minute,t0
 c
-cc      character*10    subdir
-cc      character*1     letter_hp
-cc      character*3     ch_event_number
-cc      common /hnamch/ subdir,letter_hp,ch_event_number
-c
-cc      integer         subdir_length
-cc		logical             source_flag
-cc		common /hnami/      subdir_length,source_flag
 c
 c  functions  ...  none
 c
@@ -204,11 +194,6 @@ c
 c  decode datum
 c
       call real8_to_int(dmin8,year,month,day,hour,minute)
-c
-c  code hypofile name
-c
-cc      hyponamr=lu21_data//subdir(1:subdir_length)//'/'//
-cc     >letter_hp//ch_event_number
 c
 c  write second part of header
 c

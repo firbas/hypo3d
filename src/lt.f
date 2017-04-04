@@ -23,7 +23,6 @@ c
 		implicit none
 c
 		include 'param.fi'
-c      include 'term.fi'
 c
 		integer i,j
 		integer imode

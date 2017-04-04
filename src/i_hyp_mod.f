@@ -387,7 +387,7 @@ c
 c  write input data to terminal
 c
 		write (*,'(1x,a,": Phase data from ",a)')
-     >prog_name,hypfn
+     >prog_name,hypfn(1:lnblnk(hypfn))
 c
 c  write header
 c

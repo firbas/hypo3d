@@ -58,7 +58,6 @@ c  global parameters
 c
 		include 'pname.fi'
 		include 'param.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -72,16 +71,6 @@ c
 		integer      n_fix_coord
 c
 c  global variables
-c
-cc      character*10    subdir              !name of subdirectory
-cc      character*1     letter_hp           !letter for hp tape
-cc      character*3     ch_fevent_number    !first event to localize
-cc      character*3     ch_levent_number    !last event to localize
-cc      character*1     interactive         !flag for interactive mode
-cc      character*1     chfix_depth         !flag for fixed depth
-cc      character*16    chfix_value         !value of fixed depth
-cc      character*6     sname               !name of file with start coord.
-cc      common /hnamch/ interactive,chfix_depth,chfix_value,sname
 c
       logical         scan_depth
       real            scan_start
@@ -162,12 +151,6 @@ c  show menu
 c
 110   continue
 c
-cc      if (interactive.eq.'N') then
-ccc
-ccc  next menu
-ccc
-cc          go to 10
-cc      else
           write (*,'(1x,a,": M e n u")') prog_name
           write (*,'(1x,a,": ",
      >    "End of program            -  ''E''",/,9x,
@@ -177,11 +160,6 @@ cc     >    "Correct hypofile          -  ''C''",/,9x,
 c
           read (*,'(a)',err=110,end=110) answer
 c
-cc          call clear_display
-c
-cc      endif
-c
-cc      call CaseFold (answer)
 	 if(answer.eq.'n')answer='N'
 	 if(answer.eq.'e')answer='E'
 	 if(answer.eq.'c')answer='C'
@@ -199,14 +177,6 @@ c
           go to 10
       else if (answer.eq.'C') then
 c
-c  correct hypofile
-c
-cc          call repair
-cc          correct=.true.
-c
-c  test on # of valid arrivals
-c
-cc          call valid_arrival
       else
 c
 c  wrong answer
@@ -222,50 +192,6 @@ c=============================================================================
 c
 10    continue
 c
-
-ccc
-cc      if (interactive.eq.'N') then
-cc          if (sname.eq.' ') then
-ccc
-ccc  start file not given ... default start point
-ccc
-cc              x_start=0.0
-cc              y_start=0.0
-cc              z_start=0.0
-cc          else
-ccc
-ccc  read start coord. from given start file
-ccc
-cc              read (lustart,*,iostat=ios) x_start,y_start,z_start
-ccc
-cc              if (ios.ne.0) then
-ccc
-ccc  report error
-ccc
-cccc                  call ReportError (ios,'READ_START_FILE')
-ccc
-ccc  set default values
-ccc
-cc                  x_start=0.0
-cc                  y_start=0.0
-cc                  z_start=0.0
-cc              endif
-ccc
-cc          endif
-cc
-ccc
-cc          if (chfix_depth.eq.'Z') then
-ccc
-ccc  fixed depth mode
-ccc
-cc              fix_depth=.true.
-cc              read (chfix_value,*) z_start
-cc          endif
-ccc
-cc          go to 1000
-ccc
-cc      else
-
           write (*,'(1x,a,": M e n u")') prog_name
           write (*,'(1x,a,": ",
      >    "Scanned depth             -  ''S''",/,9x,
@@ -276,17 +202,11 @@ cc      else
 c
           read (*,'(a)',err=10,end=10) answer
 c
-cc          call clear_display
-c
-cc         call CaseFold (answer)
 	 if(answer.eq.'s')answer='S'
 	 if(answer.eq.'f')answer='F'
 	 if(answer.eq.'r')answer='R'
 	 if(answer.eq.'n')answer='N'
 c
-
-cc      endif
-
 c
       if (answer.eq.'S') then
 c
@@ -401,10 +321,6 @@ c
 c
       read (*,'(a)',err=50,end=50) answer4
 c
-cc      call clear_display
-c
-cc      call CaseFold (answer4)
-c     
 	if ( index(answer4,'X').ne.0.or.index(answer4,'x').ne.0) then
 c
 c  fixed coordinate x

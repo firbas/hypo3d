@@ -44,8 +44,6 @@ c
 		include 'pname.fi'
 		include 'list.fi'
 		include 'model_3d.fi'
-c		include 'onset.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -114,21 +112,6 @@ c  common for model name
 c
 		character*255        ch_model_name   !name of crustal model for use
 		common /chmodn/     ch_model_name
-c
-c  common for data for hypofile and noninteractive mode description
-c
-
-cc		character*1     interactive         !flag for interactive mode
-cc		character*1     chfix_depth         !flag for fixed depth
-cc		character*16    chfix_value         !value of fixed depth
-cc		character*6     sname               !name of file with start coord.
-cc		common /hnamch/ interactive,chfix_depth,chfix_value,sname
-c
-c  common for length of subdirectory name
-c
-cc		integer             subdir_length   !length of subdir. name
-cc		logical             source_flag
-cc		common /hnami/      subdir_length,source_flag
 c
 c  common for time data
 c
@@ -431,21 +414,12 @@ c 	name must NOT be derived => option -M required
 		write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
 	   call exit
 	endif
-c	ios=index(subdir,'/')
-c	if(subdir.eq.' ') then
-c	neither subdirectory nor model have not been defined in runstring, 
-c	working directory used and the other names will be derived
-c		subdir=cwd(1:lnblnk(cwd))
-c		write(*,*) 'Data subdirectory not given. Using default values:'
-c		write(*,*) 'Subdir:  ',subdir
-c        endif
-c	hypofn=hyponame(1:lnblnk(hyponame))
 	hypofn=hyponame
 	modfn=ch_model_name
 c
 c	
-	write(*,*) 'Hypofile is  ',hypofn
-	write(*,*) 'Model is  ',modfn
+	write(*,*) 'Hypofile is  ',hypofn(1:lnblnk(hypofn))
+	write(*,*) 'Model is  ',modfn(1:lnblnk(hypofn))
 	rms_on_sphere = .false.
 	loc_write     = .false.
 	reading_error = 0.016 		!estimated reading error in ms
@@ -1104,12 +1078,6 @@ c
 			 go to 30
 		else
 			 if (scan_depth) then
-
-cc			 if (scan_depth .or. interactive.eq.'N') then
-cc			     if (interactive.eq.'N') then
-cc						z0=999.99
-cc			     endif
-
 c
 c  set values of coord. of epicenter
 c
@@ -1174,30 +1142,16 @@ c
 c  output data
 c
 			 if (i0.lt.maxIter) then
-			     call output(lulist,0)
-c			     call output(lulist,luterm)
-c
-c  test on interactive mode
-c
-c			     if (interactive.ne.'N') then
-cc  show known sources nearby hypocenter
-cc
-c						call nearest_source (source_flag,x0,y0,z0)
-c			     endif
-c
-c  show matrix in the case of interactive mode
-c
-			     if (.false.           ) then
-
-c  show resolution matrix, info density matrix
-c
-						call show_matrix
-			     endif
+c			     call output(lulist,0)
+			     call o_hy3(lulist,0)
 			 else
 c
-c  no list to terminal in the case of no covergence
+c  no list to terminal in the case of no convergence
 c
-			     call output(lulist,-1)
+                             write(lulist,*) 'NO CONVERGENCE!'
+                             write(0,*) 'NO CONVERGENCE!'
+c			     call output(lulist,-1)
+			     call o_hy3(lulist,0)
 			 endif
 		endif
 c
@@ -1239,13 +1193,6 @@ c
 		endif
 c
 162   continue
-c  test on interactive mode
-c
-
-cc		if (interactive.eq.'N') then
-cc			 go to 163
-cc		endif
-
 c
 c  show menu with rms of res. on sphere centered on the hypocenter
 c
@@ -1260,21 +1207,11 @@ c
 c
 163   continue
 c
-c  test on interactive mode
-c
-
-cc		if (interactive.eq.'N') then
-cc			 i_menu=2
-cc		else
-
-c
 c  show menu
 c
 			 call dialog_2_1
      >    (endit,prt,scan_depth,i0,maxIter,rms_on_net,
      >    loc_write,rp,i_menu)
-
-cc		endif
 
 c	
 		if (i_menu.eq.1) then
@@ -1286,18 +1223,6 @@ c
 			write(*,*) 'Writing dbfile' 
 			call create_dbfile(n_of_location,hyp3name)
 c
-c  test on interactive mode
-c
-
-cc			 if (interactive.eq.'N') then
-ccc
-ccc  next event to location
-ccc
-cc			     go to 10
-cc			 endif
-
-c
-c  segment load
 c  next menu
 c
 			 go to 163
@@ -1306,6 +1231,7 @@ c  next menu
 c
 			 go to 163
 		else if (i_menu.eq.4) then
+
 		endif
 c
 c  end of main program

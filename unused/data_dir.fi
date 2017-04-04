@@ -1,2 +1,0 @@
-      character*6 lu21_data
-      parameter (lu21_data='/data/')

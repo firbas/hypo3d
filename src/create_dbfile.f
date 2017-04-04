@@ -57,7 +57,6 @@ c
 c  global parameters
 c
 		include 'pname.fi'
-c		include 'data_dir.fi'
 c
 c  local variables
 c
@@ -69,22 +68,6 @@ cc		character*3  ch_event_number        !char. repr. # of event
 c	        character*30 hy3fn
 c
 c  global variables
-c
-cc		character*10    subdir              !name of subdirectory
-cc      character*1     letter_hp           !letter for hp tape
-cc      character*3     ch_fevent_number    !first event to localize
-cc      character*3     ch_levent_number    !last event to localize
-cc      character*1     interactive         !flag for interactive mode
-cc      character*1     chfix_depth         !flag for fixed depth
-cc      character*16    chfix_value         !value of fixed depth
-cc      character*6     sname               !name of file with start coord.
-cc      common /hnamch/ subdir,letter_hp,ch_fevent_number,
-cc     >                ch_levent_number,interactive,chfix_depth,
-cc     >                chfix_value,sname
-c
-cc      integer             subdir_length       !length of subdir. name
-cc		logical             source_flag
-cc		common /hnami/      subdir_length,source_flag
 c
 c  functions  ...  none
 c
@@ -104,29 +87,12 @@ c
           suffix='.hy1'
       endif
 c
-c  evaluate ch_event_number
-c
-cc      read (ch_fevent_number,*) number
-cc      number=number+n_loc-1
-cc      write (ch_event_number,'(i3.3)') number
-c
-cc     NamrDb=lu21_data//subdir(1:subdir_length)//'/'//
-cc     >letter_hp//ch_event_number//suffix
-c
-c	call setfn('hy3file',7,hy3fn)
-c	namrdb=namr(1:(lnblnk(namr)-4))//suffix
 	namrdb=namr
  	write(*,*) 'CREATE:  ', namrdb    
 	 open (ludb,file=namrdb,status='UNKNOWN',iostat=ios)
 c
-cc      if (ios.ne.0) then
-cc          call ReportError (ios,NamrDb,'CRDB')
-cc          call Abort
-cc      endif
 c
-c  call output
-c
-      call output(ludb,0)
+      call o_hy3(ludb,0)
 c
 c  close the data base file
 c

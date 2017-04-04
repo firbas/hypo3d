@@ -128,7 +128,7 @@ c-----------------------------------------------------------------c
 
 		real   tinj(z_layer+1),didj(z_layer+1),tr(z_layer+1)
 		real   v_hypo                       !velocity in first point (hypoc.)
-														!surface coordinate and deriv.
+						!surface coordinate and deriv.
 c
 c-----------------------------------------------------------------------------
 c
@@ -151,10 +151,10 @@ c
 c  common for terms tid, did
 c
 		real   tid(z_layer,z_layer),did(z_layer,z_layer)
-														!travel times from top
-														!of layer one ... of layer nl
+						!travel times from top
+						!of layer one ... of layer nl
 		common /trace/    tid,did           !travel times from top
-														!of layer one, ..., of layer nl
+						!of layer one, ..., of layer nl
 c
 c
 c===========================================================================
@@ -239,8 +239,6 @@ c  travel time & derivatives for refracted wave
 c
 80    continue
   
-D     TD(1)=TR(K)
-  
 c
 c  set type of wave
 c
@@ -304,7 +302,6 @@ c
 c  travel time & derivatives for direct wave in first layer
 c
  
-D     TD(1)=TDJ1
  
 		type_of_wave = 2
       if (exchange) then
@@ -387,8 +384,6 @@ c
       if (tdc .ge. tmin) go to 80     !refracted wave is faster
 210   continue
  
-D     TD(1)=TDC
- 
 c
 c  along top of layer jl
 c
@@ -396,15 +391,6 @@ c
       n_poi = jl - 1
       poi(1) = delta - did(jl,jl)
 c
-c  for debugging
-c  test on resonable value
-c
-c     if (poi(1).lt.0.0) then
-c         write(*,*) ' Error in computing of direct wave!'
-c         write(lulist,*) ' Error in computing of direct wave!'
-c         write(lulist,*) ' delta,did,jl=',delta,did(jl,jl),jl
-c         call abort
-c     endif
 c
       z_coor(1) = -d(jl)
       do ii = jl-1,2,-1
@@ -456,19 +442,11 @@ D     TD(1)=TDIR
   
 260   continue
   
-d     WRITE (LULIST,*)
-d     WRITE (LULIST,*) 'TYPE OF WAVE IS ',TYPE_OF_WAVE
-d     IF (TYPE_OF_WAVE.EQ.1) THEN
-d         WRITE (LULIST,*) 'REFRACTING LAYER: ',K
-d     ENDIF
-  
 c
 c-------------------------------------------------------------------------
 c
 c  computation of improved time for 3D-block model
 c
-  
-D     WRITE (LULIST,*) 'TRAVEL TIME = ',TD(1)
   
       td(1) = 0.
       if (type_of_wave .eq. 2) then
@@ -529,7 +507,6 @@ c
           td(1) =td(1) + t
       endif
   
-D     WRITE (LULIST,*) '3D TRAVEL TIME = ',TD(1)
       if (toa.ne.0.9999999) then
           toa=-toa
       endif
@@ -581,10 +558,6 @@ c
       else
           toa=180./pi*toa
       endif
-  
-  
-D     WRITE (LULIST,*) ' 3D:  DT/DX=',TD(2),'  DT/DY=',TD(3),
-D    >'  DT/DZ=',TD(4)
   
       return
 		end

@@ -61,7 +61,6 @@ c
 c  global parameters
 c
 		include 'pname.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -116,9 +115,6 @@ c  read answer
 c
       read (*,'(a)',end=10) answer
   
-cc      call clear_display
-  
-cc      call CaseFold(answer)
 	 if (answer.eq.'r')answer='R'
 	 if (answer.eq.'e')answer='E'
 	 if (answer.eq.'n')answer='N'

@@ -76,7 +76,6 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-c		include 'term.fi'
 c
 c  local variables
 c

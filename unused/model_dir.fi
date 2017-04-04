@@ -1,2 +1,0 @@
-      character*18  lu13_proc_models
-      parameter (lu13_proc_models='/LU13/PROC/MODELS/')

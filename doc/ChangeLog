@@ -1,12 +1,22 @@
 ========================================================================
+2017-04-04 Zacherle v10.60
+
+Trimming printed strings by lnblnk(), files:
+i_hyp_mod.f output.f hypo.f
+New file: o_hy3.f
+o_hy3.f cloned from output.f
+o_hy3() takes only necessary parts of the output()
+Commented out lines of code was deleted.
+Files in directory ./unused/ were deleted.
+========================================================================
 2017-04-03 Zacherle v10.59
 
 New files:
 read_model.f cloned from search_cr_model
 i_hyp_mod.f  cloned from inpt_3d.f
 Files discarded: search_cr_model.f inpt_3d.f.
-read_model() takes only a necessary part of the of the search_cr_model().
-i_hyp_mod() takes only a necessary part of the of the inpt_3d().
+read_model() takes only necessary parts of the search_cr_model().
+i_hyp_mod() takes only necessary parts of the inpt_3d().
 ========================================================================
 2017-04-03 Zacherle v10.58
 

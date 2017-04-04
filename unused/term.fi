@@ -1,2 +1,0 @@
-      integer       luterm                !lu of terminal
-      common /trm/  luterm

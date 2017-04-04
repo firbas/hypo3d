@@ -9,7 +9,7 @@ LDFLAGS=
 OBJ= hypo.o trans.o    \
  datum.o days.o abort.o real8_to_int.o  \
  td_all.o rt_3d.o term.o layer.o lt.o sort_d.o search_l.o velocity.o vl.o   \
- output.o sort_x.o create_dbfile.o   \
+ o_hy3.o sort_x.o create_dbfile.o   \
  sphere_step.o magni.o origin_time.o   \
  i_hyp_mod.o read_model.o spline_in.o   \
  dialog_1.o dialog_2.o dialog_2_1.o   \
@@ -28,7 +28,7 @@ OBJ= hypo.o trans.o    \
 # nearest_source.o sort_source.o
 # search_cr_model.o
 # inpt_3d.o
-
+# output.o
 
 hypo3d: $(OBJ)
 	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
@@ -72,8 +72,8 @@ velocity.o: velocity.f param.fi
 vl.o: vl.f param.fi 
 	$(FC) $(FFLAGS) vl.f
 
-output.o: output.f param.fi pname.fi error.fi
-	$(FC) $(FFLAGS) output.f
+o_hy3.o: o_hy3.f param.fi pname.fi error.fi
+	$(FC) $(FFLAGS) o_hy3.f
 sort_x.o: sort_x.f
 	$(FC) $(FFLAGS) sort_x.f
 create_dbfile.o: create_dbfile.f pname.fi

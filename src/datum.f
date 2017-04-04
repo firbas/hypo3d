@@ -65,7 +65,6 @@ c
 c
 c  global parameters
 c
-c      include 'term.fi'
 c
 c  local variables
 c

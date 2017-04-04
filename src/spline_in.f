@@ -5,7 +5,6 @@ c
 c  input of data for spline surface
 c  written by lk
 c
-c		include 'term.fi'
 c
 		character*(*) namr
 		character*255 surfn
@@ -15,11 +14,8 @@ c
 C
 		write(*,*) 'SPLINE: Surface is  ', namr
 		open (lu1,file=namr,status='OLD',iostat=ios)
-c		call setfn('surface',7,surfn)
-c		open (lu1,file=surfn,status='OLD',iostat=ios)
 C
 		if (ios.ne.0) then
-cc			 call ReportError (ios,namr,'SPLINE_IN')
 			 call Abort
 		endif
 C
@@ -71,14 +67,10 @@ C
 		write (*,
      >'("Spline_in: Error 1D surface /INTFD/.")')
 		call Abort
-c  12 CALL CURVN1(MX,X(MXS),W(MWS),VX(1,MXS),TEMP,SIGMA(IM),IERR)
-c     GO TO 19
 13    continue
 		write (*,
      >'("Spline_in: Error 1D surface /INTFD/.")')
 		call Abort
-c  13 CALL CURVN1(MY,Y(MYS),W(MWS),VY(1,MYS),TEMP,SIGMA(IM),IERR)
-c     GO TO 19
 14    CALL SURFB1(MX,MY,X(MXS),Y(MYS),W(MWS),MX,W(MWS),
      *            VX(1,MXS),VY(1,MYS),TEMP,SIGMA(IM),IERR)
 19    IF(IERR.EQ.1) STOP 22

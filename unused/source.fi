@@ -1,6 +1,0 @@
-      integer max_source                  !maximum number of sources
-      parameter (max_source=100)
-  
-      integer lusource                    !lu for file with data of known
-      parameter (lusource = 21)           !sources
-  

@@ -49,7 +49,6 @@ c  global parameters
 c
 		include 'list.fi'
 		include 'pname.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -74,32 +73,6 @@ c  *******************
 c
 c=============================================================================
 c
-c
-c  segment loading
-c
-C		call seg_load ('SGT8  ')
-c
-c  purge list file
-c
-cc		call opclose (lulist,1,' ','DELETE')
-c
-c  segment loading
-c
-C		call seg_load ('SGT13 ')
-c
-c  for the first: if there are changes in weights give a chance to write
-c                  new weigths in hypofile
-c
-cc		call permanent_change
-c
-c  segment loading
-c
-C		call seg_load ('SGT11 ')
-c
-c  purge temporary files
-c
-cc		call purge_scratch
-c
 c  test on loc_file writting
 c
 		if (loc) then
@@ -114,10 +87,6 @@ c
 		if (w_changes) then
 			 ipram(5)=ipram(5)+10
 		endif
-c
-c  return loc-write flag to father program
-c
-cc		call prtn(ipram)
 c
 c  write good bye message
 c

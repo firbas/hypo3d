@@ -8,7 +8,7 @@ The HYPO3D is derived from the program HYPO71
 
 3-dimensional velocity model is constructed of rectangular blocks
 and ray-tracing is solved in 1-dimensional layered model reduced of 3-d for each line between the source and the receiver point.
-The problem is solved in map coordinates S-JTSK Křovák EPSG:5513, but the unit is kilometers, not meters.
+The problem is solved in map coordinates S-JTSK Křovák EPSG:5513, but the unit is [km].
 
 ## Authors
 * **Petr Firbas** - 1986 - Initial work.

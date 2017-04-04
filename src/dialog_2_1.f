@@ -72,7 +72,6 @@ c
 c  global parameters
 c
 		include 'pname.fi'
-c		include 'term.fi'
 c
 c  local variables
 c
@@ -174,14 +173,6 @@ c
 			 i_menu=1
 c
 		else if (answer.eq.'L' .and. endit) then
-c
-c  cursor home, clear display
-c
-cc			 call clear_display
-c
-c  write waiting message
-c
-cc			 write (*,'(//////////,28x,"P l e a s e ,   w a i t.")')
 c
 c  set flags
 c
