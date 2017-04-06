@@ -582,7 +582,7 @@ c
 			 call rms_net_1(dmin8)
 		endif
 c
-c  transform hypocenter coord. to local coordinates for surface computing
+c  transform hypocenter coord. to Krovak coordinates for surface computing
 c
 		c_hypo1(1)=x0
 		c_hypo1(2)=y0
@@ -665,7 +665,7 @@ c
 		if (rms_on_sphere) then
 			 call sphere_step (i0,rmsres,endit,t0_norm)
 c
-c  transform to local coordinates for surface computing
+c  transform local to Krovak coordinates for surface computing
 c
 			 c_hypo1(1)=x0
 			 c_hypo1(2)=y0
@@ -752,7 +752,7 @@ c
 			     go to 162
 			 else
 c
-c  transform to local coordinates for surface computing
+c  transform local to Krovak coordinates for surface computing
 c
 			     c_hypo1(1)=x0
 			     c_hypo1(2)=y0
@@ -792,14 +792,9 @@ c
 			 yp=y0
 			 zp=z0
 c
-c  test on 3D case
-c
-			 if (prog_name.eq.'HYPO3D') then
-c
 c  transform local coord. to Krovak
 c
-			     call trans (xp,yp,zp,0)
-			 endif
+		     call trans (xp,yp,zp,0)
 c
 c  set grafics symbol for successful and unsuccessful iteration
 c
@@ -1010,7 +1005,7 @@ c
 c
 		endif
 c
-c  transform to local coordinates for surface computing
+c  transform local to Krovak coordinates for surface computing
 c
 		c_hypo1(1)=c_hypo(1)
 		c_hypo1(2)=c_hypo(2)
@@ -1088,36 +1083,38 @@ c
 c
 c  write message; give a chance to continue the location
 c
-			     write (1     ,'(1x,a,": Hypocenter not found in ",i2,
-     >        " iterations."/)') prog_name,maxIter
-150           continue
-			     write (1     ,'(1x,a,": Continue location with final",
-     >        " coordinates",/,9x,"of trial hypocenter? (y/n) [n]:_")')
-     >        prog_name
-c
-			     read (*,'(a)',end=150) answer
-c
-c  to big letters
-c
-	 if(answer.eq.'y')answer='Y'
-	 if(answer.eq.'n')answer='N'
 
-c
-c  test the answer
-c
-			     if (answer.eq.'Y') then
-c
-c  iterations will be numbered from one
-c
-						i0=0
-c
-c  set flag for the reasons of conserving of origin time value
-c
-						t0_norm=.true.
-						go to 30
-			     else if (answer.ne.' ' .and. answer.ne.'N') then
-						go to 150
-			     endif
+cc			     write (*     ,'(1x,a,": Hypocenter not found in ",i2,
+cc     >        " iterations."/)') prog_name,maxIter
+cc150           continue
+cc			     write (*     ,'(1x,a,": Continue location with final",
+cc     >        " coordinates",/,9x,"of trial hypocenter? (y/n) [n]:_")')
+cc     >        prog_name
+ccc
+cc			     read (*,'(a)',end=150) answer
+ccc
+ccc  to big letters
+ccc
+cc	 if(answer.eq.'y')answer='Y'
+cc	 if(answer.eq.'n')answer='N'
+cc
+ccc
+ccc  test the answer
+ccc
+cc			     if (answer.eq.'Y') then
+ccc
+ccc  iterations will be numbered from one
+ccc
+cc						i0=0
+ccc
+ccc  set flag for the reasons of conserving of origin time value
+ccc
+cc						t0_norm=.true.
+cc						go to 30
+cc			     else if (answer.ne.' ' .and. answer.ne.'N') then
+cc						go to 150
+cc			     endif
+
 c
 c  write message for the case of end of the location
 c
@@ -1148,7 +1145,6 @@ c			     call output(lulist,0)
 c
 c  no list to terminal in the case of no convergence
 c
-                             write(lulist,*) 'NO CONVERGENCE!'
                              write(0,*) 'NO CONVERGENCE!'
 c			     call output(lulist,-1)
 			     call o_hy3(lulist,0)
@@ -1162,14 +1158,9 @@ c
 			 yp=y0
 			 zp=z0
 c
-c  test on 3d case
-c
-			 if (prog_name.eq.'HYPO3D') then
-c
 c  local to Krovak
 c
 			     call trans (xp,yp,zp,0)
-			 endif
 c
 c  scan depth mode ... write results
 c

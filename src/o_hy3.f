@@ -228,13 +228,10 @@ c
 c
       xp=x0
       yp=y0
-		zp=z0
+      zp=z0
 c
-c  test on 3D case
-c
-      if (prog_name.eq.'HYPO3D') then
-          call trans (xp,yp,zp,0)
-      endif
+c local to Krovak
+      call trans (xp,yp,zp,0)
 c
 c  init. variable
 c

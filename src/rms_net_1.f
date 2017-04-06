@@ -128,7 +128,7 @@ c=============================================================================
 c
 		hyponamr = 'hypofile'
 c
-c  initialize x0, y0
+c  initialize x0, y0 (Krovak coordinates)
 c
       x0=start_x
       y0=start_y
@@ -147,7 +147,7 @@ c  Krovak to local
 c
       call trans (x0,y0,z0,1)
 c
-c  transform to local coordinates for surface computing
+c  transform local to Krovak coordinates for surface computing
 c
       c_hypo1(1)=x0
       c_hypo1(2)=y0

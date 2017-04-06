@@ -429,20 +429,13 @@ c
 c
 		if(indx.ne.1) then
 c
-c  Transf. local to Krovak of coord of the nearest station in 3D case
+c  Transf. local to Krovak of coord of the nearest station
 c
 			 x_temp=xstat(key(n0))
 			 y_temp=ystat(key(n0))
 			 z_temp=zstat(key(n0))
 c
-c  test on 3D case
-c
-			 if (prog_name.eq.'HYPO3D') then
-c
-c  local to Krovak
-c
-			     call Trans (x_temp,y_temp,z_temp,0)
-			 endif
+			 call Trans (x_temp,y_temp,z_temp,0)
 c
 c  compute x0, y0, z0
 c
@@ -473,17 +466,9 @@ c
 			 z0 = z_start
 		endif
 c
-c  Transf. Krovak to local in 3D case
+c  Transf. Krovak to local
 c
-c
-c  test on 3D case
-c
-		if (prog_name.eq.'HYPO3D') then
-c
-c  Krovak to local
-c
-			 call Trans (x0,y0,z0,1)
-		endif
+	        call Trans (x0,y0,z0,1)
 c
 c  set trial start for scan depth usage
 c

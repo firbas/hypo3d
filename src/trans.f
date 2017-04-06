@@ -19,6 +19,9 @@ c     real     X1      ...  x-coordinate (old x new)         I/O
 c     real     X2      ...  y-coordinate (old x new)         I/O
 c     real     X3      ...  z-coordinate (old x new)         I/O
 c     integer  TYPE    ...  type of transformation            I
+c                           type=1   Krovak --> local
+c                           type=0   local  --> Krovak
+c                           type=2   local  --> Krovak (for surface computing)
 c
 c----------------------------------------------------------------------------
 c
@@ -92,7 +95,8 @@ c
 	   x_nova= y_stara*a + x_stara*b
 c       
 	else
-c       
+c
+c       type=0, type=2       
 c       l --> K
 c       
 	   y_nova= x_stara*a + y_stara*b + y_shift

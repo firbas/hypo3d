@@ -139,21 +139,18 @@ c
       write (lulist,'(1x,4(f8.3,4x),f11.6,1x)')
      >x0,y0,z0,t0,sqrt(rmsres)
 c
-c  !!! temporary for grafics output
-c
-c     write (900,'(f11.6)') sqrt(rmsres)
-c
 c  increment coordinate x
 c
       x0=x0+step_x
 c
-c  transform to local coordinates for surface computing
+c x0,y0 (Krovak)
+c It is not needed to transform coordinates for surface computing.
 c
       c_hypo1(1)=x0
       c_hypo1(2)=y0
       c_hypo1(3)=z0
 c
-      call trans(c_hypo1(1),c_hypo1(2),c_hypo1(3),2)
+cc      call trans(c_hypo1(1),c_hypo1(2),c_hypo1(3),2)
 c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
