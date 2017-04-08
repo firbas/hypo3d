@@ -119,57 +119,35 @@ c
 c  open crustal model file
 c
          open (lucrmod,file=modfn,iostat=ios,status='OLD')
-c
-c  test on error
-c
           if (ios.ne.0) then
               call Abort
           endif
 c
-c  cte posun lokalnich souradnici vuci Krovakovi
-c
 	  read (lucrmod,*,iostat=ios) p_over_s
-c	  
           if (ios.ne.0) then
    	      write (*,'(" ... Abort 666")')
               call Abort
           endif
 	  write (*,*) p_over_s	  
+c local coordinates rotation to Krovak coordinates 	  
           read (lucrmod,*,iostat=ios) p_fi
-c
-c  test on error in reading
-c
           if (ios.ne.0) then
    	      write (*,'(" ... Abort 2")')
               call Abort
           endif
 c	  
+c local coordinates origin at Krovak coordinates
+c
           read (lucrmod,*,iostat=ios) p_x_shift
-c
-c  test on error in reading
-c
           if (ios.ne.0) then
               call Abort
           endif
 c	  
           read (lucrmod,*,iostat=ios) p_y_shift
-c
-c  test on error in reading
-c
           if (ios.ne.0) then
               call Abort
           endif
 c
-c  read in estimated model error
-c
-c          read (lucrmod,*,iostat=ios) temp
-c
-c  test on error in reading
-c
-c          if (ios.ne.0) then
-c              call Abort
-c          endif
-
 c =============================================================
 c 2017-03-28
 c Extended by the ability to read parameter reading_error
@@ -234,9 +212,6 @@ c
 c  Read in value of angle between x-axis and north
 c
           read (lucrmod,*,iostat=ios) nangle
-c
-c  test on error in reading
-c
           if (ios.ne.0) then
               call Abort
           endif

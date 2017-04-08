@@ -1140,14 +1140,14 @@ c  output data
 c
 			 if (i0.lt.maxIter) then
 c			     call output(lulist,0)
-			     call o_hy3(lulist,0)
+			     call o_hy3(lulist)
 			 else
 c
 c  no list to terminal in the case of no convergence
 c
                              write(0,*) 'NO CONVERGENCE!'
 c			     call output(lulist,-1)
-			     call o_hy3(lulist,0)
+			     call o_hy3(lulist)
 			 endif
 		endif
 c

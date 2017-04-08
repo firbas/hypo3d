@@ -18,18 +18,6 @@ OBJ= hypo.o trans.o    \
  eigen.o minv.o \
  model.o xy2fl.o
 
-#unused
-# clf_3d_1.o clf_3d_2.o rt_3d_l.o    
-# valid_arrival.o   
-# show_matrix.o 
-# pause.o
-# setfn.o
-# break.o
-# nearest_source.o sort_source.o
-# search_cr_model.o
-# inpt_3d.o
-# output.o
-
 hypo3d: $(OBJ)
 	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
 
@@ -38,11 +26,10 @@ clean:
 
 hypo.o: hypo.f min_shift.fi error.fi param.fi pname.fi list.fi \
 		model_3d.fi  stmod.fi
- 
 	$(FC) $(FFLAGS) hypo.f
+
 trans.o: trans.f pname.fi
 	$(FC) $(FFLAGS) trans.f
-
 
 datum.o: datum.f 
 	$(FC) $(FFLAGS) datum.f

@@ -92,7 +92,7 @@ c
 	 open (ludb,file=namrdb,status='UNKNOWN',iostat=ios)
 c
 c
-      call o_hy3(ludb,0)
+      call o_hy3(ludb)
 c
 c  close the data base file
 c

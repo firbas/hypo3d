@@ -1,4 +1,16 @@
 ========================================================================
+2017-04-08 Zacherle v10.62
+
+HYPO3D computes the covariance matrix in local coordinates, not Krovak.
+It has difficulty in evaluating the error ellipse, which were partially 
+corrected in o_hy3.f code.
+1) Epicenter error ellipse parameters (axis and orientation) are
+   computed in local coordinates. l1 is major axis.
+2) To estimate errors dxer and dyer a rotation of the covariance matrix
+   from local to Krovak was added.
+3) In the case of fix_x or fix_y (in view to Krovak coord.)
+   it is not possible to estimate errors dxer and dyer.
+========================================================================
 2017-04-06 Zacherle v10.61
 
 Coord. trans. Krovak<-->local revised: rms_net_2.f and comments.

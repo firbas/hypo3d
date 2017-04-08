@@ -1,6 +1,6 @@
 c
 C$ema /hyp/,/rec/,/stmod/
-		subroutine o_hy3(lulist,lu1)
+		subroutine o_hy3(lulist)
 c
 c*****************************************************************************
 c
@@ -11,23 +11,18 @@ c
 c  purpose:
 c
 c     output results to list devices/files (list-file, database-file)
-c     lu1=0      ... output to db file
-c     lu1=-1     ... output in the case of no convergence
-c     lu1 .ne. 0 ... output to lu and to list file
 c
 c-----------------------------------------------------------------------------
 c
 c  formal parameters:
 c
 c     integer     LULIST      ...  lu for output                    I
-c     integer     LU1         ...  lu for output resp.
-c                                  switch of output format          I
 c
 c----------------------------------------------------------------------------
 c
 c  calling convention:
 c
-c     call o_hy3 (lulist,lu1)
+c     call o_hy3 (lulist)
 c
 c----------------------------------------------------------------------------
 c
@@ -41,7 +36,7 @@ c
 c----------------------------------------------------------------------------
 c
 c  programmed:  87-07  01.00  mw OUTPUT.F
-c  programmed:2017-04  10.59  pc O_HY3 cloned from OUTPUT.F
+c  programmed:2017-04  10.59  pz O_HY3 cloned from OUTPUT.F
 c
 c*****************************************************************************
 c
@@ -55,7 +50,6 @@ c
 c  formal parameters
 c
 		integer lulist
-		integer lu1
 c
 c  local parameters  ...  none
 c
@@ -68,18 +62,12 @@ c
 c
 c  local variables
 c
-		character     fmt1*151,fmt2*36,fmt3*55,fmt4*64,fmt5*64,fmt6*64
-		character     fmt7*59,fmt8*47,fmt9*52,fmt10*39,fmt11*48,fmt12*48
-		character     fmt13*50
-		character*22  whole_date
-		integer it1,it2
-      integer imt1,imt2
-      integer minut1,minut2
+      character*22  whole_date
+      integer it1,it2
       integer itime(5)
 	integer ita(9)
 	integer stime
       integer iyear
-      integer lu
       integer iain
       integer temp1(nrec_max)
       integer temp2
@@ -88,11 +76,6 @@ c
       integer igap
       integer isec,msec
 c
-		integer  i1a
-		integer  i2a
-		integer	 i3a
-		integer  i4a
-c		
       real    delay
       real    coef
       real    dtemp
@@ -100,16 +83,15 @@ c
       real    d11,d21,d22
       real    theta
       real    al,bl
-		real    l1,l2
+      real    l1,l2,tl
       real    dxer,dyer,dzer,dter
-      real    dx,dy
+      real    dx,dy,dz
       real    temp(nrec_max)
       real    gap
       real    d_hypo(nrec_max)
       real    d_epi(nrec_max)
-C      ema     d_hypo,d_epi
+
       real    az(nrec_max)
-      logical no_convergence
       real    xp,yp,zp
       real*8  fi, rla
 c
@@ -118,9 +100,9 @@ c
       integer             key(nrec_max)   !key field
       common /stmod/      key
 c
-	character*255      hypfn
-	character*255      modfn
-	common /hymofn/ hypfn,modfn
+      character*255      hypfn
+      character*255      modfn
+      common /hymofn/ hypfn,modfn
 c
       real                amp(nrec_max)
       real                freq(nrec_max)
@@ -190,7 +172,7 @@ c
       real                ot_start
       common /start/      x_start,y_start,z_start,ot_start
 c
-		integer             year_orig
+      integer             year_orig
       integer             month_orig
       integer             day_orig
       integer             hour_orig
@@ -204,15 +186,19 @@ c
       logical         fix_otime
       common /f_mode/ fix_x,fix_y,fix_otime
 c
-		logical         scan_depth
-		real            scan_start
-		real            scan_end
-		real            scan_step
-		common /scan/   scan_depth,scan_start,scan_end,scan_step
+      logical         scan_depth
+      real            scan_start
+      real            scan_end
+      real            scan_step
+      common /scan/   scan_depth,scan_start,scan_end,scan_step
 c
       real            nangle
       common /nangl/  nangle
 
+      double precision p_fi, p_x_shift, p_y_shift
+      common /p_posun/ p_fi, p_x_shift, p_y_shift
+
+      double precision c,s,PI_D,RAD2DEG,DEG2RAD
 c
 c  functions
 c
@@ -224,36 +210,15 @@ c  end of declarations
 c  *******************
 c
 c=============================================================================
+      PI_D=4.D0*datan(1.D0)
+      RAD2DEG=180.D0/PI_D
+      DEG2RAD=PI_D/180.D0
 c
+c The covariance matrix co was computed in local coord. For this
+c in the case of fix_x or fix_y (in view to Krovak coord.) 
+c it is not possible to estimate errors dxer and dyer.
 c
-      xp=x0
-      yp=y0
-      zp=z0
-c
-c local to Krovak
-      call trans (xp,yp,zp,0)
-c
-c  init. variable
-c
-      no_convergence=.false.
-      lu=lu1
-c
-c  modify covariance matrix
-c  for fixed coordinates
-c
-      if (fix_x) then
-          do i=1,4
-              co(1,i)=0.0
-              co(i,1)=0.0
-          end do
-      endif
-c
-      if (fix_y) then
-          do i=1,4
-              co(2,i)=0.0
-              co(i,2)=0.0
-          end do
-      endif
+c modify covariance matrix for fixed coordinates
 c
       if (fix_depth .or. scan_depth) then
 			 do i=1,4
@@ -262,18 +227,26 @@ c
 			 end do
 		endif
 c
-		if (fix_otime) then
+      if (fix_otime) then
 			 do i=1,4
 			     co(4,i)=0.0
 			     co(i,4)=0.0
 			 end do
 		endif
 c
-		if (.not.fix_x .and. .not.fix_y
-     >  .and. rmsres_co.ne.9.99**2) then
+c --------------------------------------------------------------------
+      dxer=9.99
+      dyer=9.99
+      dzer=9.99
+      dter=9.99
+      l1=9.99
+      l2=9.99
+      theta=999.0
+c --------------------------------------------------------------------
 c
-c  error ellipse for epicenter
-c
+      if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
+c error ellipse for epicenter
+c computed in local coordinates
 			 deter=co(1,1)*co(2,2)-co(1,2)*co(2,1)
 			 d11=co(2,2)/deter
 			 d22=co(1,1)/deter
@@ -298,77 +271,64 @@ c
 			     l2=sqrt(1./bl)
 			 endif
 c
-c  theta is the angle from x-axis to the semi-major axis of the error ellipse
+c theta is the angle from x-axis to the semi-major axis of the error ellipse
 c
-			 theta = theta*180./pi
-cc!!??    theta = 90.-theta
-			 theta = mod(360.0-nangle+theta,360.0)
-		else
-			 l1=9.99
-			 l2=9.99
-			 theta=9.99
-		endif
+		 theta = theta*RAD2DEG
+		 theta = theta-nangle
+c l1 is major axis
+                 if (l2 .gt. l1 .and. l2 .ne. 999.99 ) then
+                    tl=l1
+                    l1=l2
+                    l2=tl
+                    theta=theta+90.0
+                 endif
+		 theta = mod(720.0+theta,360.0)
 c
-		if (rmsres_co.eq.9.99**2) then
+      endif
 c
-c  no degree of freedom
-c
-			 dxer=9.99
-			 dyer=9.99
-			 dzer=9.99
-			 dter=9.99
-			 l1=9.99
-			 l2=9.99
-			 theta=9.0
-		else
+c --------------------------------------------------------------------
+      if (rmsres_co.ne.9.99**2) then
 c
 c  square root of diagonal elements of covariance matrix ... dispersion
 c    of hypocenter coordinate estimates
 c
-			 dxer=sqrt(abs(co(1,1)))
-			 dyer=sqrt(abs(co(2,2)))
-			 dzer=sqrt(abs(co(3,3)))
-			 dter=sqrt(abs(co(4,4)))
-		endif
+c ====================================================================
+c 2017-04-08 pz
+c  rotation of the diagonal elements in the co matrix from local to Krovak
+           dxer=0.0
+           dyer=0.0
+           if (.not.fix_x .and. .not.fix_y) then
+              c=dcos(p_fi*DEG2RAD)
+              s=dsin(p_fi*DEG2RAD)
+              dxer=c*c*co(1,1)-s*c*co(1,2)-s*c*co(2,1)+s*s*co(2,2)
+              dyer=s*s*co(1,1)+s*c*co(1,2)+s*c*co(2,1)+c*c*co(2,2)
+              dxer=sqrt(abs(dxer))
+              dyer=sqrt(abs(dyer))
+           endif
+c ====================================================================
+           dzer=sqrt(abs(co(3,3)))
+           dter=sqrt(abs(co(4,4)))
+      endif
 c
+c --------------------------------------------------------------------
 		j = 0
 		do i = 1,nrec
 			 dx = x0-xstat(key(i))
 			 dy = y0-ystat(key(i))
+			 dz = z0-zstat(key(i))
 c
-c  az(i) ... angle between x-axis and direction recorder to source minus
+c  az(i) ... angle between x-axis and recorder to source direction minus
 c             angle between x-axis and north
 c
-			 if (dx.eq.0.0) then
-			     az(i) = mod(360.0-nangle+90.0,360.0)
-			 else
-			     if (dx.gt.0.0) then
-						if (dy.gt.0.0) then
-							 temp2=atan(dy/dx)*57.29578
-						else
-							 dy=-dy
-							 temp2=360.0-atan(dy/dx)*57.29578
-						endif
-			     else
-						if (dy.gt.0.0) then
-							 dx=-dx
-							 temp2=180.0-atan(dy/dx)*57.29578
-						else
-							 dx=-dx
-							 dy=-dy
-							 temp2=180.0+atan(dy/dx)*57.29578
-						endif
-			     endif
-c
-			     az(i) = mod(360.0-nangle+temp2,360.0)
-			 endif
+                         temp2=atan2(dy,dx)*RAD2DEG
+			 az(i) = mod(720.0-nangle+temp2,360.0)
 c
 			 if (wt(i).gt.0.0) then
 			     j = j + 1
 			     temp(j)=az(i)
 			 endif
 c
-			 d_hypo(i) = sqrt( dx**2 + dy**2 + (zstat(key(i))-zp)**2 )
+			 d_hypo(i) = sqrt( dx**2 + dy**2 + dz**2 )
 			 d_epi (i) = sqrt( dx**2 + dy**2 )
 		end do
 c
@@ -383,7 +343,16 @@ c
 		end do
 c
 		igap=gap+0.5
+c --------------------------------------------------------------------
+c hypocenter to Krovak
+      xp=x0
+      yp=y0
+      zp=z0
 c
+c local to Krovak
+      call trans (xp,yp,zp,0)
+c
+c --------------------------------------------------------------------
 c provedeme transformaci data do tvaru rr-mm-dd  hh:mm:ss.ss
 c
 		isec=t_orig
@@ -392,23 +361,7 @@ c
      >'(2(i2.2,"-"),i2.2,2x,2(i2.2,":"),i2.2,".",i3.3)')
      >year_orig,month_orig,day_orig,hour_orig,minute_orig,isec,msec
 c
-c  test on list mode
-c
-		if (lu.eq.0) then
-c
-c  lu=0 ... output to db file
-c
-			 go to 10
-		else if (lu.eq.-1) then
-c
-c  lu=-1 ... output in the case of no convergence
-c
-			 no_convergence=.true.
-			 lu=0
-			 whole_date=' '
-		endif
-c
-c no_convegence output deleted
+c --------------------------------------------------------------------
 c
 c	label 10 - regular output to dbfile begins ###
 c

@@ -28,4 +28,4 @@ No further development is foreseen but for further use it is needed:
 ## Licence
 HYPO3D is primarily designed for users in Institute of Physics of the Earth, Masaryk University in Brno.
 Potential users or contributors are welcome. 
-But note that this is working repository and not an end-user release. 
+But note that this is the working repository and not an end-user release. 
