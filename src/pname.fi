@@ -9,5 +9,5 @@ c      parameter (prog_name1='hypo3d.bin, ')         !first part of program name
 c      parameter (prog_name2='rev. 09.00 88-01-14')  !second part of program name
 c      parameter (prog_name2='rev. jan 2000 - SUN v.')
 c      parameter (prog_name2='rev. feb 2015 - Linux v.')
-      parameter (prog_name2='rev. 2017-04 - v.10.62')
+      parameter (prog_name2='rev. 2017-04 - v.10.63')
                                          

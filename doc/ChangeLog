@@ -1,4 +1,9 @@
 ========================================================================
+2017-04-20 Zacherle v10.63
+
+magni.f:
+Station magnitude is calculated only from S-wave amplitudes.
+========================================================================
 2017-04-08 Zacherle v10.62
 
 HYPO3D computes the covariance matrix in local coordinates, not Krovak.
@@ -23,7 +28,7 @@ i_hyp_mod.f output.f hypo.f
 New file: o_hy3.f
 o_hy3.f cloned from output.f.
 o_hy3() takes only necessary parts of the output().
-Commented out lines of code was deleted.
+Commented out lines of code were deleted.
 Files in directory ./unused/ were deleted.
 ========================================================================
 2017-04-03 Zacherle v10.59
@@ -45,7 +50,7 @@ Procedures inaccessible or unused were discarded:
 3) Default model choice
    search_cr_model.f
 
-Additionally versions of the program was labeled 
+Versions of the program were labeled additionally 
 following the original Milan Werl numbering.
 Werl        01.00-09.00
 Sitta       09.nn

@@ -391,8 +391,8 @@ c
       write (lulist,'("create time   :",i2.2,"-",i2.2,"-",i2.2,1x,
      >i2.2,":",i2.2,":",i2.2)') iyear,itime(1),itime(5),itime(4),
      >itime(3),itime(2)
-      write (lulist,'("event",9x,":",a)') hypfn(1:lnblnk(hypfn))         ! lu21_data//
-cc     >subdir(1:subdir_length)//'/'//letter_hp//ch_event_number
+      write (lulist,'("event",9x,":",a)') hypfn(1:lnblnk(hypfn)) 
+
       write (lulist,'("start(x,y,z,t):(",
      >f7.2,",",f7.2,",",f7.2,",",f7.2,")",//)')
      >x_start,y_start,z_start,ot_start

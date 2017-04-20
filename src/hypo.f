@@ -346,7 +346,6 @@ c  initialization of model_error variable (and other variables -VD)
 c
       model_error=-1.0
 	status=getcwd(cwd)
-c	subdir=' '
 	ch_model_name=' '
 	hyponame=' '
 	hyp3name=' '
@@ -368,9 +367,6 @@ c
       		write(*,*) 'Online information is not available'	
 c          	else if (string(1:2).eq.'-D'.or.string(1:2).eq.'-d') then
 c
-c  name of subdirectory
-c				
-c			subdir(1:string_length-2)=string(3:string_length)
           	else if (string(1:2).eq.'-i'.or.string(1:2).eq.'-I') then
 c
 c  name of first hypofile to location

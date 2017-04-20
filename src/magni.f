@@ -50,11 +50,9 @@ c
 c  local parameters  ...  none
 c
 		integer     min_distance
-		integer     max_freq
 		parameter (min_distance = 5.0)      !if hypocentral distance is less
 														!then min_distance then magnitude
 														!will be not evaluated
-		parameter (max_freq     = 25.0)     !maximal reasonable freq
 c
 c  global parameters
 c
@@ -95,9 +93,6 @@ c
       real            xmag(nrec_max)
       common /mag/    xmag,avm,sdm
 c
-      character*255    subdir
-cc      common /hnamch/ subdir
-c
       character*4     rec_name(nrec_max)
       common /chhyp/  rec_name
 c
@@ -109,8 +104,6 @@ c  end of declarations
 c  *******************
 c
 c=============================================================================
-c
-		subdir = ''
 c
 c  init. variables
 c
@@ -133,24 +126,22 @@ c
               go to 40
           endif
 c
-          if (type(i).eq.'P' .and. i.lt.nrec) then
+
+c          if (type(i).eq.'P' .and. i.lt.nrec) then
+cc
+cc  evaluating for S-arr., if only P-arrival then eval. for P-arr.
+cc
+c              if (rec_name(i).eq.rec_name(i+1) .and.
+c     >           type(i+1).eq.'S' .and. amp(i+1).gt.0.0) then
+c                  xmag(i)=-9.9
+c                  go to 40
+c              endif
+c          endif
+
 c
-c  evaluating for S-arr., if only P-arrival then eval. for P-arr.
-c
-              if (rec_name(i).eq.rec_name(i+1) .and.
-     >           type(i+1).eq.'S' .and. amp(i+1).gt.0.0) then
-                  xmag(i)=-9.9
-                  go to 40
-              endif
-          endif
-c
-c  Blahutovice array:  station LUCx is not used for magnitude estimation
-c
-          if (subdir(1:1).eq.'B'
-     >        .and. rec_name(i)(1:3).eq.'LUC') then
-              xmag(i)=-9.9
-              go to 40
-          endif
+       xmag(i)=-9.9
+
+       if (type(i).eq.'S' .and. amp(i)>0.0) then
 c
 c  distance hypocenter - record. station
 c
@@ -164,12 +155,6 @@ c
               go to 40
           endif
 c
-c  test on meaningful value of frequence
-c
-          if (freq(i).gt.max_freq) then
-              freq(i)=max_freq
-          endif
-c
 c  formula for magnitude estimation (W.-A. equivalent)
 c
           xmag(i)=
@@ -179,6 +164,11 @@ c
           nm=nm+1
           avm=avm+xmag(i)
           sdm=sdm+xmag(i)**2
+       
+       endif
+
+
+
    40     continue
       end do
 c
