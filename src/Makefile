@@ -1,9 +1,7 @@
 
 FC=gfortran
 
-#FFLAGS=  -O0 -m32 -ffixed-line-length-170 -c -g -fd-lines-as-comments
-#LDFLAGS= -m32
-FFLAGS=-g -O0 -ffixed-line-length-170 -c -fd-lines-as-comments
+FFLAGS=-g -O0 -c -ffixed-line-length-170 -fd-lines-as-comments
 LDFLAGS=
 
 OBJ= hypo.o trans.o    \
@@ -16,7 +14,7 @@ OBJ= hypo.o trans.o    \
  dialog_3.o rec_time_name.o \
  iter_1.o iter_2.o cov_matrix.o rms_net_1.o rms_net_2.o spline_value.o   \
  eigen.o minv.o \
- model.o xy2fl.o
+ surfb.o xy2fl.o
 
 hypo3d: $(OBJ)
 	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
@@ -107,8 +105,8 @@ rms_net_2.o: rms_net_2.f pname.fi list.fi
 spline_value.o: spline_value.f 
 	$(FC) $(FFLAGS) spline_value.f
 
-model.o: model.f
-	$(FC) $(FFLAGS) model.f
+surfb.o: surfb.f
+	$(FC) $(FFLAGS) surfb.f
 
 eigen.o: eigen.f
 	$(FC) $(FFLAGS) eigen.f

@@ -333,6 +333,14 @@ c
 		integer index
 		character*255 string,hyponame, hyp3name
 c
+c common for ray profile coordinates
+c
+		integer n_poi
+		real poi(2*z_layer)
+		real z_coor(2*z_layer)
+      common  /ray/ n_poi, poi, z_coor
+c
+
 c  *******************
 c  end of declarations
 c  *******************
@@ -1220,6 +1228,11 @@ c
 		else if (i_menu.eq.4) then
 
 		endif
+c ====================================================================
+c      write(14,*) n_poi
+c      write(14,*) 0,c_hypo(3),z0,best_z0
+c      write(14,'(F7.3,F6.2)') (poi(j),z_coor(j),j=1,n_poi)
+c ====================================================================
 c
 c  end of main program
 c

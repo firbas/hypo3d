@@ -56,7 +56,7 @@ c         03.01  17.12.86 mw  computed derivatives for general positions
 c                             of stations in 3d
 c         04.00  12.02.87 mw  streamlined computation of derivatives
 c         05.00  16.06.87 mw  new version ... input,output parameters
-c
+c        10.64 2017-04-23 pz  added common /ray/ 
 c**************************************************************************
 
 		implicit none
@@ -106,8 +106,14 @@ c
 cc		real srt
 		real u
 		real u1
+c
+c common for ray profile coordinates
+c
+		integer n_poi
 		real poi(2*z_layer)
 		real z_coor(2*z_layer)
+      common  /ray/ n_poi, poi, z_coor
+c
 		real x_sour1,y_sour1
 		real x_sour2,y_sour2
 		real t
@@ -116,7 +122,6 @@ cc		real temp
 		integer j1
 		integer jl
 		integer nl
-		integer n_poi
 		integer type_of_wave                !type of wave attaching station
 
 c-----------------------------------------------------------------c
@@ -441,7 +446,10 @@ D     TD(1)=TDIR
       endif
   
 260   continue
-  
+c ====================================================================
+c      write(*,'(1X,7(F7.3,F6.2,";"))') (poi(j),z_coor(j),j=1,n_poi)
+c ====================================================================
+c  
 c
 c-------------------------------------------------------------------------
 c

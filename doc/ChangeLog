@@ -1,10 +1,19 @@
 ========================================================================
-2017-04-20 Zacherle v10.63
+2017-04-23 pz v10.64
+
+1) The azimuth of the rays emerging from the focus and the angle
+   of rotation of the error ellipse is counted with respect 
+   to the meridian convergence at the focal point. File o_hy3.f.
+2) Added common /ray/ for ray profile coordinates. File rt_3d.f.
+3] Renamed model.f to surfb.f (subroutines surfbd, surfb1) 
+   and unused subroutines discarded. 
+========================================================================
+2017-04-20 pz v10.63
 
 magni.f:
 Station magnitude is calculated only from S-wave amplitudes.
 ========================================================================
-2017-04-08 Zacherle v10.62
+2017-04-08 pz v10.62
 
 HYPO3D computes the covariance matrix in local coordinates, not Krovak.
 It has difficulty in evaluating the error ellipse, which were partially 
@@ -16,12 +25,12 @@ corrected in o_hy3.f code.
 3) In the case of fix_x or fix_y (in view to Krovak coord.)
    it is not possible to estimate errors dxer and dyer.
 ========================================================================
-2017-04-06 Zacherle v10.61
+2017-04-06 pz v10.61
 
 Coord. trans. Krovak<-->local revised: rms_net_2.f and comments.
 3D/1D case test discarded.
 ========================================================================
-2017-04-04 Zacherle v10.60
+2017-04-04 pz v10.60
 
 Trimming printed strings by lnblnk(), files:
 i_hyp_mod.f output.f hypo.f
@@ -31,7 +40,7 @@ o_hy3() takes only necessary parts of the output().
 Commented out lines of code were deleted.
 Files in directory ./unused/ were deleted.
 ========================================================================
-2017-04-03 Zacherle v10.59
+2017-04-03 pz v10.59
 
 New files:
 read_model.f cloned from search_cr_model,
@@ -40,7 +49,7 @@ Files discarded: search_cr_model.f inpt_3d.f.
 read_model() takes only necessary parts of the search_cr_model().
 i_hyp_mod() takes only necessary parts of the inpt_3d().
 ========================================================================
-2017-04-03 Zacherle v10.58
+2017-04-03 pz v10.58
 
 Procedures inaccessible or unused were discarded:
 1) Inaccessible mode "interactive='N'"
@@ -57,7 +66,7 @@ Sitta       09.nn
 Vyslouzil   10.00-10.49
 Git commits 10.51-10.58
 ========================================================================
-2017-04-01 Zacherle v10.56
+2017-04-01 pz v10.56
 
 Git project directory organized.
 Inaccessible code removed. Functionality unchanged 
@@ -88,7 +97,7 @@ To orient in the code, cleaning of:
    common /hnami/ (sources)
 
 ========================================================================
-2017-03-28 Zacherle v10.50
+2017-03-28 Zacherle=pz v10.50
 
 search_cr_model.f:
 Extended by the ability to read parameter reading_error

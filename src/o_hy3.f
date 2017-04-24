@@ -37,6 +37,9 @@ c----------------------------------------------------------------------------
 c
 c  programmed:  87-07  01.00  mw OUTPUT.F
 c  programmed:2017-04  10.59  pz O_HY3 cloned from OUTPUT.F
+c  programmed"2017-04  10.62  pz Rotation of the diagonal elements 
+c                                in the co matrix from local to Krovak
+c  programmed:2017-04  10.64  pz function mconvergence
 c
 c*****************************************************************************
 c
@@ -68,12 +71,9 @@ c
 	integer ita(9)
 	integer stime
       integer iyear
-      integer iain
       integer temp1(nrec_max)
       integer temp2
-      integer iaz
       integer i,j
-      integer igap
       integer isec,msec
 c
       real    delay
@@ -81,7 +81,7 @@ c
       real    dtemp
       real    deter
       real    d11,d21,d22
-      real    theta
+      real    theta, az_theta
       real    al,bl
       real    l1,l2,tl
       real    dxer,dyer,dzer,dter
@@ -94,6 +94,7 @@ c
       real    az(nrec_max)
       real    xp,yp,zp
       real*8  fi, rla
+      real    meridian_con
 c
 c  global variables
 c
@@ -203,6 +204,7 @@ c
 c  functions
 c
        integer time
+       real mconvergence
 c
 c
 c  *******************
@@ -242,6 +244,7 @@ c --------------------------------------------------------------------
       l1=9.99
       l2=9.99
       theta=999.0
+      az_theta=999.0
 c --------------------------------------------------------------------
 c
       if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
@@ -273,8 +276,8 @@ c
 c
 c theta is the angle from x-axis to the semi-major axis of the error ellipse
 c
+c local coordinates
 		 theta = theta*RAD2DEG
-		 theta = theta-nangle
 c l1 is major axis
                  if (l2 .gt. l1 .and. l2 .ne. 999.99 ) then
                     tl=l1
@@ -282,7 +285,6 @@ c l1 is major axis
                     l2=tl
                     theta=theta+90.0
                  endif
-		 theta = mod(720.0+theta,360.0)
 c
       endif
 c
@@ -311,6 +313,23 @@ c ====================================================================
       endif
 c
 c --------------------------------------------------------------------
+c hypocenter to Krovak
+      xp=x0
+      yp=y0
+      zp=z0
+c
+c local to Krovak
+      call trans (xp,yp,zp,0)
+      meridian_con = mconvergence(xp,yp)
+c      write(*,*) "m.k: ",meridian_con
+c
+c coordinates local --> Krovak
+      theta = mod(360.0+theta+p_fi,360.0)
+c coordinates Krovak --> geofraphic
+c      az_theta = theta-nangle
+      az_theta = theta-180.0-meridian_con
+      az_theta = mod(360.0+az_theta,360.0)
+c --------------------------------------------------------------------
 		j = 0
 		do i = 1,nrec
 			 dx = x0-xstat(key(i))
@@ -321,7 +340,8 @@ c  az(i) ... angle between x-axis and recorder to source direction minus
 c             angle between x-axis and north
 c
                          temp2=atan2(dy,dx)*RAD2DEG
-			 az(i) = mod(720.0-nangle+temp2,360.0)
+c			 az(i) = mod(720.0-nangle+temp2,360.0)
+			 az(i) = mod(720.0+temp2-180.0-meridian_con+p_fi,360.0)
 c
 			 if (wt(i).gt.0.0) then
 			     j = j + 1
@@ -341,16 +361,6 @@ c
 			     gap=dtemp
 			 endif
 		end do
-c
-		igap=gap+0.5
-c --------------------------------------------------------------------
-c hypocenter to Krovak
-      xp=x0
-      yp=y0
-      zp=z0
-c
-c local to Krovak
-      call trans (xp,yp,zp,0)
 c
 c --------------------------------------------------------------------
 c provedeme transformaci data do tvaru rr-mm-dd  hh:mm:ss.ss
@@ -416,8 +426,7 @@ c
 c cycle for writing station distances,etc.
 c
       do i=1,nrec
-          iaz=az(i)+0.5
-          iain=toa(i)+0.5
+c
           if (zp.lt.surf_ev) then
 c
 c  model for surface event ... with station delays
@@ -431,14 +440,14 @@ c
               coef=p_over_s
 	      write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
      >    trec(i)-tcal(i)-t0-coef*delay,
-     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),iaz,
-     >    int(toa(i)),xmag(i) 
+     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    int(toa(i)+0.5),xmag(i) 
          else
               coef=1.
               write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
      >    trec(i)-tcal(i)-t0-coef*delay,
-     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),iaz,
-     >    int(toa(i))        
+     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    int(toa(i)+0.5)        
 	 endif
 c
 c
@@ -450,25 +459,45 @@ c
 c
       call XY2FL (yp*1000, xp*1000, fi, rla)
       print *,xp*1000,yp*1000,fi,rla
-      write (lulist,926) whole_date,dter,xp,dxer,fi,yp,dyer,rla,zp,dzer, avm,sdm,sqrt(rmsres),igap,i0,l1,l2,int(theta)
+      write (lulist,926) whole_date,dter,xp,dxer,fi,yp,dyer,rla,zp,dzer,
+     >                   avm,sdm,sqrt(rmsres),int(gap+0.5),i0,l1,l2,
+     >                   theta, az_theta
 c
-cc		write (lulist,*)'theta:',theta
 c
 926   format (//
      *"hypocenter data:",/,"----------------",/,
      *"origin time          t:",2x,a22,1x,"+-",1x,f6.3,/,
-     *"x-coordinate         x:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",5x,"(fi:",f10.6," deg)",/,
-     *"y-coordinate         y:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",1x,"(lambda:",f10.6," deg)"/,
+     *"x-coordinate         x:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",
+     >                          5x,"(fi:",f10.6," deg)",/,
+     *"y-coordinate         y:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",
+     >                          1x,"(lambda:",f10.6," deg)"/,
      *"depth                z:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",/,
      *"magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2,4x,/,
      *"rms of time residuals :",8x,f6.2,9x,"s",/,
-     *"angular gap           :",11x,i3,9x,"degrees",/,
+     *"angular gap           :",11x,i3,9x,"deg",/,
      *"number of iterations  :",11x,i3,/,
      *"error ellipse axis l1 :",8x,f6.2,9x,"km",/,
      *"              axis l2 :",8x,f6.2,9x,"km",/,
-     *"              theta   :",11x,i3,9x,"degrees")
+     *"              theta   :",3x,f6.1," deg (to grid)",
+     >                          3x,"(azimuth:",f6.1," deg)")
+
 c
 20    continue
 c
       return
+      end
+
+
+c
+      real function mconvergence(X, Y)
+c
+c X,Y [km]
+c
+      real X
+      real Y
+
+
+      mconvergence = 0.008257*Y+2.373*Y/X
+      return
+
       end
