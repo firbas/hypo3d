@@ -396,7 +396,8 @@ c
 c
 50    continue
 c
-		if (ot_start.eq.0.0) then
+		if (abs(ot_start).lt.1E-7) then
+c		if (ot_start.eq.0.0) then
 			 t0_norm=.true.
 		endif
 c
@@ -406,8 +407,11 @@ c  in the case [0,0] set first epi. approx to coordinates of the nearest
 c   station + 0.1
 c
 		indx = 1
-		if (x_start .eq. 0. .or. y_start .eq. 0. .or.
-     >    z_start .eq. 0.) then
+		if (abs(x_start) .lt. 1E-7 .or. 
+     >              abs(y_start) .lt. 1E-7 .or.
+     >              abs(z_start) .lt. 1E-7      ) then
+c		if (x_start .eq. 0. .or. y_start .eq. 0. .or.
+c     >    z_start .eq. 0.) then
 			 indx = 0                       !nejbl. stanice
 		endif
 c
@@ -439,13 +443,15 @@ c
 c
 c  compute x0, y0, z0
 c
-			 if (x_start.eq.0.0) then
+			 if (abs(x_start).lt.1E-7) then
+c			 if (x_start.eq.0.0) then
 			     x0 = x_temp + 0.1
 			 else
 			     x0 = x_start
 			 endif
 c
-			 if (y_start.eq.0.0) then
+			 if (abs(y_start).lt.1E-7) then
+c			 if (y_start.eq.0.0) then
 			     y0 = y_temp + 0.1
 			 else
 			     y0 = y_start
@@ -454,7 +460,8 @@ c
 			 if (fix_depth) then
 			     z0 = z_start
 			 else
-			     if (z_start.eq.0.0) then
+			     if (abs(z_start).lt.1E-7) then
+c			     if (z_start.eq.0.0) then
 						z0=z_temp + 0.1
 			     else
 						z0=z_start

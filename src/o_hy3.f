@@ -461,7 +461,8 @@ c
       print *,xp*1000,yp*1000,fi,rla
       write (lulist,926) whole_date,dter,xp,dxer,fi,yp,dyer,rla,zp,dzer,
      >                   avm,sdm,sqrt(rmsres),int(gap+0.5),i0,l1,l2,
-     >                   theta, az_theta
+     >                   az_theta
+c     >                   theta, az_theta
 c
 c
 926   format (//
@@ -478,8 +479,9 @@ c
      *"number of iterations  :",11x,i3,/,
      *"error ellipse axis l1 :",8x,f6.2,9x,"km",/,
      *"              axis l2 :",8x,f6.2,9x,"km",/,
-     *"              theta   :",3x,f6.1," deg (to grid)",
-     >                          3x,"(azimuth:",f6.1," deg)")
+     *"              theta   :",8x,f6.1,9x,"deg")
+c     *"              theta   :",3x,f6.1," deg (to grid)",
+c     >                          3x,"(azimuth:",f6.1," deg)")
 
 c
 20    continue

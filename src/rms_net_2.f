@@ -169,7 +169,8 @@ c
 c
 c  test on norm of origin time
 c
-      if (start_otime.eq.0.0) then
+      if (abs(start_otime).lt.1E-7) then
+c      if (start_otime.eq.0.0) then
 c
 c  set flag for orig. time norm
 c

@@ -1,5 +1,5 @@
 c
-		subroutine dialog_3 (correct)
+		subroutine dialog_3
 c
 c*****************************************************************************
 c
@@ -16,13 +16,12 @@ c-----------------------------------------------------------------------------
 c
 c  formal parameters:
 c
-c     logical     CORRECT     ...  flag for correction of hypofile   O
 c
 c----------------------------------------------------------------------------
 c
 c  calling convention:
 c
-c     call dialog_3 (correct)
+c     call dialog_3
 c
 c----------------------------------------------------------------------------
 c
@@ -49,7 +48,6 @@ c
 c
 c  formal parameters
 c
-		logical correct
 c
 c  local parameters  ...  none
 c
@@ -154,7 +152,6 @@ c
           write (*,'(1x,a,": M e n u")') prog_name
           write (*,'(1x,a,": ",
      >    "End of program            -  ''E''",/,9x,
-cc     >    "Correct hypofile          -  ''C''",/,9x,
      >    "Next menu                 -  ''N''   [N]:_")')
      >    prog_name
 c
@@ -162,7 +159,6 @@ c
 c
 	 if(answer.eq.'n')answer='N'
 	 if(answer.eq.'e')answer='E'
-	 if(answer.eq.'c')answer='C'
 
 c
       if (answer.eq.'E') then
@@ -175,7 +171,6 @@ c
 c  next menu
 c
           go to 10
-      else if (answer.eq.'C') then
 c
       else
 c
@@ -389,7 +384,8 @@ c
      >    year,month,day,hour,minute
           read (*,*,err=58,end=58) ot_start
 c
-          if (ot_start.eq.0.0) then
+          if (abs(ot_start).lt.1E-7) then
+c          if (ot_start.eq.0.0) then
 c
 c  set ot_start to 0.000001 for the reason of automatic norming of origin
 c  time for the value exactly equals 0.0
@@ -693,7 +689,8 @@ c
           read (line,*,err=93,end=93) start_otime
       endif
 c
-      if (start_otime.eq.0.0) then
+      if (abs(start_otime).lt.1E-7) then
+c      if (start_otime.eq.0.0) then
           go to 1000
       endif
 c

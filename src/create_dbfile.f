@@ -1,5 +1,5 @@
 c
-		subroutine create_dbfile (n_loc,namr)
+		subroutine create_dbfile (namr)
 c
 c*****************************************************************************
 c
@@ -21,7 +21,7 @@ c----------------------------------------------------------------------------
 c
 c  calling convention:
 c
-c     call create_dbfile (n_loc,namr)
+c     call create_dbfile (namr)
 c
 c----------------------------------------------------------------------------
 c
@@ -46,7 +46,6 @@ c
 c
 c  formal parameters
 c
-		integer    n_loc
 		character*255 namr
 c
 c  local parameters

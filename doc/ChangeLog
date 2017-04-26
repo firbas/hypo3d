@@ -1,9 +1,13 @@
+2017-04-26 pz v10.65
+
+The numerical inaccuracy of the zero value test is treated.
+Files: dialog_3.f rec_time_name.f rms_net_1.f rms_net_2.f
 ========================================================================
 2017-04-23 pz v10.64
 
-1) The azimuth of the rays emerging from the focus and the angle
+1) The azimuth of rays emerging from the focus and the angle
    of rotation of the error ellipse is counted with respect 
-   to the meridian convergence at the focal point. File o_hy3.f.
+   to meridian convergence at the focal point. File o_hy3.f.
 2) Added common /ray/ for ray profile coordinates. File rt_3d.f.
 3] Renamed model.f to surfb.f (subroutines surfbd, surfb1) 
    and unused subroutines discarded. 

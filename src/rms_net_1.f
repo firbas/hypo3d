@@ -167,7 +167,8 @@ c
 c
 c  test on norming of start origin time
 c
-      if (start_otime.eq.0.0) then
+      if (abs(start_otime).lt.1E-7) then
+c      if (start_otime.eq.0.0) then
           t0_norm=.true.
       else
           t0_norm=.false.

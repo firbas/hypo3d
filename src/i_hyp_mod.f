@@ -1,5 +1,5 @@
 c
-		subroutine I_HYP_MOD (n_loc)
+		subroutine I_HYP_MOD
 c
 c*****************************************************************************
 c
@@ -47,8 +47,6 @@ c
 		implicit none
 c
 c  formal parameters
-c
-		integer     n_loc
 c
 c  local parameters
 c
@@ -187,7 +185,7 @@ c
 c  write the message  ...  read crustal model
 c
 		len=lnblnk(ch_model_name)
-		if (index(ch_model_name,'.MOD').eq.0.and.
+		if (index(ch_model_name,'.MOD').eq.0 .and.
      *		    index(ch_model_name,'.mod').eq.0) then
 			 write (*,'(1x,a,": Reading ",a)')
      >    prog_name,

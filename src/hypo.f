@@ -47,12 +47,11 @@ c
 c
 c  local variables
 c
-		logical correct                     !int. copy of hypofile corrected?
 		logical loc_write                   !locfile was written in menu block?
 		logical rms_on_sphere               !compute rms on sphere centered
 														!on hypocenter
 		logical prt                         !printed?
-		logical rp                          !repair mode?
+		logical rp                          !repeat location flag
 		real*8  dmin8                       !reference time in double real
 		real    absd                        !last shift of hypocenter
 		real    best_x0,best_y0,best_z0,best_t0
@@ -447,7 +446,7 @@ c
 					 
 c  input of hypofile, crustal model, initialize of spline surface common
 c
-		call i_hyp_mod(n_of_location)
+		call i_hyp_mod
 
 		if (nrec .lt. 3) then
 			 write (*,
@@ -458,9 +457,6 @@ c
 		rp=.false.
 90    continue
 c
-c  init. flag for correction of hypofile
-c
-		correct=.false.
 c  test on repeat of location
 c
 		if (rp) then
@@ -468,13 +464,13 @@ c
 c  check datum, compute no_valid_arrival
 c
 			 call rec_time_name
-     >    (correct,rp,no_valid_arrivals,dmin8,n_increase,2)
+     >    (.false.,rp,no_valid_arrivals,dmin8,n_increase,2)
 		else
 c
 c  check names of recording stations, datum
 c
 			 call rec_time_name
-     >    (correct,rp,no_valid_arrivals,dmin8,n_increase,0)
+     >    (.false.,rp,no_valid_arrivals,dmin8,n_increase,0)
 c
 c  test on number of arrivals
 c
@@ -488,25 +484,14 @@ c			     go to 10
 		endif
 c
 c  interactive part ... choice of fixed coordinates, start point, location
-c   mode (various starting points, rms of res. on net, scanned depth), repair
-c   mode
+c   mode (various starting points, rms of res. on net, scanned depth)
 c
-		call dialog_3 (correct)
-c
-c  test on correction in hypofile
-c
-		if (correct) then
-c
-c  check datum, new no_valid arrival
-c
-			 call rec_time_name
-     >    (correct,rp,no_valid_arrivals,dmin8,n_increase,2)
-		endif
+		call dialog_3
 c
 c  search the nearest station
 c
 		call rec_time_name
-     >(correct,rp,no_valid_arrivals,dmin8,n_increase,1)
+     >(.false.,rp,no_valid_arrivals,dmin8,n_increase,1)
 c
 c  test on scanned depth mode
 c
@@ -522,20 +507,10 @@ c
 			 write (*,'(1x,a,": # of arrivals in hypofile  <  3 "/
      >    "         Try another hypofile.")') prog_name
 c
-			 if (rp) then
-c
-c  in repeat of location: this situation was created by the change of weights
-c   by operator in repair mode; so give a new chance to repair
-c
-			     scan_depth=.false.
-			     endit=.false.
-			     go to 162
-			 else
-c
 c  fatal situation in original hypofile
 c
 			     call Abort
-			 endif
+c
 		else if (no_valid_arrivals.eq.3 .and. .not.fix_depth
      >       .and. .not.fix_surface  .and. .not.scan_depth
      >       .and. .not.fix_x  .and. .not.fix_y
@@ -1216,7 +1191,7 @@ c
 			 go to 90
 		else if (i_menu.eq.2) then
 			write(*,*) 'Writing dbfile' 
-			call create_dbfile(n_of_location,hyp3name)
+			call create_dbfile(hyp3name)
 c
 c  next menu
 c

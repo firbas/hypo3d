@@ -4,7 +4,7 @@ FC=gfortran
 FFLAGS=-g -O0 -c -ffixed-line-length-170 -fd-lines-as-comments
 LDFLAGS=
 
-OBJ= hypo.o trans.o    \
+OBJ= trans.o    \
  datum.o days.o abort.o real8_to_int.o  \
  td_all.o rt_3d.o term.o layer.o lt.o sort_d.o search_l.o velocity.o vl.o   \
  o_hy3.o sort_x.o create_dbfile.o   \
@@ -16,11 +16,19 @@ OBJ= hypo.o trans.o    \
  eigen.o minv.o \
  surfb.o xy2fl.o
 
-hypo3d: $(OBJ)
-	$(FC)  $(LDFLAGS) $(OBJ)  -o hypo3d
+hypo3d: hypo.o $(OBJ)
+	$(FC)  $(LDFLAGS) hypo.o $(OBJ)  -o hypo3d
 
 clean:
 	rm *.o hypo3d
+
+hypo3d_: hypo_iter.o $(OBJ)
+	$(FC)  $(LDFLAGS) hypo_iter.o $(OBJ)  -o hypo3d_
+
+
+hypo_iter.o: hypo_iter.f min_shift.fi error.fi param.fi pname.fi list.fi \
+		model_3d.fi  stmod.fi
+	$(FC) $(FFLAGS) hypo_iter.f
 
 hypo.o: hypo.f min_shift.fi error.fi param.fi pname.fi list.fi \
 		model_3d.fi  stmod.fi
