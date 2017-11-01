@@ -36,6 +36,7 @@ c----------------------------------------------------------------------------
 c
 c  programmed:  87-07  01.00  mw INPT_3D.F
 c  programmed:2017-04  10.59  pz I_HYP_MOD.F cloned of INPT_3D.F
+c  programmed:  18-05  10.66  pz Weights in quadratic scale
 c
 c*****************************************************************************
 c
@@ -83,11 +84,13 @@ c
       integer     day
       integer     month
       integer     year
-		real        ampcon
+      real        ampcon
       real        period
       character*1  answer
       character*255 line
       character*255 surname
+
+      real   pwt
 c
 c  global variables
 c
@@ -338,15 +341,19 @@ c
 			 datum8(i)=year*1.d08+month*1.d06+day*1.d04+hour*1.d02+
      >    minute*1.d00
 c
-c  compute weights
-c
-			 wt(i)=(4.-float(iwt))/4.
-c
-c
 c  remember original weights
 c
-			 wt1(i)=wt(i)
+			 wt1(i)=iwt
 c
+c
+c  compute weights
+c
+			 pwt=(4.-float(iwt))/4.
+c =====================================================================
+c 2018-05  10.66  Weights in quadratic scale
+                         wt(i)=pwt*pwt
+c
+c =====================================================================
 c
 c  test on type of arrival
 c
@@ -402,7 +409,7 @@ c
 c  one line with data for ane arrival
 c
 			 write(*,'(9x,a4,7x,a1,4x,f8.2,7x,f4.2)')
-     >    rec_name(i),type(i),trec(i),wt(i)           !4.-4.*wt(i)
+     >    rec_name(i),type(i),trec(i),wt(i)          
 		end do
 c
 c  one empty line

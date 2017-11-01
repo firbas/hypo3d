@@ -79,7 +79,7 @@ c
 c
 c  local variables
 c
-	    integer   i6a	
+                integer   i6a	
 		integer isec
 		integer indx
 		integer n0

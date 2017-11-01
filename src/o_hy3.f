@@ -141,7 +141,7 @@ c
 c
       real                trec(nrec_max)
       real                wt(nrec_max)
-		real                avwt
+      real                avwt
       common /hyp/        trec,wt,avwt
 c
       character*4         rec_name(nrec_max)
@@ -198,7 +198,10 @@ c
 
       double precision p_fi, p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
-
+c
+      real                wt1(nrec_max)
+      common /wt_1/       wt1
+c
       double precision c,s,PI_D,RAD2DEG,DEG2RAD
 c
 c  functions
@@ -440,13 +443,13 @@ c
               coef=p_over_s
 	      write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
      >    trec(i)-tcal(i)-t0-coef*delay,
-     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >    int(toa(i)+0.5),xmag(i) 
          else
               coef=1.
               write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
      >    trec(i)-tcal(i)-t0-coef*delay,
-     >    amp(i),freq(i),int(4.-4.*wt(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >    int(toa(i)+0.5)        
 	 endif
 c

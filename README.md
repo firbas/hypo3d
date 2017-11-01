@@ -6,9 +6,14 @@ The HYPO3D is derived from the program HYPO71:
 
  http://www.jclahr.com/science/software/hypo71/index.html
 
-The 3-dimensional velocity model is constructed from rectangular blocks
-and the ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each line
+## Program features and limitations
+The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
+The program reflects the 3-dimensional model only in a limited way.
+The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each section 
 between the source and the receiver point.
+This procedure applies the linearization scheme used in tomography but not in full.
+As a result, it is difficult to estimate the exact effect of the model, it must be tested.
+
 The problem is solved in map coordinates S-JTSK Křovák EPSG:5513, but the unit is [km].
 
 ## Authors

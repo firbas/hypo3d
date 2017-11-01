@@ -22,14 +22,6 @@ hypo3d: hypo.o $(OBJ)
 clean:
 	rm *.o hypo3d
 
-hypo3d_: hypo_iter.o $(OBJ)
-	$(FC)  $(LDFLAGS) hypo_iter.o $(OBJ)  -o hypo3d_
-
-
-hypo_iter.o: hypo_iter.f min_shift.fi error.fi param.fi pname.fi list.fi \
-		model_3d.fi  stmod.fi
-	$(FC) $(FFLAGS) hypo_iter.f
-
 hypo.o: hypo.f min_shift.fi error.fi param.fi pname.fi list.fi \
 		model_3d.fi  stmod.fi
 	$(FC) $(FFLAGS) hypo.f
