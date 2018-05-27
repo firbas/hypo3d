@@ -1,3 +1,10 @@
+2018-05-27 pz v10.67
+
+Weights in quadratic scale
+A failed hy3 listing (from v10.66) of weights 
+in case of an unknown station was corrected.
+File: time_name.f
+========================================================================
 2018-05-27 pz v10.66
 
 Weights in quadratic scale

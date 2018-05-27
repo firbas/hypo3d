@@ -166,6 +166,9 @@ c
 		logical        w_changes
 		common /ernam/ err_stname,w_changes
 c
+		real                wt1(nrec_max)
+		common /wt_1/       wt1
+c
 c  functions  ...  none
 c
 c
@@ -232,6 +235,7 @@ c
 						type(l) = type(l+1)
 						ichan(l) = ichan(l+1)
 						trec(l) = trec(l+1)
+						wt1(l) = wt1(l+1)
 						wt(l) = wt(l+1)
 						amp(l) = amp(l+1)
 						freq(l) = freq(l+1)
