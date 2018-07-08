@@ -75,7 +75,8 @@ c
 c
       real           x_orig,y_orig,z_orig
       real           rms_orig
-      common /org/   x_orig,y_orig,z_orig,rms_orig
+      integer        no_iter_orig
+      common /org/   x_orig,y_orig,z_orig,rms_orig, no_iter_orig
 c
       real           s_point(10)
       common /point/ s_point
@@ -386,7 +387,10 @@ c
 		y0=y_orig
 		z0=z_orig
 		t0=t_orig
-c
+c 2018-07-09 pz -----------------------------
+		rmsres=rms_orig*rms_orig
+                i0=no_iter_orig
+c -------------------------------------------
 20    continue
 c
 		return

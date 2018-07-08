@@ -88,7 +88,8 @@ c  common for space and rms data of hypocenter
 c
 		real           x_orig,y_orig,z_orig
 		real           rms_orig
-		common /org/   x_orig,y_orig,z_orig,rms_orig
+                integer        no_iter_orig
+		common /org/   x_orig,y_orig,z_orig,rms_orig,no_iter_orig
 c
 c  common for damping factor
 c
@@ -634,6 +635,7 @@ c  initialization
 c
 		rmsresp= 1.0e+06
 		rp = .false.
+                no_iter_orig=i0
 		i0 = 0
 		absd = 0.
 		endit=.false.

@@ -1,13 +1,22 @@
+2018-07-09 pz v10.68
+
+Corrected an erroneous rms listing when choice in menu was
+"Rms of res. on a sphere" -R and then "Write loc" -L
+
+Files: sphere_step.f hypo.f
+========================================================================
 2018-05-27 pz v10.67
 
-Weights in quadratic scale
 A failed hy3 listing (from v10.66) of weights 
 in case of an unknown station was corrected.
 File: time_name.f
 ========================================================================
 2018-05-27 pz v10.66
 
-Weights in quadratic scale
+Weight codes -> weighting factors
+Original hypo3d to version 1.65 compute weighting factors linearly. 
+From version 1.66 it is changed and weights are applied quadratically.
+
 Files: i_hyp_mod.f o_hy3.f
 ========================================================================
 2017-04-26 pz v10.65
