@@ -18,7 +18,7 @@ The number of dividing planes (and the number of blocks) is limited, now it is 1
 The velocities of longitudial seismic waves in units of [km/s] are assigned to these blocks.
 
 <p align="center">
-<img src="doc/img/panelak.png" alt="Cross-wall structure" style="max-width:35%;" />
+<img src="doc/img/panelak.png" alt="Cross-wall structure" width="40%" />
 <br>
 Cross-wall structure of the 3-d velocity model
 </p>
@@ -37,7 +37,7 @@ The authors of the computer program justify this approach by reference to [[Roma
 [Firbas 1984](#firbas1984)] and consider this solution to be a linearization approach.
 
 The described solution process has features of the perturbation method.
-This method provides an approximate forward modeling solution whose accuracy depends on the complexity of the velocity model and the type of seismic phases. 
+The described method of forward modeling provides an approximate solution whose accuracy depends on the complexity of the velocity model and on the type of seismic phases. 
 It is difficult to estimate the exact effect of the model, it must be tested.
 It is known [[Ryaboy 2001](#ryaboy2001)] that this procedure does not guarantee sufficient accuracy 
 for refracted or head waves that pass along curved or sloping interfaces.
@@ -45,10 +45,6 @@ for refracted or head waves that pass along curved or sloping interfaces.
 the linearization approach, which can be successfully applied in seismic tomography,
 is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases,
 whose ray paths are passing close to the curved surface. -->
-
-
-This method can only be accurate enough if the ray path perturbances have little effect on the total travel-time.
-
 
 ### Coordinates
 The map coordinate system S-JTSK Křovák EPSG:5513 is used for program input and output
@@ -71,12 +67,26 @@ Original HYPO3D to version 1.65 compute weighting factors linearly (according to
 From HYPO3D version 1.66 it is changed and weights are applied quadratically (according to HYPOINVERSE).
 
 ## Authors
+<table>
+<tbody>
+<tr class="odd">
+<td>Petr Firbas</td>
+<td>1986</td>
+<td>Initial work.</td>
+</tr>
+<tr class="even">
+<td><a href="https://cz.linkedin.com/in/milan-werl-a174357?trk=org-employees_mini-profile_cta"><strong>Milan Werl</strong></a></td>
+<td>1986-1987</td>
+<td>Researcher and programmer for the most of the code.</td>
+</tr>
+<tr class="odd">
+<td>Vladimír Dvořák and Libor Vejmělek</td>
+<td>1996</td>
+<td>Porting program of HP minicomputer platform to SUN workstation.</td>
+</tr>
+</tbody>
+</table>
 
-| | | |
-|-|-|-|
-|   Petr Firbas   | 1986 | Initial work. |
-| [**Milan Werl**](https://cz.linkedin.com/in/milan-werl-a174357?trk=org-employees_mini-profile_cta) | 1986-1987 | Researcher and programmer for the most of the code. |
-| Vladimír Dvořák and Libor Vejmělek | 1996 | Porting program of HP minicomputer platform to SUN workstation. |
 
 Luděk Klimeš contributed to the initial code.
 The program includes parts of the library FITPACK (coded by Alan Kaylor Cline) and
