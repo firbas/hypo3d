@@ -18,9 +18,9 @@ The number of dividing planes (and the number of blocks) is limited, now it is 1
 The velocities of longitudial seismic waves in units of [km/s] are assigned to these blocks.
 
 <p align="center">
-<img src="doc/img/panelak.png" alt="Cross-wall structure" style="height: 300px" />
+<img src="doc/img/panelak.png" alt="Cross-wall structure" style="max-width:35%;" />
 <br>
-Cross-wall sructure of the 3-d velocity model
+Cross-wall structure of the 3-d velocity model
 </p>
 
 ### Forward modelling
@@ -28,24 +28,26 @@ The program HYPO3D reflects the 3-dimensional model only in a limited way.
 The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each section 
 between the source and the receiver point.   
 The travel-time is calculated for each source-receiver pair in the following steps:  
-1) An 2-dimensional cross-section of the 3-d velocity model is made between the source and the receiver.  
+1) An vertical plane cross-section of the 3-d velocity model is made between the source and the receiver.  
 2) The conversion procedure for the 1-d model consists in preserving horizontal layers (the floor in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity with the equivalent propagation time in this layer between the source and the receiver.   
 3) An ray is computed in the 1-d velocity model, using two-point fast ray-tracing scheme taken from HYPO71.   
 4) The travel-time is then calculated by integrating in the 3-d velocity model along the ray path approximately calculated in the previous step.
 
-The authors of the computer program justify this approach by referring to [[Romanov 1972](#romanov1972)] 
-and consider this solution to be a linearization approach [[Firbas 1981](#firbas1981), [Firbas 1984][3]].
-But this refered linearization approach is fully correct only in an iterative scheme.
-The linearization step itself applied outside the iteration scheme has been proven [[Firbas 2000](#firbas2000)]
-not to be sufficiently precise for prediction of travel-times of all phases.  [[Ryaboy 2001](#ryaboy2001)] writes that
-the linearization approach, which can be successfully applied in seismic tomography, 
-is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases, 
-whose ray paths are passing close to the curved surface.  
+The authors of the computer program justify this approach by reference to [[Romanov 1972](#romanov1972)],
+[Firbas 1984](#firbas1984)] and consider this solution to be a linearization approach.
+
+The described solution process has features of the perturbation method.
+This method provides an approximate forward modeling solution whose accuracy depends on the complexity of the velocity model and the type of seismic phases. 
+It is difficult to estimate the exact effect of the model, it must be tested.
+It is known [[Ryaboy 2001](#ryaboy2001)] that this procedure does not guarantee sufficient accuracy 
+for refracted or head waves that pass along curved or sloping interfaces.
+<!-- [[Ryaboy 2001](#ryaboy2001)] writes that
+the linearization approach, which can be successfully applied in seismic tomography,
+is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases,
+whose ray paths are passing close to the curved surface. -->
+
 
 This method can only be accurate enough if the ray path perturbances have little effect on the total travel-time.
-This is the case for direct waves that pass through the interfaces, but this does not have to be the case for refracted or head waves that pass along curved or sloping interfaces.
-As a result, it is difficult to estimate the exact effect of the model, it must be tested.
-The program works as expected in a 1-dimensional model, it can work with a simple model, such as a vertical velocity interface, but it is questionable that it works with a complex three-dimensional model.
 
 
 ### Coordinates
@@ -110,29 +112,29 @@ which does not change the features of the computer program.
    to meridian convergence of Křovák coordinates at the focal point.
 5. From version 1.66 the weights of measurements are applied quadratically, not linearly.
 
+## Documentation
+
+The original documentation of the program is in the report
+[Firbas P., Werl M.: HYPO3D, rev. 9.00. Lokalizace ve 3D blokovém prostředí. Etapová zpráva. Geofyzika n.p., Brno 1988](https://github.com/firbas/hypo3d/blob/master/doc/hypo3d_Werl.pdf)
+
+Additional information
+([starting the program](https://github.com/firbas/hypo3d/wiki#starting-the-hypo3d-program), formats)
+is available at the wiki site:   
+https://github.com/firbas/hypo3d/wiki
 
 ## Licence
 HYPO3D is primarily designed for users in Institute of Physics of the Earth, Masaryk University in Brno.
 The computer program is free to use. 
-But note that this is the working repository and not an end-user release 
-and note the limited capabilities of the program.
+But note that this is the working repository and not an end-user release
+and consider the limited capabilities of the program.
 
 ## Literature
 
-<span id="romanov1972">Романов В. Г. (1972)</span>. Некоторые обратные задачи для уравнений гиперболического типа. Издательство "Наукa", Новосибирск, 1972
+<a name="romanov1972"></a>Романов В. Г. (1972). Некоторые обратные задачи для уравнений гиперболического типа. Издательство "Наукa", Новосибирск, 1972
 
-[Firbas, P. (1981)]{#firbas1981}</span>. Inversion of travel-time data for laterally heterogeneous velocity structure — linearization approach, Geophysical Journal International, Volume 67, Issue 1, 1 October 1981, Pages 189–198.
-DOI https://doi.org/10.1111/j.1365-246X.1981.tb02742.x
-
-[3]: Firbas, P. & Vaněk, J. (1984)</span>. Travel time curves for complex inhomogeneous slightly anisotropic media. Stud Geophys Geod (1984) 28: 393-406.
+<a name="firbas1984"></a>Firbas, P. & Vaněk, J. (1984). Travel time curves for complex inhomogeneous slightly anisotropic media. Stud Geophys Geod (1984) 28: 393-406.
 DOI https://doi.org/10.1007/BF01642992
 
-<span id="firbas2000">Firbas P. (2000)</span>. Location Calibration Based on 3-D Modelling. In: Thurber C.H., Rabinowitz N. (eds) Advances in Seismic Event Location. Modern Approaches in Geophysics, vol 18. Springer, Dordrecht.
-DOI https://doi.org/10.1007/978-94-015-9536-0_6 
-
-<span id="ryaboy2001">Ryaboy V., Baumgardt D.R., Firbas P., Dainty A.M. (2001)</span>. Application of 3-D crustal and upper mantle velocity model of North America for Location of Regional Seismic Events. Pure appl. geophys. 158 (2001) 79-103. Birkhäuser Verlag, Basel, 2001.
+<a name="ryaboy2001"></a>Ryaboy V., Baumgardt D.R., Firbas P., Dainty A.M. (2001). Application of 3-D crustal and upper mantle velocity model of North America for Location of Regional Seismic Events. Pure appl. geophys. 158 (2001) 79-103. Birkhäuser Verlag, Basel, 2001.
 DOI https://doi.org/10.1007/PL00001169
-
-<span id="ryaboy2001b">Ryaboy V., Baumgardt D.R., Firbas P., Dainty A.M. (2001)</span>. Application of 3-D Crustal and Upper Mantle Velocity Model of North America for Location of Regional Seismic Events. In: Ringdal F., Kennett B.L.N. (eds) Monitoring the Comprehensive Nuclear-Test-Ban Treaty: Sourse Location. Pageoph Topical Volumes. Birkhäuser, Basel.
-DOI https://doi.org/10.1007/978-3-0348-8250-7_7
 
