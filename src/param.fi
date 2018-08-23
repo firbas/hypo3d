@@ -3,12 +3,15 @@
   
       integer x_layer                     !maximum number of x_layers
       parameter (x_layer  = 15)
+c      parameter (x_layer  = 100)          !possible extension
   
       integer y_layer                     !maximum number of y_layers
       parameter (y_layer  = 15)
+c      parameter (y_layer  = 100)          !possible extension
   
       integer z_layer                     !maximum number of z_layers
       parameter (z_layer  = 40)
+c      parameter (z_layer  = 100)          !possible extension
   
       integer nrec_max                    !maximum number of recorded arrivals
       parameter (nrec_max = 80)

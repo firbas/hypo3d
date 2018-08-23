@@ -1,9 +1,9 @@
 
 # hypo3d
 HYPO3D is a computer program for determining hypocenter and magnitude of local earthquakes.
-The program is an attempt to solve the localization of the earthquake in a 3-dimensional velocity model.
+The program is an attempt to solve the location of the earthquake in a 3-dimensional velocity model.
 Author Milan Werl wrote this program under the guidance of Petr Firbas in the years 1986-1988.
-It was used in the Institute of Physics of the Earth, Masaryk University in Brno.
+This software has been in use at the Institute of Physics of the Earth, Masaryk University in Brno.
 
 ## Program features and limitations
 
@@ -14,7 +14,7 @@ especially when programming forward modeling.
 ### Velocity model
 The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
 The space of the model is divided into blocks in three perpendicular directions by parallel planes with irregular spacings.
-The number of dividing planes (and the number of blocks) is limited, now it is 15x15x40.
+The number of blocks is limited, now it is 15x15x40 (it can easily be expanded to 100x100x100).
 The velocities of longitudial seismic waves in units of [km/s] are assigned to these blocks.
 
 <p align="center">
@@ -27,19 +27,22 @@ Cross-wall structure of the 3-d velocity model
 The program HYPO3D reflects the 3-dimensional model only in a limited way.
 The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each section 
 between the source and the receiver point.   
-The travel-time is calculated for each source-receiver pair in the following steps:  
-1) An vertical plane cross-section of the 3-d velocity model is made between the source and the receiver.  
-2) The conversion procedure for the 1-d model consists in preserving horizontal layers (the floor in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity with the equivalent propagation time in this layer between the source and the receiver.   
-3) An ray is computed in the 1-d velocity model, using two-point fast ray-tracing scheme taken from HYPO71.   
+Travel-time is calculated for each source-receiver pair in the following steps:  
+1) A vertical plane cross-section of the 3-d velocity model is made between the source and the receiver.  
+2) The conversion procedure for the 1-d model consists in preserving horizontal layers (the floor in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity so that the travel-time between the source and the receiver in this layer is equivalent (time-averaged velocity).   
+3) A ray is computed in the 1-d velocity model, using two-point fast ray-tracing scheme taken from the HYPO71.   
 4) The travel-time is then calculated by integrating in the 3-d velocity model along the ray path approximately calculated in the previous step.
 
-The authors of the computer program justify this approach by reference to [[Romanov 1972](#romanov1972)],
-[Firbas 1984](#firbas1984)] and consider this solution to be a linearization approach.
+The authors of the computer program justify this approach by reference to
+[[Romanov 1972](#romanov1972), [Firbas 1984](#firbas1984)]
+and consider this solution to be a linearization approach.
 
-The described solution process has features of the perturbation method.
-The described method of forward modeling provides an approximate solution whose accuracy depends on the complexity of the velocity model and on the type of seismic phases. 
-It is difficult to estimate the exact effect of the model, it must be tested.
-It is known [[Ryaboy 2001](#ryaboy2001)] that this procedure does not guarantee sufficient accuracy 
+#### Applicability limits of the forward modelling
+
+We see that the described solution of forward modelling is a type of noniterative perturbation method.
+This method assumes that the problem is regular (a small perturbance in ray-path will cause small difference in the travel-time).
+This is not case for all type of seismic phases.
+It is known [[Ryaboy 2001](#ryaboy2001)] that described procedure does not guarantee sufficient accuracy 
 for refracted or head waves that pass along curved or sloping interfaces.
 <!-- [[Ryaboy 2001](#ryaboy2001)] writes that
 the linearization approach, which can be successfully applied in seismic tomography,
@@ -49,15 +52,15 @@ whose ray paths are passing close to the curved surface. -->
 ### Coordinates
 The map coordinate system S-JTSK Křovák EPSG:5513 is used for program input and output
 (but the unit is [km]).
-This coordinate system is defined only for Bohemia, Slovakia, and near border regions.
+This coordinate system is defined only for Czech Republic, Slovakia, and near border regions.
 
 The velocity model is defined in local coordinates.
 For most internal calculations, the model local coordinate system is used.
 This brings some limitations, especially in the case of fixing hypocenter in some coordinates.
 
 ### Weighting
-The program uses a in seismology well-established weight codes for phase arrivals measurements
-(from HYPO71, HYPOINVERSE).
+The program uses weight codes for phase arrivals measurements. 
+These weight codes are well established in seismology (HYPO71, HYPOINVERSE).
 Weight codes are:
 ```
  0 - full weight, 1 - 3/4 weight, 2 - half weight, 3 - 1/4 weight, 4 - no weight
@@ -70,7 +73,7 @@ From HYPO3D version 1.66 it is changed and weights are applied quadratically (ac
 <table>
 <tbody>
 <tr class="odd">
-<td>Petr Firbas</td>
+<td>Petr Firbas, Luděk Klimeš</td>
 <td>1986</td>
 <td>Initial work.</td>
 </tr>
@@ -87,8 +90,6 @@ From HYPO3D version 1.66 it is changed and weights are applied quadratically (ac
 </tbody>
 </table>
 
-
-Luděk Klimeš contributed to the initial code.
 The program includes parts of the library FITPACK (coded by Alan Kaylor Cline) and
 subroutines of IBM SSP (Scientific Subroutine Package).
 
@@ -116,7 +117,7 @@ which does not change the features of the computer program.
 3. The coordinates x,y of the epicenter and their estimate errors dxer,dyer
    were presented in different coordinate systems.
    (Epicenter in map coordinates Křovák EPSG:5513 but errors in model local coordinates).
-   Now it is consistently in map coordinates Křovák.  
+   Now it is consistently in map coordinates.  
 4. The azimuth of rays emerging from the focus and the angle
    of rotation of the error ellipse is counted with respect
    to meridian convergence of Křovák coordinates at the focal point.
