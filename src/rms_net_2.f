@@ -64,11 +64,9 @@ c  global variables
 c
 c
 		real            co(4,4)
-		real            id(4,4)
-		real            re(4,4)
 		real            rmsres
 		real            rmsres_co
-		common /cov/    co,rmsres,rmsres_co,id,re
+		common /cov/    co,rmsres,rmsres_co
 c
 		real            c_hypo(3)
       integer         no_valid_arrivals

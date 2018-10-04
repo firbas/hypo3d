@@ -1,5 +1,4 @@
 c
-C$ema /model_3d/
 c
 		subroutine lt(xs,ys,zs,xo,yo,zo,tm,imode)
 c

@@ -1,6 +1,5 @@
 c
-C$ema /rec/,/hyp/,/stmod/
-		subroutine rec_time_name
+       subroutine rec_time_name
      >(correct,rp,no_valid_arrival,dmin8,n_increase,inumber)
 c
 c*****************************************************************************
@@ -166,8 +165,9 @@ c
 		logical        w_changes
 		common /ernam/ err_stname,w_changes
 c
-		real                wt1(nrec_max)
-		common /wt_1/       wt1
+		logical             hyr
+                real                wt1(nrec_max)
+		common /wt_1/       hyr,wt1
 c
 c  functions  ...  none
 c

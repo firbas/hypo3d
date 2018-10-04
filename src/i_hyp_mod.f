@@ -90,7 +90,7 @@ c
       character*255 line
       character*255 surname
 
-      real   pwt
+      real   pwt, mwt
 c
 c  global variables
 c
@@ -134,8 +134,9 @@ c
 		real                avwt            !average weight
 		common /hyp/        trec,wt,avwt
 c
+                logical             hyr
 		real                wt1(nrec_max)
-		common /wt_1/       wt1
+		common /wt_1/       hyr,wt1
 c
 		character*4         rec_name(nrec_max)
 		common /chhyp/      rec_name
@@ -156,7 +157,14 @@ c
 c=============================================================================
 c
 		write(*,*) 'INP: Hypofile is  ', hypfn(1:lnblnk(hypfn))
-
+c ----------------------------------------------------------------------------
+c 2018-09 10.69
+       hyr = .false.
+       if ( hypfn(lnblnk(hypfn)-3:lnblnk(hypfn)) .eq. '.hyr' .or.
+     *      hypfn(lnblnk(hypfn)-3:lnblnk(hypfn)) .eq. '.HYR'     ) then
+         hyr = .true.
+       endif
+c ----------------------------------------------------------------------------    
 		ios = 0
 		event_number = 1
 c
@@ -324,7 +332,7 @@ c  characters 7 to end of line are next data for arrival in free format
 c
 			 read (line(7:),*,iostat=ios,err=86,end=86)
      >    ichan(i),year,month,day,hour,minute,isec,msec,micros,
-     >    iwt,ampcon,isign,amp(i),period
+     >    pwt,ampcon,isign,amp(i),period
 c
 c  evaluate frequency
 c
@@ -343,17 +351,8 @@ c
 c
 c  remember original weights
 c
-			 wt1(i)=iwt
+			 wt1(i)=pwt
 c
-c
-c  compute weights
-c
-			 pwt=(4.-float(iwt))/4.
-c =====================================================================
-c 2018-05  10.66  Weights in quadratic scale
-                         wt(i)=pwt*pwt
-c
-c =====================================================================
 c
 c  test on type of arrival
 c
@@ -394,6 +393,32 @@ c
 		write (*,'(1x,a,": Phase data from ",a)')
      >prog_name,hypfn(1:lnblnk(hypfn))
 c
+c ---------------------------------------------------------------------
+c 2018-09  10.69 
+c compute weights
+                mwt = 0.0
+                avwt = 0.0
+		do i=1,nrec
+                  pwt = wt1(i)
+c Inverse-variance weighing
+c weights refer (are proportional) to the standard deviation
+                  if (hyr) then 
+                    if (pwt .gt. 0) then 
+                         pwt = pwt/1000.0
+                         pwt = 1. / pwt
+                    else if (pwt .lt. 0) then
+                         pwt = 0.0
+                    else
+                         pwt = 0.0
+                    endif
+                  else
+			 pwt=(4.-pwt)/4.
+c			 pwt=(4.-float(iwt))/4.
+                  endif
+                  wt(i) = pwt
+                  if (pwt > mwt) mwt = pwt
+		end do   ! nrec
+c ---------------------------------------------------------------------
 c  write header
 c
 		write (*,'(
@@ -404,13 +429,13 @@ c
 c
 c  cycle over recorded arrivals
 c
-		do i=1,nrec
+               do i=1,nrec
 c
 c  one line with data for ane arrival
 c
-			 write(*,'(9x,a4,7x,a1,4x,f8.2,7x,f4.2)')
-     >    rec_name(i),type(i),trec(i),wt(i)          
-		end do
+		  write(*,'(9x,a4,7x,a1,4x,f8.2,7x,f5.3)')
+     >    rec_name(i),type(i),trec(i),wt(i)/mwt          
+               end do 
 c
 c  one empty line
 c

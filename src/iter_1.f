@@ -1,5 +1,4 @@
 c
-C$ema /rec/,/stmod/,/hyp/
 		subroutine iter_1
 c
 c*****************************************************************************
@@ -118,11 +117,9 @@ c
       common /ch_it1/ old_it
 c
       real            co(4,4)
-      real            id(4,4)
-      real            re(4,4)
       real            rmsres
       real            rmsres_co
-      common /cov/    co,rmsres,rmsres_co,id,re
+      common /cov/    co,rmsres,rmsres_co
 c
       real            x_start
       real            y_start
@@ -170,7 +167,7 @@ c
               else
                   coef=1.
               endif
-              sum8=sum8+(trec(i)-tcal(i)-coef*delay)*wt(i)/avwt
+              sum8=sum8+(trec(i)-tcal(i)-coef*delay)*wt(i)
           end do
 c
           t0=sum8/no_valid_arrivals
@@ -223,10 +220,10 @@ c
 c
 c  rmsres for covariance matrix
 c
-              rmsres_co=rmsres_co+(dtime_co**2)*wt(i)/avwt
+              rmsres_co=rmsres_co+dtime_co*wt(i)*wt(i)*dtime_co
           endif
 c
-          rmsres=rmsres+(dtime**2)*wt(i)/avwt
+          rmsres=rmsres+dtime*wt(i)*wt(i)*dtime
       end do
 c
 c  evaluate no. of constraints

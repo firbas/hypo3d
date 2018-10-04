@@ -1,3 +1,14 @@
+2018-10-03 pz v10.69
+
+1) Weighted least squares
+Weights are inversely proportional to the (a priori) standard deviation 
+and can be entered in two ways:
+a) HYP file -- scale: 0 - full, 1 - 75%, 2 - 50%, 3 - 25%, 4 - no weight
+b) HYR file -- standard deviation [ms], <= 0 is no weight
+2) In the case of coordinate fixation, 
+the calculation of the error covariance matrix is not reduced.
+3) Oxbow code for resolution & info density matrix deleted.
+========================================================================
 2018-07-09 pz v10.68
 
 Corrected an erroneous rms listing when choice in menu was

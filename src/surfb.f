@@ -4,7 +4,6 @@ C
       SUBROUTINE SURFBD (XX,YY,W,WX,WY,WXX,WXY,WYY,NX,NY,X, 
      *                   Y,C,VX,VY,SIGMA) 
 C 
-C      ema nx,ny,x,y,c,vx,vy,sigma 
       INTEGER NX,NY 
       REAL XX,YY,W,WX,WY,WXX,WXY,WYY,X(NX),Y(NY),VX(5,NX),
      *     VY(5,NY),C(NX,NY),SIGMA
@@ -116,7 +115,6 @@ C-----------------------------------------------------------------------
 C 
       SUBROUTINE DSPLNZ (T,N,X,V,SIGMA,ISTART,B)
 C 
-C      ema n,x,v,sigma 
       INTEGER N,ISTART
       REAL T,X(N),V(5,N),SIGMA,B(3,4) 
 C 
@@ -256,7 +254,6 @@ C-----------------------------------------------------------------------
 C 
       FUNCTION INTRVL (T,X,N) 
 C 
-C      ema x,n 
       INTEGER N 
       REAL T,X(N) 
 C 
@@ -423,7 +420,6 @@ C
       SUBROUTINE SURFB1 (NX,NY,X,Y,W,NW1,C,VX,VY,TEMP,SIGMA,
      *                   IERR)
 C 
-C      ema x,y,w,c,vx,vy,sigma 
       INTEGER NX,NY,NW1,IERR
       REAL X(NX),Y(NY),W(NW1,NY),C(NX,NY),VX(5,NX),VY(5,NY),
      *     TEMP(1),SIGMA
@@ -554,7 +550,6 @@ C-----------------------------------------------------------------------
 C 
       SUBROUTINE VGEN (N,X,SIGMA,V,IERR)
 C 
-C      ema x,sigma,v 
       INTEGER N,IERR
       REAL X(N),SIGMA,V(5,N)
 C 
@@ -877,7 +872,6 @@ C
       SUBROUTINE TRISOL (N,SUBD,DIAG,SUPD,RHS,MRHS,NUMRHS,
      *                   INCRHS)
 C 
-C      ema rhs 
       INTEGER N,MRHS,NUMRHS,INCRHS
       REAL SUBD(N),DIAG(N),SUPD(N),RHS(MRHS,NUMRHS) 
 C 

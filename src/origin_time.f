@@ -1,5 +1,4 @@
 c
-C$ema /rec/,/hyp/
 		subroutine origin_time (n_increase,dmin8)
 c
 c*****************************************************************************

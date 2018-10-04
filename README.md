@@ -23,6 +23,9 @@ The velocities of longitudial seismic waves in units of [km/s] are assigned to t
 Cross-wall structure of the 3-d velocity model
 </p>
 
+On the upper side the structure is bounded by a surface, which is defined by spline interpolation in the network of points.
+
+
 ### Forward modelling
 The program HYPO3D reflects the 3-dimensional model only in a limited way.
 The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each section 
@@ -37,8 +40,7 @@ The authors of the computer program justify this approach by reference to
 [[Romanov 1972](#romanov1972), [Firbas 1984](#firbas1984)]
 and consider this solution to be a linearization approach.
 
-#### Applicability limits of the forward modelling
-
+### Applicability limits
 We see that the described solution of forward modelling is a type of noniterative perturbation method.
 This method assumes that the problem is regular (a small perturbance in ray-path will cause small difference in the travel-time).
 This is not case for all type of seismic phases.
@@ -48,6 +50,10 @@ for refracted or head waves that pass along curved or sloping interfaces.
 the linearization approach, which can be successfully applied in seismic tomography,
 is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases,
 whose ray paths are passing close to the curved surface. -->
+
+The HYPO3D program was originally designed to locate an earthquake using short-distance direct phases in a local seismic network.
+In the case of the location of an regional-distance earthquake in a complex 3-dimensional velocity model, the problem may not be sufficiently regular.
+
 
 ### Coordinates
 The map coordinate system S-JTSK Křovák EPSG:5513 is used for program input and output
@@ -59,15 +65,16 @@ For most internal calculations, the model local coordinate system is used.
 This brings some limitations, especially in the case of fixing hypocenter in some coordinates.
 
 ### Weighting
-The program uses weight codes for phase arrivals measurements. 
+The weighted least squares algorithm takes into account the specified weight codes 
+for phase arrivals measurements. 
 These weight codes are well established in seismology (HYPO71, HYPOINVERSE).
 Weight codes are:
 ```
  0 - full weight, 1 - 3/4 weight, 2 - half weight, 3 - 1/4 weight, 4 - no weight
 ```
-The question is how to convert weight codes into weighting factors. 
-Original HYPO3D to version 1.65 compute weighting factors linearly (according to HYPO71). 
-From HYPO3D version 1.66 it is changed and weights are applied quadratically (according to HYPOINVERSE).
+Weight codes are converted into weighting factors 
+that are seen as inversely proportional to the (a priori) standard deviation.
+In versions prior to version 1.65 it was taken as inversely proportional to the variance.
 
 ## Authors
 <table>
@@ -99,7 +106,7 @@ This project is intended for maintenance of code and documentation and
 to test and document the limitations of this program.
 No further development is foreseen but for further use it is needed:
 
-1. Reduce the ballast code for clarity.
+1. Reduce unnecessary code for clarity.
 1. Fix some known bugs.
 1. Gather documentation of this software.
 
@@ -108,20 +115,22 @@ No further development is foreseen but for further use it is needed:
 There are only minor changes compared to the original version 1.50, 
 which does not change the features of the computer program.
 
-1. To clear the code, about 9,000 rows of code were reduced.
-   Deleting the ballast (inaccessible or unusable) code 
-   did not affect the functionality.
+1. To clear the code, about 9,000 lines of program code were removed.
+   Deleting unreachable or unusable code did not affect the functionality.
 2. The parameter reading_error was originally hard coded.
    Now the default value can be overwritten
    as a second optional argument in the velocity model file (line number 5th).
 3. The coordinates x,y of the epicenter and their estimate errors dxer,dyer
    were presented in different coordinate systems.
    (Epicenter in map coordinates Křovák EPSG:5513 but errors in model local coordinates).
-   Now it is consistently in map coordinates.  
-4. The azimuth of rays emerging from the focus and the angle
+   Now it is consistently in map coordinates. 
+4. In the case of coordinate fixation, 
+   the calculation of the error covariance matrix is not reduced in dimensions.
+5. The azimuth of rays emerging from the focus and the angle
    of rotation of the error ellipse is counted with respect
    to meridian convergence of Křovák coordinates at the focal point.
-5. From version 1.66 the weights of measurements are applied quadratically, not linearly.
+6. From version 1.66 the weighting factors are seen as
+   inversely proportional to the (a priori) standard deviation.
 
 ## Documentation
 

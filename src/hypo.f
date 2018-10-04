@@ -148,11 +148,9 @@ c
 c  common for data for covariance matrix evaluation
 c
 		real            co(4,4)
-		real            id(4,4)
-		real            re(4,4)
 		real            rmsres
 		real            rmsres_co
-		common /cov/    co,rmsres,rmsres_co,id,re
+		common /cov/    co,rmsres,rmsres_co
 c
 c  common for data of recording situ (space coordinates, delay; no. of arr.)
 c
@@ -192,9 +190,6 @@ c
 		real                wt(nrec_max)    !weight
 		real                avwt            !average weight
 		common /hyp/        trec,wt,avwt
-
-		real                wt1 (nrec_max)
-		common /wt_1/       wt1
 c
 c  common of hypofile items ... character part
 c
@@ -613,10 +608,16 @@ c   compute average weight
 c
 		avwt=0.0
 		do  i=1,nrec
-			 xc(4,i)=1.0
 			 avwt=avwt+wt(i)
 		end do
 		avwt=avwt/no_valid_arrivals
+c ---------------------------------------------------------------------
+c 2018-10 10.69
+		do  i=1,nrec
+			 xc(4,i)=1.0
+                         wt(i)=wt(i)/avwt
+		end do
+c ---------------------------------------------------------------------
 c
 c  scanned depth
 c

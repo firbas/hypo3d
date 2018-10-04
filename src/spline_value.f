@@ -1,5 +1,4 @@
 c
-C$ema /sur/
 		subroutine spline_value (IN,R,ZD,NDER)
 c
 c
@@ -21,9 +20,6 @@ c
 		COMMON/SUR/ NX(7),NY(7),NXS(7),NYS(7),NWS(7),X(48),
      *             Y(48),W(1024),VX(5,48),VY(5,48),SIGMA(7)
 c
-cc		character*255    ch_model_name
-cc		common /chmodn/ ch_model_name
-C
 c mw
 c |
 c |

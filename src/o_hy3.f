@@ -1,5 +1,4 @@
 c
-C$ema /hyp/,/rec/,/stmod/
 		subroutine o_hy3(lulist)
 c
 c*****************************************************************************
@@ -40,6 +39,7 @@ c  programmed:2017-04  10.59  pz O_HY3 cloned from OUTPUT.F
 c  programmed"2017-04  10.62  pz Rotation of the diagonal elements 
 c                                in the co matrix from local to Krovak
 c  programmed:2017-04  10.64  pz function mconvergence
+c  programmed:2018-10  10.69  pz hyr
 c
 c*****************************************************************************
 c
@@ -133,11 +133,9 @@ c
       common /chrec/      type
 c
       real            co(4,4)
-      real            id(4,4)
-      real            re(4,4)
       real            rmsres
       real            rmsres_co
-      common /cov/    co,rmsres,rmsres_co,id,re
+      common /cov/    co,rmsres,rmsres_co
 c
       real                trec(nrec_max)
       real                wt(nrec_max)
@@ -199,8 +197,9 @@ c
       double precision p_fi, p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c
+      logical             hyr
       real                wt1(nrec_max)
-      common /wt_1/       wt1
+      common /wt_1/       hyr, wt1
 c
       double precision c,s,PI_D,RAD2DEG,DEG2RAD
 c
@@ -225,19 +224,19 @@ c it is not possible to estimate errors dxer and dyer.
 c
 c modify covariance matrix for fixed coordinates
 c
-      if (fix_depth .or. scan_depth) then
-			 do i=1,4
-			     co(3,i)=0.0
-			     co(i,3)=0.0
-			 end do
-		endif
+!      if (fix_depth .or. scan_depth) then
+!			 do i=1,4
+!			     co(3,i)=0.0
+!			     co(i,3)=0.0
+!			 end do
+!		endif
 c
-      if (fix_otime) then
-			 do i=1,4
-			     co(4,i)=0.0
-			     co(i,4)=0.0
-			 end do
-		endif
+!      if (fix_otime) then
+!			 do i=1,4
+!			     co(4,i)=0.0
+!			     co(i,4)=0.0
+!			 end do
+!		endif
 c
 c --------------------------------------------------------------------
       dxer=9.99
@@ -250,7 +249,7 @@ c --------------------------------------------------------------------
       az_theta=999.0
 c --------------------------------------------------------------------
 c
-      if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
+!      if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
 c error ellipse for epicenter
 c computed in local coordinates
 			 deter=co(1,1)*co(2,2)-co(1,2)*co(2,1)
@@ -289,7 +288,7 @@ c l1 is major axis
                     theta=theta+90.0
                  endif
 c
-      endif
+!      endif      ! fix
 c
 c --------------------------------------------------------------------
       if (rmsres_co.ne.9.99**2) then
@@ -302,14 +301,14 @@ c 2017-04-08 pz
 c  rotation of the diagonal elements in the co matrix from local to Krovak
            dxer=0.0
            dyer=0.0
-           if (.not.fix_x .and. .not.fix_y) then
+!           if (.not.fix_x .and. .not.fix_y) then
               c=dcos(p_fi*DEG2RAD)
               s=dsin(p_fi*DEG2RAD)
               dxer=c*c*co(1,1)-s*c*co(1,2)-s*c*co(2,1)+s*s*co(2,2)
               dyer=s*s*co(1,1)+s*c*co(1,2)+s*c*co(2,1)+c*c*co(2,2)
               dxer=sqrt(abs(dxer))
               dyer=sqrt(abs(dyer))
-           endif
+!           endif      ! fix
 c ====================================================================
            dzer=sqrt(abs(co(3,3)))
            dter=sqrt(abs(co(4,4)))
@@ -415,6 +414,18 @@ c
 c
 c header for station data
 c
+      if(hyr) then
+      write (lulist,
+     *'("----------------------------------------------------------",
+     *  "----------------")')
+      write (lulist,'(" sta  |obs. t.|cal. t.|res. |amplitude"
+     *,"|freq|   w | epi |hypo |azm|ain|xmag")')
+      write(lulist, '("      |  [s]  |  [s]  | [s] |  [m/s]  "
+     *,"|[Hz]| [ms]|[km] |[km] |[o]|[o]|    ")')
+      write (lulist,
+     *'("----------------------------------------------------------",
+     *  "----------------")')
+      else
       write (lulist,
      *'("----------------------------------------------------------",
      *  "------------")')
@@ -425,6 +436,7 @@ c
       write (lulist,
      *'("----------------------------------------------------------",
      *  "------------")')
+      endif
 c
 c cycle for writing station distances,etc.
 c
@@ -438,6 +450,23 @@ c
           else
               delay=0.0
           endif
+c
+        if (hyr) then
+          if (type(i).eq.'S') then
+              coef=p_over_s
+	      write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
+     >    trec(i)-tcal(i)-t0-coef*delay,
+     >    amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    int(toa(i)+0.5),xmag(i) 
+         else
+              coef=1.
+              write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
+     >    trec(i)-tcal(i)-t0-coef*delay,
+     >    amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >    int(toa(i)+0.5)        
+	 endif
+c
+       else      ! hyr == .false.
 c
           if (type(i).eq.'S') then
               coef=p_over_s
@@ -453,10 +482,15 @@ c
      >    int(toa(i)+0.5)        
 	 endif
 c
+       endif     ! hyr
 c
  916      format (a4,' ',a1,'|',
      >    f7.2,   '|',f7.2,   '|',f5.3,'|',1pe9.2,'|',0pf4.1,
      >    '|',i1,'|',0pf5.1,'|',0pf5.1,
+     >    '|',i3,'|',i3,'|',f4.1)
+ 917      format (a4,' ',a1,'|',
+     >    f7.2,   '|',f7.2,   '|',f5.3,'|',1pe9.2,'|',0pf4.1,
+     >    '|',i5,'|',0pf5.1,'|',0pf5.1,
      >    '|',i3,'|',i3,'|',f4.1)
       end do
 c

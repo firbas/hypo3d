@@ -1,5 +1,4 @@
 c
-C$ema /sur/
 		subroutine spline_in (lu1,namr)
 c
 c  input of data for spline surface

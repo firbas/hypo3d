@@ -1,6 +1,5 @@
-C$ema /model_3d/
+c
 		subroutine vl(xs,ys,xo,yo,n,v_prum,svolume)
-
 c
 c     vl       ... velocity layers
 c     xs,ys    ... source coordinates

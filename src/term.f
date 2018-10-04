@@ -1,5 +1,4 @@
 c
-C$ema /trace/
 		subroutine term
 c
 c computation if TID, DID

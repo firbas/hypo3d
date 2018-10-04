@@ -1,5 +1,4 @@
 c
-C$ema /rec/,/stmod/,/hyp/
 		subroutine iter_2
 c
 c*****************************************************************************
@@ -163,8 +162,8 @@ c
                   else
                       coef=1.
                   endif
-                  sum8=sum8+xc(j,i)*(trec(i)-t0-tcal(i)-coef*delay)*
-     >                wt(i)/avwt
+                  sum8=sum8+xc(j,i)*wt(i)
+     >                 *(trec(i)-t0-tcal(i)-coef*delay)*wt(i)
               end do
           b(j)=sum8
       end do
@@ -175,7 +174,7 @@ c
           do j=1,4
               sum8=0.0
               do k=1,nrec
-                  sum8=sum8+xc(i,k)*xc(j,k)*wt(k)/avwt
+                  sum8=sum8+xc(i,k)*wt(k)*xc(j,k)*wt(k)
               end do
               c(i,j)=sum8
           end do
@@ -228,8 +227,9 @@ c
           do i=1,4
               c(i,i)=c(i,i)+sigma(i)
           end do
-      endif
+      endif   ! .not.endit
 c
+      if (.not.endit) then
 c  modify matrix C & vector b
 c  for fixed coordinates
 c
@@ -268,6 +268,7 @@ c
           c(4,4)=1.0
           b(4)=0.0
       endif
+      endif ! .not.endit 
 c
       if (.not.endit) then
 c
@@ -298,7 +299,7 @@ d         write (lulist,'(4f18.8)') c
 d         write (lulist,'(/"Vector b")')
 d         write (lulist,'(4f18.8)') b
 c
-      endif
+      endif !  .not.endif
 c
 c  matrix inversion
 c

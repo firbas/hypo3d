@@ -1,13 +1,4 @@
 c
-c
-c  following common block is in extended memory area
-c
-
-C$ema /trace/
-
-c
-c-----------------------------------------------------------------------------
-c
 		subroutine rt_3d (c_hypo,c_stat,td,toa,exchange)
 
 c*************************************************************************
@@ -307,8 +298,9 @@ c
 c  travel time & derivatives for direct wave in first layer
 c
  
- 
-		type_of_wave = 2
+      type_of_wave = 2
+      n_poi=0
+
       if (exchange) then
           toa=-delta/sqt
       else
