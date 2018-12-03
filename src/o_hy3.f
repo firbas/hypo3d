@@ -71,8 +71,8 @@ c
 	integer ita(9)
 	integer stime
       integer iyear
-      integer temp1(nrec_max)
-      integer temp2
+      integer ktemp(nrec_max)
+      real temp2
       integer i,j
       integer isec,msec
 c
@@ -137,10 +137,11 @@ c
       real            rmsres_co
       common /cov/    co,rmsres,rmsres_co
 c
+      logical             hyr
       real                trec(nrec_max)
       real                wt(nrec_max)
-      real                avwt
-      common /hyp/        trec,wt,avwt
+      real                avwt,sumw,sumw2
+      common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
       character*4         rec_name(nrec_max)
       common /chhyp/      rec_name
@@ -197,9 +198,8 @@ c
       double precision p_fi, p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c
-      logical             hyr
       real                wt1(nrec_max)
-      common /wt_1/       hyr, wt1
+      common /wt_1/       wt1
 c
       double precision c,s,PI_D,RAD2DEG,DEG2RAD
 c
@@ -354,7 +354,7 @@ c
 			 d_epi (i) = sqrt( dx**2 + dy**2 )
 		end do
 c
-		call sort_x(temp,temp1,j)
+		call sort_x(temp,ktemp,j)
 		gap = temp(1)+360.-temp(j)
 c
 		do i=2,j
@@ -378,13 +378,15 @@ c
 c	label 10 - regular output to dbfile begins ###
 c
 10    continue
-      write (lulist,'("program       :",a)')
-     >prog_name1//prog_name2
+      write (lulist,'("program       :",a)') prog_name1//prog_name2
       write (lulist,'("model         :",a)') modfn(1:lnblnk(modfn))       ! ch_model_name
-      write (lulist,'("model error   :",f5.3," s")')
-     >model_error
-      write (lulist,'("reading error :",f5.3," s")')
-     >reading_error
+      if (hyr) then
+        write (lulist,'("model error   :")')
+        write (lulist,'("reading error :")')
+      else
+        write (lulist,'("model error   :",f5.3," s")') model_error
+        write (lulist,'("reading error :",f5.3," s")') reading_error
+      endif
 c
 c  get system time
 c

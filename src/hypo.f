@@ -186,10 +186,12 @@ c
 c
 c  common of hypofile items ... noncharacter part, average weight
 c
+                logical             hyr
 		real                trec(nrec_max)  !observed times
 		real                wt(nrec_max)    !weight
 		real                avwt            !average weight
-		common /hyp/        trec,wt,avwt
+                real                sumw,sumw2
+		common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
 c  common of hypofile items ... character part
 c
@@ -607,10 +609,13 @@ c  initialize derivative on time for origin time (is equal to one)
 c   compute average weight
 c
 		avwt=0.0
+                sumw=0.0
+                sumw2=0.0
 		do  i=1,nrec
-			 avwt=avwt+wt(i)
+			 sumw=sumw+wt(i)
+			 sumw2=sumw2+wt(i)*wt(i)
 		end do
-		avwt=avwt/no_valid_arrivals
+		avwt=sumw/no_valid_arrivals
 c ---------------------------------------------------------------------
 c 2018-10 10.69
 		do  i=1,nrec

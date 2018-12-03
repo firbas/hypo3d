@@ -1,3 +1,13 @@
+2018-12-02 pz v10.70
+
+1) The estimate of arrivals variance and their modification
+according to specified reading error was corrected.
+File: iter_1.f
+2) A priori eel
+Weighting is calculated according to the input file extension:
+       *.hyr - A priori error ellipse computation.
+       *.hyp - Weighing is counted as the original program.
+========================================================================
 2018-10-03 pz v10.69
 
 1) Weighted least squares

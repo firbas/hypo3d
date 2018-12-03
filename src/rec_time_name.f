@@ -107,10 +107,11 @@ c
 		integer         key     (nrec_max)
 		common /stmod/  key
 c
+                logical         hyr
 		real            trec    (nrec_max)
 		real            wt      (nrec_max)
-		real                avwt            !average weight
-		common /hyp/        trec,wt,avwt
+		real            avwt,sumw,sumw2        !average weight
+		common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
 		real*8          datum8  (nrec_max)
 		integer         ichan   (nrec_max)
@@ -165,9 +166,8 @@ c
 		logical        w_changes
 		common /ernam/ err_stname,w_changes
 c
-		logical             hyr
                 real                wt1(nrec_max)
-		common /wt_1/       hyr,wt1
+		common /wt_1/       wt1
 c
 c  functions  ...  none
 c

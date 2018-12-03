@@ -70,14 +70,11 @@ c
 		real            rmsres_co
 		common /cov/    co,rmsres,rmsres_co
 c
+                logical         hyr
 		real            trec (nrec_max)
 		real            wt   (nrec_max)
-		real            avwt
-		common /hyp/    trec,wt,avwt
-c
-                logical             hyr
-                real                wt1(nrec_max)
-                common /wt_1/       hyr,wt1
+		real            avwt,sumw,sumw2
+		common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
 		real              tcal(nrec_max)
                 real              xc  (4,nrec_max)
@@ -98,11 +95,10 @@ c  end of declarations
 c  *******************
 c
 c=============================================================================
+      if (hyr) then
 c
       do i=1,4
           do m=1,4
-c
-c  initialize summ
 c
               sum4_co=0.0
               do l=1,nrec
@@ -110,23 +106,37 @@ c
                       do k=1,4
                           sum4_co=sum4_co+c(i,j)*xc(j,l)*wt(l)
      >                            *wt(l)*xc(k,l)*c(m,k)
-                      end do
-                  end do
-              end do
+                      end do  !k
+                  end do      !j
+              end do          !l
 c
 c  element i,m of cov. matrix
-c
-c ---------------------------------------------------------------------
-c 2018-09 10.69
-            if (hyr) then
               co(i,m)=sum4_co/(avwt*avwt)
-c              co(i,m)=sum4_co
-            else
-              co(i,m)=sum4_co*rmsres_co
-            endif
-c ---------------------------------------------------------------------
-          end do
-      end do
+          end do  !m
+      end do      !i
 c
+c=============================================================================
+      else       ! hyr .false.
+c
+      do i=1,4
+          do m=1,4
+c
+              sum4_co=0.0
+              do l=1,nrec
+                  do j=1,4
+                      do k=1,4
+                          sum4_co=sum4_co+c(i,j)*xc(j,l)
+     >                            *wt(l)*xc(k,l)*c(m,k)
+                      end do  !k
+                  end do      !j
+              end do          !l
+c
+c  element i,m of cov. matrix
+              co(i,m)=sum4_co*rmsres_co
+          end do  !m
+      end do      !i
+c
+      endif    !hyr
+c ---------------------------------------------------------------------
       return
       end

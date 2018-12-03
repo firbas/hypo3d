@@ -92,10 +92,11 @@ c
       integer         key  (nrec_max)
       common /stmod/  key
 c
+      logical         hyr
       real            trec (nrec_max)
       real            wt   (nrec_max)
-      real            avwt
-      common /hyp/    trec,wt,avwt
+      real            avwt,sumw,sumw2
+      common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
       real            cep(3)
       integer         no_valid_arrivals
@@ -177,6 +178,7 @@ c
 c  compute rms of residuals
 c
       rmsres=0.0
+      rmsres_co=0.0
 c
       do i=1,nrec
           if (cep(3).lt.surf_ev) then
@@ -199,48 +201,55 @@ c  endit=true ... for covariance matrix
 c
           if (endit) then
 c
-c  test on the start of cycle
-c
-              if (i.eq.1) then
-c
-c  initialize rmsres_co
-c
-                  rmsres_co=0.0
-              endif
-c
               dtime_co=dtime
 c
-              if (abs(dtime_co).lt.reading_error) then
+c ----------------------------------------------------------------
+commented out 2018-12-04 pz v10.70
 c
-c  if difference is less then reading error ... difference will be equal to
-c  reading error
-c
-                  dtime_co = reading_error
-              endif
+c              if (abs(dtime_co).lt.reading_error) then
+cc  if difference is less then reading error ... 
+cc     difference will be equal to reading error
+c                  dtime_co = reading_error
+c              endif
+c ----------------------------------------------------------------
 c
 c  rmsres for covariance matrix
 c
-              rmsres_co=rmsres_co+dtime_co*wt(i)*wt(i)*dtime_co
-          endif
+              rmsres_co=rmsres_co+dtime_co*wt(i)*dtime_co
+          endif    ! endit
 c
-          rmsres=rmsres+dtime*wt(i)*wt(i)*dtime
-      end do
+          if (hyr) then
+            rmsres=rmsres+dtime*wt(i)*wt(i)*dtime
+          else
+            rmsres=rmsres+dtime*wt(i)*dtime
+          endif    !hyr
+      end do       !i   nrec
+c
+      if (hyr) then
+        rmsres=rmsres*avwt*avwt/sumw2
+      else
+        rmsres=rmsres/no_valid_arrivals
+      endif
 c
 c  evaluate no. of constraints
 c
       n_constr=4
-c
       if (fix_x) n_constr=n_constr-1
       if (fix_y) n_constr=n_constr-1
       if (fix_depth) n_constr=n_constr-1
       if (fix_otime) n_constr=n_constr-1
 c
-      rmsres=rmsres/no_valid_arrivals
       if (no_valid_arrivals-n_constr.le.0) then
           rmsres_co=9.99**2
       else
           rmsres_co=rmsres_co/(no_valid_arrivals-n_constr)
       endif
 c
+c ----------------------------------------------------------------
+c 2018-12-04 pz v10.70
+      if (rmsres_co .lt. reading_error**2) then
+        rmsres_co = reading_error**2
+      endif          
+c ----------------------------------------------------------------
       return
       end

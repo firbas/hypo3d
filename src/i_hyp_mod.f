@@ -129,14 +129,14 @@ c
 		integer             ichan (nrec_max)
 		common /dat8/       datum8,ichan
 c
+                logical             hyr
 		real                trec(nrec_max)
 		real                wt  (nrec_max)
-		real                avwt            !average weight
-		common /hyp/        trec,wt,avwt
+		real                avwt,sumw,sumw2    !average weight
+		common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
-                logical             hyr
 		real                wt1(nrec_max)
-		common /wt_1/       hyr,wt1
+		common /wt_1/       wt1
 c
 		character*4         rec_name(nrec_max)
 		common /chhyp/      rec_name

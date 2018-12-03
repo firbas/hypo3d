@@ -93,10 +93,11 @@ c
       integer         key  (nrec_max)
       common /stmod/  key
 c
+      logical         hyr
       real            trec (nrec_max)
       real            wt   (nrec_max)
-      real            avwt
-      common /hyp/    trec,wt,avwt
+      real            avwt,sumw,sumw2
+      common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
       real            cep(3)
       integer         no_valid_arrivals
@@ -162,8 +163,13 @@ c
                   else
                       coef=1.
                   endif
-                  sum8=sum8+xc(j,i)*wt(i)
+                  if (hyr) then
+                    sum8=sum8+xc(j,i)*wt(i)
      >                 *(trec(i)-t0-tcal(i)-coef*delay)*wt(i)
+                  else
+                    sum8=sum8+xc(j,i)*wt(i)
+     >                 *(trec(i)-t0-tcal(i)-coef*delay)
+                  endif    !hyr
               end do
           b(j)=sum8
       end do
@@ -174,7 +180,11 @@ c
           do j=1,4
               sum8=0.0
               do k=1,nrec
+                if (hyr) then  
                   sum8=sum8+xc(i,k)*wt(k)*xc(j,k)*wt(k)
+                else
+                  sum8=sum8+xc(i,k)*wt(k)*xc(j,k)
+                endif    !hyr
               end do
               c(i,j)=sum8
           end do

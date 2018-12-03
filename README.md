@@ -14,7 +14,7 @@ especially when programming forward modeling.
 ### Velocity model
 The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
 The space of the model is divided into blocks in three perpendicular directions by parallel planes with irregular spacings.
-The number of blocks is limited, now it is 15x15x40 (it can easily be expanded to 100x100x100).
+The number of blocks is limited to 100x100x100.
 The velocities of longitudial seismic waves in units of [km/s] are assigned to these blocks.
 
 <p align="center">
@@ -67,15 +67,15 @@ This brings some limitations, especially in the case of fixing hypocenter in som
 ### Weighting
 The weighted least squares algorithm takes into account the specified weight codes 
 for phase arrivals measurements. 
-These weight codes are well established in seismology (HYPO71, HYPOINVERSE).
-Weight codes are:
+These weight codes are:
 ```
  0 - full weight, 1 - 3/4 weight, 2 - half weight, 3 - 1/4 weight, 4 - no weight
+(as in HYPO71, HYPOINVERSE)
 ```
-Weight codes are converted into weighting factors 
-that are seen as inversely proportional to the (a priori) standard deviation.
-In versions prior to version 1.65 it was taken as inversely proportional to the variance.
 
+Weights are used as coefficients of the objective function linearly, not quadraticaly,
+which means that their weighting effect is rather weak (except code ```4 - no weight```).
+ 
 ## Authors
 <table>
 <tbody>
@@ -129,8 +129,14 @@ which does not change the features of the computer program.
 5. The azimuth of rays emerging from the focus and the angle
    of rotation of the error ellipse is counted with respect
    to meridian convergence of Křovák coordinates at the focal point.
-6. From version 1.66 the weighting factors are seen as
-   inversely proportional to the (a priori) standard deviation.
+6. The limitation of the number of blocks of the velocity model was extended 
+   from the original 15x15x40 to 100x100x100.
+7. A posteriori estimation of the arrivals variance was not an unbiased estimate 
+   because the individual residues were first modified 
+   according to a priori specified reading error. 
+   Newly, the estimate of the arrivals variance is calculated first 
+   and then adjusted by the reading error value.
+
 
 ## Documentation
 

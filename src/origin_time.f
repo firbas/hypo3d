@@ -86,11 +86,12 @@ c
 		real                zstat(nStation) !/
 		real                dly(nStation)   !stations delays for surf. events
 		common /rec/        nrec,xstat,ystat,zstat,dly
-c
+c 
+                logical             hyr
 		real                trec(nrec_max)  !observed times
 		real                wt(nrec_max)    !weight
-		real                avwt            !average weight
-		common /hyp/        trec,wt,avwt
+		real                avwt,sumw,sumw2 !average weight
+		common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
 c  *******************
 c  end of declarations
