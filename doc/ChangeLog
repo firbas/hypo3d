@@ -1,5 +1,10 @@
 2018-12-02 pz v10.70
 
+Rms calculation on the grid if t0 is fixed.
+File: dialog_3.f, iter_1.f
+========================================================================
+2018-12-02 pz v10.70
+
 1) The estimate of arrivals variance and their modification
 according to specified reading error was corrected.
 File: iter_1.f

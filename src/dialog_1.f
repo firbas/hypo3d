@@ -51,15 +51,16 @@ c
 c
 c  global parameters
 c
-		character*255         ch_model_name   !name of crustal model for use
-		common /chmodn/     ch_model_name
+      character*255      hypfn
+      character*255      modfn
+      common /hymofn/ hypfn,modfn
+
 c
 		include 'list.fi'
 		include 'pname.fi'
 c
 c  local variables
 c
-		character*255 hyponamr
 		integer      year
 		integer      month
 		integer      day
@@ -83,8 +84,6 @@ c  *******************
 c
 c=============================================================================
 c
-		hyponamr = 'hypofile'
-c
 c  for scanned depth
 c
       write (*,'(1x,a,": Scanned depth mode:")') prog_name
@@ -101,8 +100,8 @@ c
 c
 c  write header
 c
-      write (lulist,'(" Name of used model        :",a)') ch_model_name
-      write (lulist,'(" Name of hypofile          :",a)') hypoNamr
+      write (lulist,'(" Name of used model        :",a)') modfn(1:lnblnk(modfn))
+      write (lulist,'(" Name of hypofile          :",a)') hypfn(1:lnblnk(hypfn))
       write (lulist,'(" Minimal recorded arr. time:",
      >2(i2.2,"-"),i2.2,1x,i2.2,":",i2.2)') year,month,day,hour,minute
       write (lulist,'(" Starting point (x,y,t)    :(",f8.2,",",f8.2,",",

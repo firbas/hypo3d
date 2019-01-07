@@ -108,11 +108,6 @@ c
                 real            xmag(nrec_max)
                 common /mag/    xmag,avm,sdm
 c
-c  common for model name
-c
-		character*255        ch_model_name   !name of crustal model for use
-		common /chmodn/     ch_model_name
-c
 c  common for time data
 c
 		integer year
@@ -225,9 +220,9 @@ c
 c
 c  common for subprogram iteration_1 ... character part
 c
-		character*1     old_it              !symbol for iteration with rms
-														!of res greater then previous succ.
-														!iteration
+		character*1     old_it          !symbol for iteration with rms
+						!of res greater then previous succ.
+						!iteration
 		common /ch_it1/ old_it
 c
 c  common for subprogram iteration_2
@@ -321,14 +316,15 @@ c
 c
 c	common for file names - VD
 c
-		character*255 hypofn
+		character*255 hypfn
 		character*255 modfn
-		common /hymofn/	hypofn,modfn
+		common /hymofn/	hypfn,modfn
 c  functions
 c
 		integer iargc, lnblnk, getcwd, status,string_length
 		integer index
 		character*255 string,hyponame, hyp3name
+		character*255 ch_model_name   !name of crustal model
 c
 c common for ray profile coordinates
 c
@@ -415,12 +411,12 @@ c 	name must NOT be derived => option -M required
 		write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
 	   call exit
 	endif
-	hypofn=hyponame
+	hypfn=hyponame
 	modfn=ch_model_name
 c
 c	
-	write(*,*) 'Hypofile is  ',hypofn(1:lnblnk(hypofn))
-	write(*,*) 'Model is  ',modfn(1:lnblnk(hypofn))
+	write(*,*) 'Hypofile is  ',hypfn(1:lnblnk(hypfn))
+	write(*,*) 'Model is  ',modfn(1:lnblnk(hypfn))
 	rms_on_sphere = .false.
 	loc_write     = .false.
 	reading_error = 0.016 		!estimated reading error in ms
@@ -679,7 +675,7 @@ c
 c
 c  increment i0 ... variable for no. of iterations
 c
-		I0=I0+1
+		i0=i0+1
 c
 c  travel time and derivatives for hypocenter coordinate x0, y0, z0
 c
@@ -1068,41 +1064,6 @@ c
 			     rmsres=9.99**2
 			 else
 c
-c  write message; give a chance to continue the location
-c
-
-cc			     write (*     ,'(1x,a,": Hypocenter not found in ",i2,
-cc     >        " iterations."/)') prog_name,maxIter
-cc150           continue
-cc			     write (*     ,'(1x,a,": Continue location with final",
-cc     >        " coordinates",/,9x,"of trial hypocenter? (y/n) [n]:_")')
-cc     >        prog_name
-ccc
-cc			     read (*,'(a)',end=150) answer
-ccc
-ccc  to big letters
-ccc
-cc	 if(answer.eq.'y')answer='Y'
-cc	 if(answer.eq.'n')answer='N'
-cc
-ccc
-ccc  test the answer
-ccc
-cc			     if (answer.eq.'Y') then
-ccc
-ccc  iterations will be numbered from one
-ccc
-cc						i0=0
-ccc
-ccc  set flag for the reasons of conserving of origin time value
-ccc
-cc						t0_norm=.true.
-cc						go to 30
-cc			     else if (answer.ne.' ' .and. answer.ne.'N') then
-cc						go to 150
-cc			     endif
-
-c
 c  write message for the case of end of the location
 c
 			     write (lulist,'(/,9x,"No convergent criterion satisfied "
@@ -1116,8 +1077,7 @@ c
 c  test on locmode
 c
 		if (.not.scan_depth) then
-cc  normalize orig. time
-c
+c  normalize orig. time
 			 call origin_time (n_increase,dmin8)
 c
 c  magnitude estimation
@@ -1126,14 +1086,12 @@ c
 c  output data
 c
 			 if (i0.lt.maxIter) then
-c			     call output(lulist,0)
 			     call o_hy3(lulist)
 			 else
 c
 c  no list to terminal in the case of no convergence
 c
                              write(0,*) 'NO CONVERGENCE!'
-c			     call output(lulist,-1)
 			     call o_hy3(lulist)
 			 endif
 		endif

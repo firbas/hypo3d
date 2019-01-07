@@ -64,8 +64,6 @@ c
 c
 c  local variables
 c
-		integer     len1
-		integer     event_number
 		integer     ix
 		integer     iy
 		integer     iz
@@ -75,7 +73,6 @@ c
 		integer     iwt
 		integer     isign
 		integer     ios
-      integer     len
       integer     micros
       integer     msec
       integer     isec
@@ -98,9 +95,6 @@ c
 		real                x(48),y(48),w(1024)
 		real                vx(5,48),vy(5,48),sigma(7)
 		common /sur/        nx,ny,nxs,nys,nws,x,y,w,vx,vy,sigma
-c
-		character*255        ch_model_name   !name of crustal model for use
-		common /chmodn/     ch_model_name
 c
 		integer             nrec
 		real                xstat(nStation)
@@ -166,28 +160,24 @@ c 2018-09 10.69
        endif
 c ----------------------------------------------------------------------------    
 		ios = 0
-		event_number = 1
 c
 c  open the hypofile ... it must exist! (status=old)
 c
 		open (luhypo,file=hypfn,iostat=ios,status='OLD')
-c
-c  test on error
-c
 		if (ios.ne.0) then
-c
-c  reset number of records in hypofile
-c
-			 nrec=0
 			 call EXIT(1)
 		endif
 c
-70    continue
-
+c  open crustal model file
+c
+         open (lucrmod,file=modfn,iostat=ios,status='OLD')
+          if (ios.ne.0) then
+              call Abort
+          endif
 c
 c  read crustal model file, read in station data
 c
-		call read_model(luhypo,lucrmod,ch_model_name,surname)
+		call read_model(luhypo,lucrmod,surname)
 c
 c  initialize spline common for surface computing
 c
@@ -195,17 +185,8 @@ c
 c
 c  write the message  ...  read crustal model
 c
-		len=lnblnk(ch_model_name)
-		if (index(ch_model_name,'.MOD').eq.0 .and.
-     *		    index(ch_model_name,'.mod').eq.0) then
-			 write (*,'(1x,a,": Reading ",a)')
-     >    prog_name,
-     >    ch_model_name(1:len)//'.mod'
-		else
-			 write (*,'(1x,a,": Reading ",a)')
-     >    prog_name,
-     >    ch_model_name(1:len)
-		endif
+      write (*,'(1x,a,": Reading ",a)') prog_name,
+     >                                  modfn(1:lnblnk(modfn))
 c
 c  skip one comment line
 c

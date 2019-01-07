@@ -114,9 +114,6 @@ c
       logical         fix_otime
       common /f_mode/ fix_x,fix_y,fix_otime
 c
-      character*1     old_it
-      common /ch_it1/ old_it
-c
       real            co(4,4)
       real            rmsres
       real            rmsres_co

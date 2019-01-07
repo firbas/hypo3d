@@ -1,5 +1,5 @@
 c
-		subroutine read_model(luhypo,lucrmod,chname,surname)
+		subroutine read_model(luhypo,lucrmod,surname)
 c
 c*****************************************************************************
 c
@@ -17,8 +17,6 @@ c  formal parameters:
 c
 c     integer       LUHYPO      ...  lu for hypofile                  I
 c     integer       LUCRMOD     ...  lu for crustal model file        I
-c     character*16  CHNAME      ...  name of crustal model or no.
-c                                    of cr. model or blanks          I/O
 c     character*16  SURNAME     ...  name of surface file for this
 c                                    model                            O
 c
@@ -26,7 +24,7 @@ c----------------------------------------------------------------------------
 c
 c  calling convention:
 c
-c     call read_model(luhypo,lucrmod,chname,surname)
+c     call read_model(luhypo,lucrmod,surname)
 c
 c----------------------------------------------------------------------------
 c
@@ -55,7 +53,6 @@ c  formal parameters
 c
 		integer         lucrmod
 		integer         luhypo
-		character*255    chname
 		character*255    surname
 c
 c  local parameters
@@ -105,23 +102,9 @@ c
       double precision p_fi, p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c	
-c
-	character*255      hypfn
-	character*255      modfn
-	common /hymofn/ hypfn,modfn
-c
-c  functions
-c
 c  *******************
 c  end of declarations
 c  *******************
-c
-c  open crustal model file
-c
-         open (lucrmod,file=modfn,iostat=ios,status='OLD')
-          if (ios.ne.0) then
-              call Abort
-          endif
 c
 	  read (lucrmod,*,iostat=ios) p_over_s
           if (ios.ne.0) then

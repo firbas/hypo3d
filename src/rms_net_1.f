@@ -53,8 +53,10 @@ c
 c
 c  global parameters
 c
-		character*255   ch_model_name
-		common/chmodn/ ch_model_name
+      character*255      hypfn
+      character*255      modfn
+      common /hymofn/ hypfn,modfn
+
 c
 		include 'pname.fi'
 		include 'list.fi'
@@ -64,7 +66,6 @@ c
 		real            c_hypo1(3)
 		real            zsurf
 		real            vd(10)
-		character*255    hyponamr
 c
 c  global variables
 c
@@ -125,8 +126,6 @@ c  end of declarations
 c  *******************
 c
 c=============================================================================
-c
-		hyponamr = 'hypofile'
 c
 c  initialize x0, y0 (Krovak coordinates)
 c
@@ -198,8 +197,8 @@ c
 c
 c  write second part of header
 c
-      write (lulist,'(" Name of used model        :",a)') ch_model_name
-      write (lulist,'(" Name of hypofile          :",a)') hypoNamr
+      write (lulist,'(" Name of used model        :",a)') modfn(1:lnblnk(modfn))
+      write (lulist,'(" Name of hypofile          :",a)') hypfn(1:lnblnk(hypfn))
       write (lulist,'(" Minimal recorded arr. time:",
      >2(i2.2,"-"),i2.2,1x,i2.2,":",i2.2,/)')
      >year,month,day,hour,minute

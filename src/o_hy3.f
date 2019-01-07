@@ -163,9 +163,6 @@ c
       integer             i0
       common /srfc/       fix_surface,fix_depth,i0
 c
-      character*255        ch_model_name
-      common /chmodn/     ch_model_name
-c
       real                x_start
       real                y_start
       real                z_start
@@ -379,7 +376,7 @@ c	label 10 - regular output to dbfile begins ###
 c
 10    continue
       write (lulist,'("program       :",a)') prog_name1//prog_name2
-      write (lulist,'("model         :",a)') modfn(1:lnblnk(modfn))       ! ch_model_name
+      write (lulist,'("model         :",a)') modfn(1:lnblnk(modfn))
       if (hyr) then
         write (lulist,'("model error   :")')
         write (lulist,'("reading error :")')

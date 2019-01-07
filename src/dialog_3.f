@@ -688,7 +688,6 @@ c
       else
           read (line,*,err=93,end=93) start_otime
       endif
-c
       if (abs(start_otime).lt.1E-7) then
 c      if (start_otime.eq.0.0) then
           go to 1000
@@ -715,6 +714,12 @@ c
       if (step_otime.lt.0.0) then
           go to 97
       endif
+c
+c ---------------------------------------------------------------------------
+c 2018-12-15 pz
+c subroutine iter_1 rewrites t0=ot_start if i0=1 (first iter) 
+      ot_start = start_otime
+c ---------------------------------------------------------------------------
 c
       go to 1000
 c

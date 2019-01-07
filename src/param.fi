@@ -18,7 +18,6 @@ c      parameter (z_layer  = 100)          !possible extension
   
       real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
       common /p_over_s/   p_over_s
-c      parameter (p_over_s = 1.6700)       !VD..variabilni P/S pomer 11/93
   
       real    vair                        !velocity of sound wave in air
       parameter (vair = 0.300)
@@ -29,17 +28,7 @@ c      parameter (p_over_s = 1.6700)       !VD..variabilni P/S pomer 11/93
       real    pi                          !Ludolf number
       parameter (pi = 3.1415926)
   
-c      integer max_models                  !number of default crustal models
-c      parameter (max_models = 5)
- 
-c      integer luloc                       !lu for loc file
-c      parameter (luloc = 14)
-  
       real surf_ev
       parameter (surf_ev = 1000.)         !switch for station delays
                                           !depth of hypocenter < surf_ev -->
                                           !use station delays
-  
-c      integer lustart                     !lu for start file
-c      parameter (lustart = 20)
-
