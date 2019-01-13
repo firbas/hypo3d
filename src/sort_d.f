@@ -1,5 +1,5 @@
 c
-		subroutine sort_d(d,x,y,z,m,n)
+      subroutine sort_d(d,x,y,z,m,n)
 c
 c*****************************************************************************
 c
@@ -46,16 +46,16 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		real d(1)
-		real x(1)
-		real y(1)
-		real z(1)
-		integer m(1)
-		integer n
+         real d(1)
+         real x(1)
+         real y(1)
+         real z(1)
+         integer m(1)
+         integer n
 c
 c  local parameters  ...  none
 c
@@ -65,11 +65,11 @@ c
 c
 c  local variables
 c
-		real amin
-		real ap
-		integer mp
-		integer kk
-		integer k
+         real amin
+         real ap
+         integer mp
+         integer kk
+         integer k
 c
 c  global variables  ...  none
 c
@@ -83,37 +83,37 @@ c  *******************
 c
 c=============================================================================
 c
-		do kk=1,n
-			 amin=d(kk)
+         do kk=1,n
+            amin=d(kk)
 c
-			 do k=kk,n
-			     if(d(k).lt.amin) amin=d(k)
-			 end do
+            do k=kk,n
+               if(d(k).lt.amin) amin=d(k)
+            end do
 c
-			 do k=kk,n
-			     if(d(k).eq.amin) go to 3
-			 end do
+            do k=kk,n
+               if(d(k).eq.amin) go to 3
+            end do
 c
-3         d(k)=d(kk)
-			 d(kk)=amin
+3           d(k)=d(kk)
+            d(kk)=amin
 c
-			 ap=x(k)
-			 x(k)=x(kk)
-			 x(kk)=ap
+            ap=x(k)
+            x(k)=x(kk)
+            x(kk)=ap
 c
-			 ap=y(k)
-			 y(k)=y(kk)
-			 y(kk)=ap
+            ap=y(k)
+            y(k)=y(kk)
+            y(kk)=ap
 c
-			 ap=z(k)
-			 z(k)=z(kk)
-			 z(kk)=ap
+            ap=z(k)
+            z(k)=z(kk)
+            z(kk)=ap
 c
-			 mp=m(k)
-			 m(k)=m(kk)
-			 m(kk)=mp
+            mp=m(k)
+            m(k)=m(kk)
+            m(kk)=mp
 c
-		end do
+         end do
 c
-		return
-		end
+         return
+      end subroutine sort_d

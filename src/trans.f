@@ -1,5 +1,5 @@
 c
-		subroutine trans (x1,x2,x3,type)
+      subroutine trans (x1,x2,x3,type)
 c
 c*****************************************************************************
 c
@@ -40,29 +40,29 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		integer          type
-		real*4           x1
-		real*4           x2
-		real*4           x3
+         integer          type
+         real*4           x1
+         real*4           x2
+         real*4           x3
 c
 c  local parameters  ...  none
 c
 c
 c  global parameters
-c 
-      real p_fi
-      real p_x_shift, p_y_shift
-      common /p_posun/ p_fi, p_x_shift, p_y_shift
-c		
-		include 'pname.fi'
+c
+         real p_fi
+         real p_x_shift, p_y_shift
+         common /p_posun/ p_fi, p_x_shift, p_y_shift
+c
+         include 'pname.fi'
 c
 c  local variables
-      double precision a,b,fi,x_stara,x_nova,y_stara,y_nova
-      double precision x_shift, y_shift
+         double precision a,b,fi,x_stara,x_nova,y_stara,y_nova
+         double precision x_shift, y_shift
 c
 c
 c  global variables
@@ -76,38 +76,39 @@ c  end of declarations
 c  *******************
 c
 c=============================================================================
+c dummy arg
+         if (x3 /= 0) continue
 c
-	x_stara=x1
-	y_stara=x2
-	fi=p_fi/180.0*3.141592d00
-	a=dsin(fi)
-	b=dcos(fi)
-	x_shift= p_x_shift
-	y_shift= p_y_shift
+         x_stara=x1
+         y_stara=x2
+         fi=p_fi/180.0*3.141592d00
+         a=dsin(fi)
+         b=dcos(fi)
+         x_shift= p_x_shift
+         y_shift= p_y_shift
 c
-	if (type.eq.1) then
+         if (type.eq.1) then
 c
 c       K --> l
 c
-	   x_stara=x_stara-x_shift
-	   y_stara=y_stara-y_shift
-c       
-	   y_nova=-x_stara*a + y_stara*b
-	   x_nova= y_stara*a + x_stara*b
-c       
-	else
+            x_stara=x_stara-x_shift
+            y_stara=y_stara-y_shift
 c
-c       type=0, type=2       
+            y_nova=-x_stara*a + y_stara*b
+            x_nova= y_stara*a + x_stara*b
+c
+         else
+c
+c       type=0, type=2
 c       l --> K
-c       
-	   y_nova= x_stara*a + y_stara*b + y_shift
-	   x_nova=-y_stara*a + x_stara*b + x_shift
 c
-	endif
+            y_nova= x_stara*a + y_stara*b + y_shift
+            x_nova=-y_stara*a + x_stara*b + x_shift
 c
-	x1=real(x_nova,4)
-	x2=real(y_nova,4)
-        x3=x3
-c	
-	return
-	end
+         endif
+c
+         x1=real(x_nova,4)
+         x2=real(y_nova,4)
+c
+         return
+      end subroutine trans

@@ -1,5 +1,5 @@
 c
-		subroutine rms_net_1(dmin8)
+      subroutine rms_net_1(dmin8)
 c
 c*****************************************************************************
 c
@@ -42,80 +42,80 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		real*8          dmin8
+         real*8          dmin8
 c
 c  local parameters  ...  none
 c
 c
 c  global parameters
 c
-      character*255      hypfn
-      character*255      modfn
-      common /hymofn/ hypfn,modfn
+         character*255      hypfn
+         character*255      modfn
+         common /hymofn/ hypfn,modfn
 
 c
-		include 'pname.fi'
-		include 'list.fi'
+         include 'pname.fi'
+         include 'list.fi'
 c
 c  local variables
 c
-		real            c_hypo1(3)
-		real            zsurf
-		real            vd(10)
+         real            c_hypo1(3)
+         real            zsurf
+         real            vd(10)
 c
 c  global variables
 c
-      real            c_hypo(3)
-      integer         no_valid_arrivals
-      logical         t0_norm
-      logical         endit
-      common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         real            c_hypo(3)
+         integer         no_valid_arrivals
+         logical         t0_norm
+         logical         endit
+         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
 c
-      logical         rms_on_net
-      real            start_x
-      real            start_y
-      real            start_depth
-      real            start_otime
-      real            end_y
-      real            end_x
-      real            end_depth
-      real            end_otime
-      real            step_x
-      real            step_y
-      real            step_depth
-      real            step_otime
-      common /rmsnet/ rms_on_net,
-     >                start_x,end_x,step_x,
-     >                start_y,end_y,step_y,
-     >                start_depth,end_depth,step_depth,
-     >                start_otime,end_otime,step_otime
+         logical         rms_on_net
+         real            start_x
+         real            start_y
+         real            start_depth
+         real            start_otime
+         real            end_y
+         real            end_x
+         real            end_depth
+         real            end_otime
+         real            step_x
+         real            step_y
+         real            step_depth
+         real            step_otime
+         common /rmsnet/ rms_on_net,
+     >                   start_x,end_x,step_x,
+     >                   start_y,end_y,step_y,
+     >                   start_depth,end_depth,step_depth,
+     >                   start_otime,end_otime,step_otime
 c
-      logical         fix_x
-      logical         fix_y
-      logical         fix_otime
-      common /f_mode/ fix_x,fix_y,fix_otime
+         logical         fix_x
+         logical         fix_y
+         logical         fix_otime
+         common /f_mode/ fix_x,fix_y,fix_otime
 c
-      logical         fix_depth
-      logical         fix_surface
-	integer             i0              !no. of iter. cycle
-      common /srfc/   fix_surface,fix_depth,i0
+         logical         fix_depth
+         logical         fix_surface
+         integer             i0              !no. of iter. cycle
+         common /srfc/   fix_surface,fix_depth,i0
 c
-      real            x0
-      real            y0
-      real            z0
-      common /centr/  x0,y0,z0
+         real            x0
+         real            y0
+         real            z0
+         common /centr/  x0,y0,z0
 c
-      integer         year
-      integer         month
-      integer         day
-      integer         hour
-      integer         minute
-      real            t0
-      common /otime/  year,month,day,hour,minute,t0
+         integer         year
+         integer         month
+         integer         day
+         integer         hour
+         integer         minute
+         real            t0
+         common /otime/  year,month,day,hour,minute,t0
 c
 c
 c  functions  ...  none
@@ -129,93 +129,95 @@ c=============================================================================
 c
 c  initialize x0, y0 (Krovak coordinates)
 c
-      x0=start_x
-      y0=start_y
+         x0=start_x
+         y0=start_y
 c
 c  test on fix. surface
 c
-      if (start_depth.eq.999) then
-          fix_surface=.true.
-          z0=0
-      else
-          fix_surface=.false.
-          z0=start_depth
-      endif
+         if (start_depth.eq.999) then
+            fix_surface=.true.
+            z0=0
+         else
+            fix_surface=.false.
+            z0=start_depth
+         endif
 c
 c  Krovak to local
 c
-      call trans (x0,y0,z0,1)
+         call trans (x0,y0,z0,1)
 c
 c  transform local to Krovak coordinates for surface computing
 c
-      c_hypo1(1)=x0
-      c_hypo1(2)=y0
-      c_hypo1(3)=z0
+         c_hypo1(1)=x0
+         c_hypo1(2)=y0
+         c_hypo1(3)=z0
 c
-      call trans(c_hypo1(1),c_hypo1(2),c_hypo1(3),2)
+         call trans(c_hypo1(1),c_hypo1(2),c_hypo1(3),2)
 c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-      call spline_value (0,c_hypo1,vd)
-      zsurf=-vd(1)
+         call spline_value (0,c_hypo1,vd)
+         zsurf=-vd(1)
 c
-      if (z0.lt.zsurf) then
-          z0=zsurf
-      endif
+         if (z0.lt.zsurf) then
+            z0=zsurf
+         endif
 c
 c  test on norming of start origin time
 c
-      if (abs(start_otime).lt.1E-7) then
+         if (abs(start_otime).lt.1E-7) then
 c      if (start_otime.eq.0.0) then
-          t0_norm=.true.
-      else
-          t0_norm=.false.
-          t0=start_otime
-      endif
+            t0_norm=.true.
+         else
+            t0_norm=.false.
+            t0=start_otime
+         endif
 c
 c  write first part of header
 c
-      if (fix_surface) then
-          write (*,
-     >    '(/,1x,a,": Rms of residuals on net (surface)"/)')
-     >    prog_name
-          write (lulist,'(1x,a,
+         if (fix_surface) then
+            write (*,
+     >      '(/,1x,a,": Rms of residuals on net (surface)"/)')
+     >      prog_name
+            write (lulist,'(1x,a,
      >    "   location  ...  rms of residuals on net (surface)"/)')
-     >    long_prog_name
-      else
-          write (*,'(/,1x,a,": Rms of residuals on net "/)')
-     >    prog_name
-          write (lulist,
-     >    '(1x,a,"   location  ...  rms of residuals on net "/)')
-     >    long_prog_name
-      endif
+     >      long_prog_name
+         else
+            write (*,'(/,1x,a,": Rms of residuals on net "/)')
+     >      prog_name
+            write (lulist,
+     >      '(1x,a,"   location  ...  rms of residuals on net "/)')
+     >      long_prog_name
+         endif
 c
 c  decode datum
 c
-      call real8_to_int(dmin8,year,month,day,hour,minute)
+         call real8_to_int(dmin8,year,month,day,hour,minute)
 c
 c  write second part of header
 c
-      write (lulist,'(" Name of used model        :",a)') modfn(1:lnblnk(modfn))
-      write (lulist,'(" Name of hypofile          :",a)') hypfn(1:lnblnk(hypfn))
-      write (lulist,'(" Minimal recorded arr. time:",
+         write (lulist,'(" Name of used model        :",a)')
+     >         modfn(1:lnblnk(modfn))
+         write (lulist,'(" Name of hypofile          :",a)')
+     >         hypfn(1:lnblnk(hypfn))
+         write (lulist,'(" Minimal recorded arr. time:",
      >2(i2.2,"-"),i2.2,1x,i2.2,":",i2.2,/)')
-     >year,month,day,hour,minute
+     >   year,month,day,hour,minute
 c
-      write (*,'(
+         write (*,'(
      >"-----------------------------------------------------------",
      >"----",/,
      >"       x           y           z           t       rmsres",/,
      >"-----------------------------------------------------------",
      >"----")')
 c
-      write (lulist,'(
+         write (lulist,'(
      >" ----------------------------------------------------------",
      >"----",/,
      >"       x           y           z           t       rmsres",/,
      >" ----------------------------------------------------------",
      >"----")')
 c
-      return
-      end
+         return
+      end subroutine rms_net_1

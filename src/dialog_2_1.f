@@ -1,5 +1,5 @@
 c
-		subroutine dialog_2_1
+      subroutine dialog_2_1
      >(endit,prt,scan_depth,i0,maxIter,rms_on_net,loc_write,rp,i_menu)
 c
 c*****************************************************************************
@@ -44,35 +44,35 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		logical endit
-		logical prt
-		logical scan_depth
-		integer i0
-		integer maxIter
-		logical rms_on_net
-		logical rp
-		logical loc_write
-		integer i_menu
+         logical endit
+         logical prt
+         logical scan_depth
+         integer i0
+         integer maxIter
+         logical rms_on_net
+         logical rp
+         logical loc_write
+         integer i_menu
 c
 c  local parameters  ...  none
 c
 c
 c  global parameters
 c
-		include 'pname.fi'
+         include 'pname.fi'
 c
 c  local variables
 c
-		character*1 answer
+         character*1 answer
 c
 c  global variables
 c
-		logical       loc
-		common /wloc/ loc
+         logical       loc
+         common /wloc/ loc
 c
 c  functions  ...  none
 c
@@ -83,116 +83,116 @@ c  *******************
 c
 c=============================================================================
 c
-10    continue
+10       continue
 c
-		if (endit) then
-			 if (prt) then
-		        write (*,'(1x,a,": M e n u")') prog_name
-		        write (*,'(1x,a,
+         if (endit) then
+            if (prt) then
+               write (*,'(1x,a,": M e n u")') prog_name
+               write (*,'(1x,a,
      >               ": End of location            -     ''E''  "/
      >        "         Continue location          -     ''C''  ",/
      >        "         Write loc-file             -     ''L'' [L]:_")')
-     >        prog_name
-			 else
-		        write (*,'(1x,a,": M e n u")') prog_name
-		        write (*,'(1x,a,
+     >         prog_name
+            else
+               write (*,'(1x,a,": M e n u")') prog_name
+               write (*,'(1x,a,
      >               ": End of location            -     ''E''  "/
      >        "         Continue location          -     ''C''  ",/
      >        "         Write loc-file             -     ''L''  ")')
-     >        prog_name
-			 endif
-		else if (scan_depth .or. i0.eq.maxIter
-     >         .or. rms_on_net .or. loc_write) then
+     >         prog_name
+            endif
+         else if (scan_depth .or. i0.eq.maxIter
+     >      .or. rms_on_net .or. loc_write) then
 c
 c  not loc-file  writing
 c
-			 if (prt) then
-		        write (*,'(1x,a,": M e n u")') prog_name
-		        write (*,'(1x,a,
+            if (prt) then
+               write (*,'(1x,a,": M e n u")') prog_name
+               write (*,'(1x,a,
      >               ": End of location            -     ''E''  "/
      >        "         Continue location          -     ''C'' [E]:_")')
-     >        prog_name
-			 else
-		        write (*,'(1x,a,": M e n u")') prog_name
-		        write (*,'(1x,a,
+     >         prog_name
+            else
+               write (*,'(1x,a,": M e n u")') prog_name
+               write (*,'(1x,a,
      >               ": End of location            -     ''E''  "/
      >        "         Continue location          -     ''C''  ")')
-     >        prog_name
-			 endif
-		else
-			 write (*,'(1x,a,": M e n u")') prog_name
-			 write (*,'(1x,a,
+     >         prog_name
+            endif
+         else
+            write (*,'(1x,a,": M e n u")') prog_name
+            write (*,'(1x,a,
      >           ": End of location            -     ''E''  "/
      >    "         Continue location          -     ''C'' [E]:_")')
-     >    prog_name
-		endif
+     >      prog_name
+         endif
 c
 c  read answer
 c
-		read (*,'(a)',end=10) answer
+         read (*,'(a)',end=10) answer
 
-cc		call clear_display
+cc            call clear_display
 
-cc		call CaseFold(answer)
-	 if(answer.eq.'l')answer='L'
-	 if(answer.eq.'e')answer='E'
-	 if(answer.eq.'c')answer='C'
-	 if(answer.eq.'p')answer='P'
+cc            call CaseFold(answer)
+         if(answer.eq.'l')answer='L'
+         if(answer.eq.'e')answer='E'
+         if(answer.eq.'c')answer='C'
+         if(answer.eq.'p')answer='P'
 c
 c  set default values
 c
-		if (answer.eq.' ') then
-			 if (endit) then
+         if (answer.eq.' ') then
+            if (endit) then
 c
 c  default:   write locfile
 c
-		        answer='L'
-			 else
+               answer='L'
+            else
 c
 c  default:   end of program
 c
-		        answer='E'
-			 endif
-		endif
+               answer='E'
+            endif
+         endif
 c
 c  test the answer
 c
-		if (answer.eq.'C') then
+         if (answer.eq.'C') then
 c
 c  repeat of location
 c
-			 rp=.true.
-			 i_menu=1
+            rp=.true.
+            i_menu=1
 c
-		else if (answer.eq.'L' .and. endit) then
+         else if (answer.eq.'L' .and. endit) then
 c
 c  set flags
 c
-			 loc=.true.
-			 endit=.false.
-			 loc_write=.true.
-			 i_menu=2
+            loc=.true.
+            endit=.false.
+            loc_write=.true.
+            i_menu=2
 
-		else if (answer.eq.'P' .and.
-     >(endit .or. scan_depth .or.
-     >i0.eq.maxIter .or. rms_on_net .or. loc_write) ) then
+         else if (answer.eq.'P' .and.
+     >   (endit .or. scan_depth .or.
+     >   i0.eq.maxIter .or. rms_on_net .or. loc_write) ) then
 c
 c  set flag for printed results
 c
-			 prt=.true.
-			 i_menu=3
+            prt=.true.
+            i_menu=3
 
-		else if (answer .eq. 'E') then
+         else if (answer .eq. 'E') then
 c
 c  go to the next hypofile (if exist)
 c
-			 i_menu=4
-		else
+            i_menu=4
+         else
 c
 c  show menu
 c
-			 go to 10
-		endif
+            go to 10
+         endif
 
-		return
-		end
+         return
+      end subroutine dialog_2_1

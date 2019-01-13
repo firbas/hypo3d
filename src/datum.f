@@ -1,5 +1,5 @@
 c
-		subroutine datum (year,month,day,hour,minute,second)
+      subroutine datum (year,month,day,hour,minute,second)
 c
 c*****************************************************************************
 c
@@ -49,16 +49,16 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		integer year
-		integer month
-		integer day
-		integer hour
-		integer minute
-		integer second
+         integer year
+         integer month
+         integer day
+         integer hour
+         integer minute
+         integer second
 c
 c  local parameters  ...  none
 c
@@ -68,15 +68,15 @@ c
 c
 c  local variables
 c
-		integer sday                    !true no. of days in month
-		integer flag
+         integer sday                    !true no. of days in month
+         integer flag
 c
 c  global variables  ...  none
 c
 c
 c  functions
 c
-      integer days
+         integer days
 c
 c  *******************
 c  end of declarations
@@ -87,110 +87,110 @@ c
 c
 c  init. flag
 c
-      flag = 0
+         flag = 0
 c
 c  normalize seconds
 c
-      do while (second.ge.60)
-          second=second-60
-          minute=minute+1
-      end do
+         do while (second.ge.60)
+            second=second-60
+            minute=minute+1
+         end do
 c
-      do while (second.lt.0)
-          second=second+60
-          minute=minute-1
-      end do
+         do while (second.lt.0)
+            second=second+60
+            minute=minute-1
+         end do
 c
 c  normalize minutes
 c
-      do while (minute.ge.60)
-          minute=minute-60
-          hour=hour+1
-      end do
+         do while (minute.ge.60)
+            minute=minute-60
+            hour=hour+1
+         end do
 c
-      do while (minute.lt.0)
-          minute=minute+60
-          hour=hour-1
-      end do
+         do while (minute.lt.0)
+            minute=minute+60
+            hour=hour-1
+         end do
 c
 c  normalize hours
 c
-      do while (hour.ge.24)
-          hour=hour-24
-          day=day+1
-      end do
+         do while (hour.ge.24)
+            hour=hour-24
+            day=day+1
+         end do
 c
-      do while (hour.lt.0)
-          hour=hour+24
-          day=day-1
-      end do
+         do while (hour.lt.0)
+            hour=hour+24
+            day=day-1
+         end do
 c
 c  normalize days ... lower limit
 c
-      do while (day.lt.1)          !cycle for no. of days
-          month = month - 1
+         do while (day.lt.1)             !cycle for no. of days
+            month = month - 1
 c
 c  normalize months
 c
-          do while (month .lt. 1)      !cycle for month
-              month = month + 12
-              year = year - 1
-              if (year .lt. 0) then
+            do while (month .lt. 1)      !cycle for month
+               month = month + 12
+               year = year - 1
+               if (year .lt. 0) then
                   write (*,'("DATUM: Warning - year<0.")')
-              endif
-          end do
+               endif
+            end do
 c
-          do while (month .gt. 12)
-              month = month - 12
-              year = year + 1
-          end do
+            do while (month .gt. 12)
+               month = month - 12
+               year = year + 1
+            end do
 c
-          day = day + days(month,year)
-          flag = 1
-      end do
+            day = day + days(month,year)
+            flag = 1
+         end do
 c
 c  test on flag
 c
-      if (flag .eq. 1) then
+         if (flag .eq. 1) then
 c
 c  months are normalized
 c
-          go to 1
-      endif
+            go to 1
+         endif
 c
 c  normalize months
 c
-      do while (month .lt. 1)
-          month = month + 12
-          year = year - 1
-          if (year .lt. 0) then
-              write (*,'("DATUM: Warning - year<0.")')
-          endif
-      end do
+         do while (month .lt. 1)
+            month = month + 12
+            year = year - 1
+            if (year .lt. 0) then
+               write (*,'("DATUM: Warning - year<0.")')
+            endif
+         end do
 c
-      do while (month .gt. 12)
-          month = month - 12
-          year = year + 1
-      end do
+         do while (month .gt. 12)
+            month = month - 12
+            year = year + 1
+         end do
 c
-      sday = days(month,year)
+         sday = days(month,year)
 c
 c  normalize days ... upper limit
 c
-      do while (day .gt. sday)          !cycle for no. of days
-          day = day - sday
-          month = month + 1
-          sday = days(month,year)
+         do while (day .gt. sday)          !cycle for no. of days
+            day = day - sday
+            month = month + 1
+            sday = days(month,year)
 c
-          if (sday .eq. 0) then
-              month = month - 12
-              year = year + 1
-              sday = days(month,year)
-          endif
+            if (sday .eq. 0) then
+               month = month - 12
+               year = year + 1
+               sday = days(month,year)
+            endif
 c
-      end do
+         end do
 c
-1     continue
+1        continue
 c
-      return
-      end
+         return
+      end subroutine datum

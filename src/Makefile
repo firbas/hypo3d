@@ -1,7 +1,8 @@
 
 FC=gfortran
 
-FFLAGS=-g -O0 -Wall -Wtabs -c -ffixed-line-length-170 -fd-lines-as-comments
+#FFLAGS=-g -O0 -Wall -c -ffixed-line-length-170 -fd-lines-as-comments
+FFLAGS=-g -O0 -Wall -c -ffixed-line-length-120
 LDFLAGS=
 
 OBJ= trans.o    \

@@ -1,5 +1,5 @@
 c
-		subroutine dialog_1(dmin8)
+      subroutine dialog_1(dmin8)
 c
 c*****************************************************************************
 c
@@ -40,40 +40,40 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		real*8       dmin8
+         real*8       dmin8
 c
 c  local parameters  ...  none
 c
 c
 c  global parameters
 c
-      character*255      hypfn
-      character*255      modfn
-      common /hymofn/ hypfn,modfn
+         character*255      hypfn
+         character*255      modfn
+         common /hymofn/ hypfn,modfn
 
 c
-		include 'list.fi'
-		include 'pname.fi'
+         include 'list.fi'
+         include 'pname.fi'
 c
 c  local variables
 c
-		integer      year
-		integer      month
-		integer      day
-		integer      hour
-      integer      minute
+         integer      year
+         integer      month
+         integer      day
+         integer      hour
+         integer      minute
 c
 c  global variables
 c
-      real            x_start
-      real            y_start
-      real            z_start
-      real            ot_start
-      common /start/  x_start,y_start,z_start,ot_start
+         real            x_start
+         real            y_start
+         real            z_start
+         real            ot_start
+         common /start/  x_start,y_start,z_start,ot_start
 c
 c  functions  ...  none
 c
@@ -86,32 +86,34 @@ c=============================================================================
 c
 c  for scanned depth
 c
-      write (*,'(1x,a,": Scanned depth mode:")') prog_name
-      write (*,'(
+         write (*,'(1x,a,": Scanned depth mode:")') prog_name
+         write (*,'(
      >"------------------------------------------------------------",/,
      >" # iter.    x0        y0        z0        t0        rmsres  ",/,
      >"------------------------------------------------------------")')
-      write (lulist,'(1x,a,"   location ... scanned depth ",
+         write (lulist,'(1x,a,"   location ... scanned depth ",
      >"mode."/)') long_prog_name
 c
 c  decode datum
 c
-      call real8_to_int(dmin8,year,month,day,hour,minute)
+         call real8_to_int(dmin8,year,month,day,hour,minute)
 c
 c  write header
 c
-      write (lulist,'(" Name of used model        :",a)') modfn(1:lnblnk(modfn))
-      write (lulist,'(" Name of hypofile          :",a)') hypfn(1:lnblnk(hypfn))
-      write (lulist,'(" Minimal recorded arr. time:",
+         write (lulist,'(" Name of used model        :",a)')
+     >         modfn(1:lnblnk(modfn))
+         write (lulist,'(" Name of hypofile          :",a)') 
+     >         hypfn(1:lnblnk(hypfn))
+         write (lulist,'(" Minimal recorded arr. time:",
      >2(i2.2,"-"),i2.2,1x,i2.2,":",i2.2)') year,month,day,hour,minute
-      write (lulist,'(" Starting point (x,y,t)    :(",f8.2,",",f8.2,",",
+         write (lulist,'(" Starting point (x,y,t)    :(",f8.2,",",f8.2,",",
      >f8.2,")",/)') x_start,y_start,ot_start
-      write (lulist,'(
+         write (lulist,'(
      >" ------------------------------------------------------------",/,
      >"  # iter.    x0        y0        z0        t0        rmsres  ",/,
      >" ------------------------------------------------------------")')
 c
 c  return to main
 c
-      return
-      end
+         return
+      end subroutine dialog_1

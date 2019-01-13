@@ -1,5 +1,5 @@
 c
-		subroutine create_dbfile (namr)
+      subroutine create_dbfile (namr)
 c
 c*****************************************************************************
 c
@@ -28,33 +28,33 @@ c
 c  programmed:  87-05  01.00  mw
 c
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		character*255 namr
+         character*255 namr
 c
 c  local parameters
 c
-		integer      ludb
-		parameter (ludb=15)
+         integer      ludb
+         parameter (ludb=15)
 c
 c
-		integer      ios                    !error variable
-		character*255 NamrDb                 !namr of data base file
+         integer      ios                     !error variable
+         character*255 NamrDb                 !namr of data base file
 c
 c=============================================================================
 c
-	namrdb=namr
-      write(*,*) 'CREATE:  ', namrdb    
-      open (ludb,file=namrdb,status='UNKNOWN',iostat=ios)
+         namrdb=namr
+         write(*,*) 'CREATE:  ', namrdb
+         open (ludb,file=namrdb,status='UNKNOWN',iostat=ios)
 c
 c
-      call o_hy3(ludb)
+         call o_hy3(ludb)
 c
 c  close the data base file
 c
-      close (ludb,status='KEEP')
+         close (ludb,status='KEEP')
 c
-      return
-      end
+         return
+      end subroutine create_dbfile

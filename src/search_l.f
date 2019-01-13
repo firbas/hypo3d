@@ -1,5 +1,5 @@
 c
-		subroutine search_l(sl,nsl,sf,nsf)
+      subroutine search_l(sl,nsl,sf,nsf)
 c
 c*****************************************************************************
 c
@@ -45,14 +45,14 @@ c  ************
 c  declarations
 c  ************
 c
-		implicit none
+         implicit none
 c
 c  formal parameters
 c
-		real sl(100)                    !sl(1)
-		real sf
-		integer nsl
-		integer nsf
+         real sl(100)                    !sl(1)
+         real sf
+         integer nsl
+         integer nsf
 c
 c  local parameters  ...  none
 c
@@ -62,9 +62,9 @@ c
 c
 c  local variables
 c
-		integer n1
-		integer n2
-		integer np
+         integer n1
+         integer n2
+         integer np
 c
 c  global variables  ...  none
 c
@@ -78,39 +78,39 @@ c  *******************
 c
 c=============================================================================
 c
-		if (sf .le. sl(1)) then
+         if (sf .le. sl(1)) then
 c
 c  point is in the first layer
 c
-			 nsf = 1
-			 go to 10
-		endif
+            nsf = 1
+            go to 10
+         endif
 c
-		if (sf .gt. sl(nsl-1)) then
+         if (sf .gt. sl(nsl-1)) then
 c
 c  point is in the last layer
 c
-			 nsf = nsl
-			 go to 10
-		endif
+            nsf = nsl
+            go to 10
+         endif
 c
 c     search by the method of halved intervals
 c
 c     point on the interfaces between the layers belongs to layer
 c     with the less index
 c
-		n1 = 1
-		n2 = nsl
-		do while (n2-n1-1 .gt. 0)
-			 np = (n1 + n2) / 2
-			 if (sf .le. sl(np)) then
-			     n2 = np
-			 else
-			     n1 = np
-			 endif
-		end do
-		nsf = n2
+         n1 = 1
+         n2 = nsl
+         do while (n2-n1-1 .gt. 0)
+            np = (n1 + n2) / 2
+            if (sf .le. sl(np)) then
+               n2 = np
+            else
+               n1 = np
+            endif
+         end do
+         nsf = n2
 c
-10    continue
-		return
-		end
+10       continue
+         return
+      end subroutine search_l
