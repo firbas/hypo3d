@@ -1,4 +1,16 @@
-2018-12-02 pz v10.70
+2019-01-12 pz v10.71
+
+Station code by SEED convention - 5 characters.
+
+Corrections according warnings (unused variables, unused labels, 
+type conversion, dummy arg)
+Common Blocks inserted rather than included. Inserted and deleted: 
+min_shift.fi, radius.fi, stmod.fi, model_3d.fi, error.fi
+CB removed: /surf/, /point/, /ch_it1/, /ray/ 
+CB were removed from the main module: /sur/, /mag/, /ampli/, 
+/chrec/, /toa/, /chhyp/, /dat8/, /stnam/, /trace/, /nangl/
+========================================================================
+2018-12-15 pz v10.70
 
 Rms calculation on the grid if t0 is fixed.
 File: dialog_3.f, iter_1.f

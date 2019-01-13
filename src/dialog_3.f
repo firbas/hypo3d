@@ -25,16 +25,6 @@ c     call dialog_3
 c
 c----------------------------------------------------------------------------
 c
-c  external references:
-c
-c     CLEAR_DISPLAY       mw subroutine
-c     ABORT               mw subroutine
-c    (( REPAIR              mw subroutine)) option removed ! 96-09
-c     VALID_ARRIVAL       mw subroutine
-c     CASEFOLD            RL subroutine
-c
-c----------------------------------------------------------------------------
-c
 c  programmed:  87-07  01.00  mw
 c
 c*****************************************************************************
@@ -65,7 +55,6 @@ c
 		character*4  answer4
 		character*255 line
 		integer      i
-		integer      ios
 		integer      n_fix_coord
 c
 c  global variables

@@ -1,5 +1,6 @@
 c
-		subroutine spline_value (IN,R,ZD,NDER)
+		subroutine spline_value (IN,R,ZD)
+c		subroutine spline_value (IN,R,ZD,NDER)
 c
 c
 c  Parameter IN has in program HYPO3D value 0 ... input parameter
@@ -52,9 +53,9 @@ c mw
 11    ZD(1)= W(MWS)
 		RETURN
 12    write (*,'("Spline_value: Error - 1D surface.")')
-		call Abort
+		call abort
 13    write (*,'("Spline_value: Error - 1D surface.")')
-		call Abort
+		call abort
 14    CALL SURFBD(R(1),R(2),ZD(1),ZD(2),ZD(3),ZD(4),ZD(5),ZD(6),
      *            NX(IM),NY(IM),X(MXS),Y(MYS),W(MWS),
      *            VX(1,MXS),VY(1,MYS),SIGMA(IM))

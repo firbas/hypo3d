@@ -46,7 +46,6 @@ c
 c  external references:
 c
 c     VL                  mw subroutine
-c     ABORT               mw subroutine
 c
 c----------------------------------------------------------------------------
 c

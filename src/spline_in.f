@@ -6,7 +6,6 @@ c  written by lk
 c
 c
 		character*(*) namr
-		character*255 surfn
 		COMMON/SUR/ NX(7),NY(7),NXS(7),NYS(7),NWS(7),X(48),
      *            Y(48),W(1024),VX(5,48),VY(5,48),SIGMA(7)
 		COMMON/TEM/ TEMP(48,3)
@@ -15,7 +14,7 @@ C
 		open (lu1,file=namr,status='OLD',iostat=ios)
 C
 		if (ios.ne.0) then
-			 call Abort
+			 call abort
 		endif
 C
 		nm=0
@@ -27,7 +26,7 @@ C
 		IF(LU2.GT.0) WRITE(LU2,90)
 C
 		DO 21 IM=1,MM
-						 READ (LU1,91) NX(IM),NY(IM)
+		 READ (LU1,91) NX(IM),NY(IM)
 		IF(LU2.GT.0) WRITE(LU2,92) NX(IM),NY(IM)
 		IF (IM-1) 2,2,1
 1     NXS(IM)= NXS(IM-1)+NX(IM-1)
@@ -40,7 +39,7 @@ C
 		MY = NY(IM)
 C
 		J= MXS+MX-1
-						 READ (LU1,93) (X(I),I=MXS,J)
+		 READ (LU1,93) (X(I),I=MXS,J)
 		IF(LU2.GT.0) WRITE(LU2,94) (X(I),I=MXS,J)
 		J= MYS+MY-1
 						 READ (LU1,93) (Y(I),I=MYS,J)
@@ -65,15 +64,15 @@ C
 12    continue
 		write (*,
      >'("Spline_in: Error 1D surface /INTFD/.")')
-		call Abort
+		call abort
 13    continue
 		write (*,
      >'("Spline_in: Error 1D surface /INTFD/.")')
-		call Abort
+		call abort
 14    CALL SURFB1(MX,MY,X(MXS),Y(MYS),W(MWS),MX,W(MWS),
      *            VX(1,MXS),VY(1,MYS),TEMP,SIGMA(IM),IERR)
-19    IF(IERR.EQ.1) STOP 22
-20    IF(IERR.EQ.2) STOP 33
+      IF(IERR.EQ.1) STOP 22
+      IF(IERR.EQ.2) STOP 33
 21    CONTINUE
 c
 		close (lu1,status='KEEP')

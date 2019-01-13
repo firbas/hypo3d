@@ -1,5 +1,5 @@
 c
-		subroutine read_model(luhypo,lucrmod,surname)
+		subroutine read_model(lucrmod,surname)
 c
 c*****************************************************************************
 c
@@ -15,7 +15,6 @@ c-----------------------------------------------------------------------------
 c
 c  formal parameters:
 c
-c     integer       LUHYPO      ...  lu for hypofile                  I
 c     integer       LUCRMOD     ...  lu for crustal model file        I
 c     character*16  SURNAME     ...  name of surface file for this
 c                                    model                            O
@@ -24,13 +23,12 @@ c----------------------------------------------------------------------------
 c
 c  calling convention:
 c
-c     call read_model(luhypo,lucrmod,surname)
+c     call read_model(lucrmod,surname)
 c
 c----------------------------------------------------------------------------
 c
 c  external references:
 c
-c     ABORT               mw subroutine
 c     TRANS               mw subroutine
 c
 c----------------------------------------------------------------------------
@@ -52,7 +50,6 @@ c
 c  formal parameters
 c
 		integer         lucrmod
-		integer         luhypo
 		character*255    surname
 c
 c  local parameters
@@ -61,7 +58,6 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'error.fi'
 c
 c  local variables
 c
@@ -69,14 +65,9 @@ c
 		real            x_temp
 		real            y_temp
 		real            z_temp
-cc		integer         model_number
-cc		integer         len
-cc		integer         ierr
 		integer         ios
-cc		integer         nl
-		integer         i
+c		integer         i
 		integer         j
-cc		integer         k
 
 c parameter model_error,reading_error reading  
       character*81 line
@@ -84,6 +75,12 @@ c parameter model_error,reading_error reading
       integer      itep
 c
 c  global variables
+c
+      real         model_error            !estimated error of model
+                                          !in miliseconds
+      real         reading_error          !estimated reading error in ms
+                                          !(two sample intervals)
+      common /err/ model_error,reading_error
 c
       integer         nrec
       real            xstat(nStation)
@@ -93,13 +90,14 @@ c
       common /rec/    nrec,xstat,ystat,zstat,dly
 c
       integer         nstat
-      character*4     stat_name(nStation)
+      character*5     stat_name(nStation)
       common /stnam/  nstat,stat_name
 c
       real            nangle
       common /nangl/  nangle
-c	
-      double precision p_fi, p_x_shift, p_y_shift
+c
+      real             p_fi	
+      real             p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c	
 c  *******************
@@ -109,26 +107,26 @@ c
 	  read (lucrmod,*,iostat=ios) p_over_s
           if (ios.ne.0) then
    	      write (*,'(" ... Abort 666")')
-              call Abort
+              call abort
           endif
 	  write (*,*) p_over_s	  
 c local coordinates rotation to Krovak coordinates 	  
           read (lucrmod,*,iostat=ios) p_fi
           if (ios.ne.0) then
    	      write (*,'(" ... Abort 2")')
-              call Abort
+              call abort
           endif
 c	  
 c local coordinates origin at Krovak coordinates
 c
           read (lucrmod,*,iostat=ios) p_x_shift
           if (ios.ne.0) then
-              call Abort
+              call abort
           endif
 c	  
           read (lucrmod,*,iostat=ios) p_y_shift
           if (ios.ne.0) then
-              call Abort
+              call abort
           endif
 c
 c =============================================================
@@ -149,7 +147,7 @@ c Both parameters are entered in seconds.
           if (len_trim(line)==0) then
               write(*,*) 'Invalid model file.'//
      >       ' Empty line for model_error and reading_error parameter.'
-              call Abort
+              call abort
           else
               read (line,*,end=210, iostat=ios) 
      >             (t_errparam(itep),itep=1,2)
@@ -159,7 +157,7 @@ c Both parameters are entered in seconds.
           if (ios.ne.-1) then
           write(*,*) 'Error while loading model file, model_error'//
      >               ' or reading_error parameter.'
-          call Abort 
+          call abort 
           endif
           itep=1
 215       continue
@@ -182,7 +180,7 @@ c
 c
 c  wrong choice of model error value
 c
-              call Abort
+              call abort
           endif
 c
           if (model_error.lt.0.0) then
@@ -196,7 +194,7 @@ c  Read in value of angle between x-axis and north
 c
           read (lucrmod,*,iostat=ios) nangle
           if (ios.ne.0) then
-              call Abort
+              call abort
           endif
 c
 c  read in number of stations
@@ -209,7 +207,7 @@ c
           if(nstat.gt.nStation)then
               write (*,'(1x,a,": Too many stations. Max:",i3)')
      *        nStation
-              call Abort
+              call abort
           endif
 c
 c  continue
@@ -219,7 +217,7 @@ c
 c  label for error
 c
 50        continue
-          call Abort
+          call abort
 c
 c  read in station names
 c
@@ -235,7 +233,7 @@ c
 c  label for error
 c
 90            continue
-              call Abort
+              call abort
 c
 110           continue
 c
@@ -264,7 +262,7 @@ c
 c  label for error
 c
 115       continue
-          call Abort
+          call abort
 c
 120       continue
 c

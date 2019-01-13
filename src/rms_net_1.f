@@ -157,7 +157,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-      call spline_value (0,c_hypo1,vd,0)
+      call spline_value (0,c_hypo1,vd)
       zsurf=-vd(1)
 c
       if (z0.lt.zsurf) then

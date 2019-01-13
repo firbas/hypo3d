@@ -29,14 +29,6 @@ c     subroutine dialog_2 (endit,scan_depth,rms_on_net,rms_on_sphere)
 c
 c----------------------------------------------------------------------------
 c
-c  external references:
-c
-c     CLEAR_DISPLAY       mw subroutine
-c     ABORT               mw subroutine
-c     CASEFOLD            RL subroutine
-c
-c----------------------------------------------------------------------------
-c
 c  programmed:  87-06  01.00  mw
 c
 c*****************************************************************************

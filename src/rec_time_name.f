@@ -94,11 +94,11 @@ c		real    t0
 c
 c  global variables
 c
-		character*4     rec_name(nrec_max)
+		character*5     rec_name(nrec_max)
 		common /chhyp/  rec_name
 c
 		integer         nstat
-		character*4     stat_name(nrec_max)
+		character*5     stat_name(nrec_max)
 		common /stnam/  nstat,stat_name
 c
 		character*1     type    (nrec_max)

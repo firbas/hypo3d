@@ -118,7 +118,7 @@ c
       real*8          c(4,4)
       real*8          b(4)
       real*8          det
-      real            scale(4)
+      real*8          scale(4)
       common /it2/    c,b,det,scale
 c
       real            xstat (nStation)
@@ -282,9 +282,6 @@ c
 c
       if (.not.endit) then
 c
-d    write (lulist,'(/" Matrix C")')
-d    write (lulist,'(4f18.8)') c
-c
 c  scaled matrix C
 c
           do j=1,4
@@ -295,19 +292,11 @@ c
               scale(j)=sqrt(scale(j))
           end do
 c
-d        write (lulist,'(/" Scale factor")')
-d        write (lulist,'(4f18.8)') scale
-c
           do i=1,4
               do j=1,4
                   c(i,j)=c(i,j)/scale(j)
               end do
           end do
-c
-d         write (lulist,'(/" Matrix C - scaled")')
-d         write (lulist,'(4f18.8)') c
-d         write (lulist,'(/"Vector b")')
-d         write (lulist,'(4f18.8)') b
 c
       endif !  .not.endif
 c
@@ -315,12 +304,9 @@ c  matrix inversion
 c
       call minv(c,4,det,l4,m4)
 c
-d     write (lulist,'(/" Matrix C - inverted")')
-d     write (lulist,'(4(4f18.8,/))') c
-d     write (lulist,'(" Det = ",f18.8,/)') det
 c
       if (endit) then
-cc    if (.false.) then
+c
           if (c1(10).lt.1.e-07 .or. det.eq.0.0) then
 c
 c  no error estimation

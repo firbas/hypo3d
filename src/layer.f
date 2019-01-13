@@ -1,5 +1,6 @@
 c
-		subroutine layer(xst,yst,zst)
+		subroutine layer(zst)
+c		subroutine layer(xst,yst,zst)
 c
 c*****************************************************************************
 c
@@ -46,8 +47,8 @@ c
 c
 c  formal parameters
 c
-		real xst
-		real yst
+c		real xst
+c		real yst
 		real zst
 c
 c  local parameters  ...  none

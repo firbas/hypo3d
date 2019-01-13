@@ -67,7 +67,7 @@ C
 C        GENERATE IDENTITY MATRIX
 C
 c mw    5 RANGE=1.0E-6
-    5 range=1.0d-12
+      range=1.0d-12
       IF(MV-1) 10,25,10
    10 IQ=-N
       DO 20 J=1,N
@@ -107,20 +107,20 @@ C
       LQ=(L*L-L)/2
       LM=L+MQ
 cc   62 IF( ABS(A(LM))-THR) 130,65,65
-   62 IF( dABS(A(LM))-THR) 130,65,65
+      IF( dABS(A(LM))-THR) 130,65,65
    65 IND=1
       LL=L+LQ
       MM=M+MQ
       X=0.5*(A(LL)-A(MM))
 cc   68 Y=-A(LM)/ SQRT(A(LM)*A(LM)+X*X)
-   68 Y=-A(LM)/ dSQRT(A(LM)*A(LM)+X*X)
+      Y=-A(LM)/ dSQRT(A(LM)*A(LM)+X*X)
       IF(X) 70,75,75
    70 Y=-Y
 cc   75 SINX=Y/ SQRT(2.0*(1.0+( SQRT(1.0-Y*Y))))
    75 SINX=Y/ dSQRT(2.0*(1.0+( dSQRT(1.0-Y*Y))))
       SINX2=SINX*SINX
 cc   78 COSX= SQRT(1.0-SINX2)
-   78 COSX= dSQRT(1.0-SINX2)
+      COSX= dSQRT(1.0-SINX2)
       COSX2=COSX*COSX
       SINCS =SINX*COSX
 C

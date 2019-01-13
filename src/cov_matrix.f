@@ -55,14 +55,14 @@ c
 c  local variables
 c
 		integer         i,j,k,l,m
-		real            sum4_co
+		real*8          sum8_co
 c
 c  global variables
 c
 		real*8          c(4,4)     !Hessian matrix resp. inv. Hess. m.
 		real*8          b(4)        !vector of right side
 		real*8          det          !determinant of matrix c
-		real            scale(4)      !scale vector for Hessian matrix
+		real*8          scale(4)      !scale vector for Hessian matrix
 		common /it2/    c,b,det,scale
 c
 		real            co(4,4)
@@ -100,18 +100,18 @@ c
       do i=1,4
           do m=1,4
 c
-              sum4_co=0.0
+              sum8_co=0.0
               do l=1,nrec
                   do j=1,4
                       do k=1,4
-                          sum4_co=sum4_co+c(i,j)*xc(j,l)*wt(l)
+                          sum8_co=sum8_co+c(i,j)*xc(j,l)*wt(l)
      >                            *wt(l)*xc(k,l)*c(m,k)
                       end do  !k
                   end do      !j
               end do          !l
 c
 c  element i,m of cov. matrix
-              co(i,m)=sum4_co/(avwt*avwt)
+              co(i,m)=real(sum8_co/(avwt*avwt),4)
           end do  !m
       end do      !i
 c
@@ -121,18 +121,18 @@ c
       do i=1,4
           do m=1,4
 c
-              sum4_co=0.0
+              sum8_co=0.0
               do l=1,nrec
                   do j=1,4
                       do k=1,4
-                          sum4_co=sum4_co+c(i,j)*xc(j,l)
+                          sum8_co=sum8_co+c(i,j)*xc(j,l)
      >                            *wt(l)*xc(k,l)*c(m,k)
                       end do  !k
                   end do      !j
               end do          !l
 c
 c  element i,m of cov. matrix
-              co(i,m)=sum4_co*rmsres_co
+              co(i,m)=real(sum8_co*rmsres_co,4)
           end do  !m
       end do      !i
 c

@@ -61,12 +61,10 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'error.fi'
 c
 c  local variables
 c
       character*22  whole_date
-      integer it1,it2
       integer itime(5)
 	integer ita(9)
 	integer stime
@@ -97,6 +95,12 @@ c
       real    meridian_con
 c
 c  global variables
+c
+      real         model_error            !estimated error of model
+                                          !in miliseconds
+      real         reading_error          !estimated reading error in ms
+                                          !(two sample intervals)
+      common /err/ model_error,reading_error
 c
       integer             key(nrec_max)   !key field
       common /stmod/      key
@@ -143,7 +147,7 @@ c
       real                avwt,sumw,sumw2
       common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
-      character*4         rec_name(nrec_max)
+      character*5         rec_name(nrec_max)
       common /chhyp/      rec_name
 c
       real                tcal(nrec_max)
@@ -192,7 +196,8 @@ c
       real            nangle
       common /nangl/  nangle
 
-      double precision p_fi, p_x_shift, p_y_shift
+      real             p_fi
+      real             p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c
       real                wt1(nrec_max)
@@ -276,7 +281,7 @@ c
 c theta is the angle from x-axis to the semi-major axis of the error ellipse
 c
 c local coordinates
-		 theta = theta*RAD2DEG
+		 theta = real(theta*RAD2DEG,4)
 c l1 is major axis
                  if (l2 .gt. l1 .and. l2 .ne. 999.99 ) then
                     tl=l1
@@ -301,8 +306,8 @@ c  rotation of the diagonal elements in the co matrix from local to Krovak
 !           if (.not.fix_x .and. .not.fix_y) then
               c=dcos(p_fi*DEG2RAD)
               s=dsin(p_fi*DEG2RAD)
-              dxer=c*c*co(1,1)-s*c*co(1,2)-s*c*co(2,1)+s*s*co(2,2)
-              dyer=s*s*co(1,1)+s*c*co(1,2)+s*c*co(2,1)+c*c*co(2,2)
+              dxer=real(c*c*co(1,1)-s*c*co(1,2)-s*c*co(2,1)+s*s*co(2,2),4)
+              dyer=real(s*s*co(1,1)+s*c*co(1,2)+s*c*co(2,1)+c*c*co(2,2),4)
               dxer=sqrt(abs(dxer))
               dyer=sqrt(abs(dyer))
 !           endif      ! fix
@@ -338,7 +343,7 @@ c
 c  az(i) ... angle between x-axis and recorder to source direction minus
 c             angle between x-axis and north
 c
-                         temp2=atan2(dy,dx)*RAD2DEG
+                         temp2=real(atan2(dy,dx)*RAD2DEG,4)
 c			 az(i) = mod(720.0-nangle+temp2,360.0)
 			 az(i) = mod(720.0+temp2-180.0-meridian_con+p_fi,360.0)
 c
@@ -364,17 +369,17 @@ c
 c --------------------------------------------------------------------
 c provedeme transformaci data do tvaru rr-mm-dd  hh:mm:ss.ss
 c
-		isec=t_orig
-		msec=(t_orig-isec)*1000.
+		isec=int(t_orig)
+		msec=int((t_orig-isec)*1000.0)
 		write (whole_date,
      >'(2(i2.2,"-"),i2.2,2x,2(i2.2,":"),i2.2,".",i3.3)')
      >year_orig,month_orig,day_orig,hour_orig,minute_orig,isec,msec
 c
 c --------------------------------------------------------------------
 c
-c	label 10 - regular output to dbfile begins ###
+c regular output to dbfile begins ###
 c
-10    continue
+
       write (lulist,'("program       :",a)') prog_name1//prog_name2
       write (lulist,'("model         :",a)') modfn(1:lnblnk(modfn))
       if (hyr) then
@@ -483,11 +488,11 @@ c
 c
        endif     ! hyr
 c
- 916      format (a4,' ',a1,'|',
+ 916      format (a5,' ',a1,'|',
      >    f7.2,   '|',f7.2,   '|',f5.3,'|',1pe9.2,'|',0pf4.1,
      >    '|',i1,'|',0pf5.1,'|',0pf5.1,
      >    '|',i3,'|',i3,'|',f4.1)
- 917      format (a4,' ',a1,'|',
+ 917      format (a5,' ',a1,'|',
      >    f7.2,   '|',f7.2,   '|',f5.3,'|',1pe9.2,'|',0pf4.1,
      >    '|',i5,'|',0pf5.1,'|',0pf5.1,
      >    '|',i3,'|',i3,'|',f4.1)
@@ -519,8 +524,6 @@ c
 c     *"              theta   :",3x,f6.1," deg (to grid)",
 c     >                          3x,"(azimuth:",f6.1," deg)")
 
-c
-20    continue
 c
       return
       end

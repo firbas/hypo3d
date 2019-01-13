@@ -1,5 +1,0 @@
-      real         model_error            !estimated error of model
-                                          !in miliseconds
-      real         reading_error          !estimated reading error in ms
-                                          !(two sample intervals)
-      common /err/ model_error,reading_error

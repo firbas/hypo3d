@@ -53,8 +53,9 @@ c  local parameters  ...  none
 c
 c
 c  global parameters
-c
-      double precision p_fi, p_x_shift, p_y_shift
+c 
+      real p_fi
+      real p_x_shift, p_y_shift
       common /p_posun/ p_fi, p_x_shift, p_y_shift
 c		
 		include 'pname.fi'
@@ -104,8 +105,9 @@ c
 c
 	endif
 c
-	x1=x_nova
-	x2=y_nova
+	x1=real(x_nova,4)
+	x2=real(y_nova,4)
+        x3=x3
 c	
 	return
 	end

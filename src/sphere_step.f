@@ -28,13 +28,6 @@ c     call sphere_step (i0,rmsres,endit,t0_norm)
 c
 c----------------------------------------------------------------------------
 c
-c  external references:
-c
-c     CLEAR_DISPLAY       mw subroutine
-c     TRANS               mw subroutine
-c
-c----------------------------------------------------------------------------
-c
 c  programmed:  87-06  01.00  mw
 c
 c*****************************************************************************
@@ -53,14 +46,16 @@ c
 		real    rmsres
 		logical t0_norm
 c
-c  local parameters
-c
-c		character*1 esc
-c		parameter (esc = char(27))
-c
 c  global parameters
 c
-		include 'radius.fi'
+      real       sphere_radius            !radius of sphere (centered on
+                                          !hypocenter) on which rms of res.
+                                          !will be computed (in kilometers)
+      parameter (sphere_radius=1.0)
+  
+      real    half_side                   !half of side of cube in sphere
+      parameter (half_side=sphere_radius/1.73205)
+
 		include 'list.fi'
 		include 'pname.fi'
 c
@@ -77,9 +72,6 @@ c
       real           rms_orig
       integer        no_iter_orig
       common /org/   x_orig,y_orig,z_orig,rms_orig, no_iter_orig
-c
-      real           s_point(10)
-      common /point/ s_point
 c
       integer             year_orig
       integer             month_orig
@@ -98,7 +90,11 @@ c
 		real    t0
 		common /otime/      year,month,day,hour,minute,t0
 c
-c  functions  ...  none
+c  static variable     
+c
+      real           s_point(10)
+c     common /point/ s_point
+      save s_point
 c
 c
 c  *******************

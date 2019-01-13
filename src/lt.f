@@ -52,7 +52,7 @@ c
 		real zpr((x_layer-1)+(y_layer-1)+(z_layer-1))
 		real dist((x_layer-1)+(y_layer-1)+(z_layer-1))
 
-		common/model_3D/ v3
+		common/model_3d/ v3
 		common/layers/ nxl,xl,nyl,yl,nzl,zl
 
 c
@@ -77,7 +77,7 @@ c
 c  first point is in the air ... error
 c
               write (*,'(" LT: Error ... velocity=0.3!")')
-			     call Abort
+			     call abort
           endif
           return
       endif

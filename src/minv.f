@@ -67,8 +67,8 @@ C
       IZ=N*(J-1)
       DO 20 I=K,N
       IJ=IZ+I
-cc   10 IF( ABS(BIGA)- ABS(A(IJ))) 15,20,20
-   10 IF( DABS(BIGA)- DABS(A(IJ))) 15,20,20
+
+      IF( DABS(BIGA)- DABS(A(IJ))) 15,20,20
    15 BIGA=A(IJ)
       L(K)=I
       M(K)=J

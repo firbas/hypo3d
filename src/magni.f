@@ -48,7 +48,7 @@ c
 c
 c  local parameters  ...  none
 c
-		integer     min_distance
+		real       min_distance
 		parameter (min_distance = 5.0)      !if hypocentral distance is less
 														!then min_distance then magnitude
 														!will be not evaluated
@@ -92,7 +92,7 @@ c
       real            xmag(nrec_max)
       common /mag/    xmag,avm,sdm
 c
-      character*4     rec_name(nrec_max)
+      character*5     rec_name(nrec_max)
       common /chhyp/  rec_name
 c
 c  functions  ...  none

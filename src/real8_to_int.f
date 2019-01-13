@@ -80,23 +80,23 @@ c
 c
 c  first two nonzero numbers ... year
 c
-		int1=real8/1.d08
+		int1=int(real8/1.d08)
 c
 c  number 3 to 4 ... month
 c
-		int2=(real8-int1*1.d08)/1.d06
+		int2=int((real8-int1*1.d08)/1.d06)
 c
 c  number 5 to 6 ... day
 c
-		int3=(real8-int1*1.d08-int2*1.d06)/1.d04
+		int3=int((real8-int1*1.d08-int2*1.d06)/1.d04)
 c
 c  number 7 to 8 ... hour
 c
-		int4=(real8-int1*1.d08-int2*1.d06-int3*1.d04)/1.d02
+		int4=int((real8-int1*1.d08-int2*1.d06-int3*1.d04)/1.d02)
 c
 c  number 9 to 10 ... minute
 c
-		int5=real8-int1*1.d08-int2*1.d06-int3*1.d04-int4*1.d02
+		int5=int(real8-int1*1.d08-int2*1.d06-int3*1.d04-int4*1.d02)
 c
 		return
 		end

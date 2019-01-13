@@ -1,2 +1,0 @@
-      integer             key(nrec_max)   !key field
-      common /stmod/      key

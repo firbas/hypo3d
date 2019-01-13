@@ -1,3 +1,15 @@
+
+      logical function isAZ09(c)
+      implicit none
+      character*1 c
+
+      character*36 AZ09
+      data AZ09 /'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+
+      isAZ09 = index(AZ09,c).ne.0
+      return
+      end
+
 c
 		subroutine I_HYP_MOD
 c
@@ -27,7 +39,6 @@ c----------------------------------------------------------------------------
 c
 c  external references:
 c
-c     ABORT               mw subroutine
 c     READ_MODEL          pz subroutine
 c     lnblnk              RL subroutine
 c     SPLINE_IN           spline subroutine
@@ -60,7 +71,6 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'model_3d.fi'
 c
 c  local variables
 c
@@ -70,7 +80,7 @@ c
 		integer     np
 		integer     i
 		integer     j
-		integer     iwt
+c		integer     iwt
 		integer     isign
 		integer     ios
       integer     micros
@@ -83,18 +93,23 @@ c
       integer     year
       real        ampcon
       real        period
-      character*1  answer
       character*255 line
+      integer     iline
       character*255 surname
 
       real   pwt, mwt
 c
 c  global variables
-c
-		integer             nx(7),ny(7),nxs(7),nys(7),nws(7)
-		real                x(48),y(48),w(1024)
-		real                vx(5,48),vy(5,48),sigma(7)
-		common /sur/        nx,ny,nxs,nys,nws,x,y,w,vx,vy,sigma
+      real                v3(x_layer,y_layer,z_layer)
+      common /model_3d/   v3
+c 
+      real                xl(x_layer-1)
+      real                yl(y_layer-1)
+      real                zl(z_layer-1)
+      integer             nxl
+      integer             nyl
+      integer             nzl
+      common /layers/     nxl,xl,nyl,yl,nzl,zl
 c
 		integer             nrec
 		real                xstat(nStation)
@@ -115,10 +130,6 @@ c
 		real                freq(nrec_max)
 		common /ampli/      amp,freq
 c
-		integer             nstat
-		character*4         stat_name(nStation)
-		common /stnam/      nstat,stat_name
-c
 		real*8              datum8(nrec_max)
 		integer             ichan (nrec_max)
 		common /dat8/       datum8,ichan
@@ -132,7 +143,7 @@ c
 		real                wt1(nrec_max)
 		common /wt_1/       wt1
 c
-		character*4         rec_name(nrec_max)
+		character*5         rec_name(nrec_max)
 		common /chhyp/      rec_name
 c
 	character*255      hypfn
@@ -142,7 +153,7 @@ c
 c  functions
 c
 		integer             lnblnk
-cc		logical             IfBrk
+		logical             isAZ09
 c
 c  *******************
 c  end of declarations
@@ -172,12 +183,12 @@ c  open crustal model file
 c
          open (lucrmod,file=modfn,iostat=ios,status='OLD')
           if (ios.ne.0) then
-              call Abort
+              call abort
           endif
 c
 c  read crustal model file, read in station data
 c
-		call read_model(luhypo,lucrmod,surname)
+		call read_model(lucrmod,surname)
 c
 c  initialize spline common for surface computing
 c
@@ -303,15 +314,32 @@ c
 			     call EXIT(0)
 			 endif
 c
+c decode read in line: station name
+      iline = 1
+      do while (line(iline:iline) .eq. ' ')
+        iline = iline + 1
+      end do
+      if (.not. isAZ09(line(iline:iline))) go to 81
+      do while (isAZ09(line(iline:iline)))
+        iline = iline + 1
+      end do
+      rec_name(i) = line(1:iline-1)
+      do while (index('PS',line(iline:iline)) .eq. 0)
+        iline = iline + 1
+      end do
+      type(i) = line(iline:iline)
+      iline = iline + 1
+      write(*,*) rec_name(i),' ',type(i)
+
 c  decode read in line: chars 1 to 6 are station name(4chars), one arbitrary
 c  character and type of arrival(1char)
 c
-			 read (line(1:6),'(a4,1x,a1)',iostat=ios,err=86,end=86)
-     >             rec_name(i),type(i)
+c			 read (line(1:6),'(a4,1x,a1)',iostat=ios,err=86,end=86)
+c     >             rec_name(i),type(i)
 c
 c  characters 7 to end of line are next data for arrival in free format
 c
-			 read (line(7:),*,iostat=ios,err=86,end=86)
+			 read (line(iline:),*,iostat=ios,err=86,end=86)
      >    ichan(i),year,month,day,hour,minute,isec,msec,micros,
      >    pwt,ampcon,isign,amp(i),period
 c
@@ -348,7 +376,9 @@ c
 c  code recorded time
 c
 			 trec(i) = (isec * 1000. + msec)*1e-3
-		end do
+
+81    continue
+		end do    
 c
 c  part for error in reading of hypofile
 c
@@ -381,9 +411,9 @@ c compute weights
                 avwt = 0.0
 		do i=1,nrec
                   pwt = wt1(i)
+                  if (hyr) then 
 c Inverse-variance weighing
 c weights refer (are proportional) to the standard deviation
-                  if (hyr) then 
                     if (pwt .gt. 0) then 
                          pwt = pwt/1000.0
                          pwt = 1. / pwt
@@ -431,8 +461,6 @@ c
 			 write (*,'(1x,a," : Warning ... no P_arrival.")')
      >    prog_name
 		endif
-c
-999   continue
 c
 		return
 		end

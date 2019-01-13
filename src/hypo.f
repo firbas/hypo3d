@@ -38,28 +38,32 @@ c
 
 c  global parameters
 c
-		include 'min_shift.fi'
-		include 'error.fi'
+
+      real    min_shift_epi               !minimum shift in epicenter coord.
+      real    min_shift_depth             !minimum shift in depth
+  
+      parameter (min_shift_epi  =0.005)
+      parameter (min_shift_depth=0.010)
 		include 'param.fi'
 		include 'pname.fi'
 		include 'list.fi'
-		include 'model_3d.fi'
 c
 c  local variables
 c
 		logical loc_write                   !locfile was written in menu block?
-		logical rms_on_sphere               !compute rms on sphere centered
-														!on hypocenter
+		logical rms_on_sphere               !compute rms on sphere centered on hypocenter
 		logical prt                         !printed?
 		logical rp                          !repeat location flag
 		real*8  dmin8                       !reference time in double real
 		real    absd                        !last shift of hypocenter
 		real    best_x0,best_y0,best_z0,best_t0
-														!auxiliary var.
+		character*1     old_it          !symbol for iteration with rms
+						!of res greater then previous succ.
+						!iteration
 		real    c_hypo1(3)                  !epicenter local coordinates
 		real    bx0, by0, bz0 !, bt0          !values of succesful iteration
 		real    rmsresp                     !previous rms of residuals
-		real    sum4                        !summa in real*4
+		real*8  sum8                        !summa in real*8
 		real    xp,yp,zp                    !auxiliary variables
 		real    d(4)                        !shift vector
 		real    zsurf                       !value of fix_surface
@@ -70,19 +74,20 @@ c
 		integer ios                         !error variable
 		integer n_recomp_it                 !number of recomputing of iter.
 		integer i,j                         !aux. var.
-		character*1 answer                  !      -"-      for input
-		character*64 cwd		!VD -current working directory	
+
+		integer string_length
+		character*255 string, hyponame, hyp3name
+		character*255 ch_model_name   !name of crustal model
 
 c
 c  global variables ... common blocks
 c
-c
-c  common for spline subroutines
-c
-		integer             nx,ny,nxs,nys,nws
-		real                x,y,w,vx,vy,sigma
-		common /sur/        nx(7),ny(7),nxs(7),nys(7),nws(7),x(48),
-     >                    y(48),w(1024),vx(5,48),vy(5,48),sigma(7)
+      real         model_error            !estimated error of model
+                                          !in miliseconds
+      real         reading_error          !estimated reading error in ms
+                                          !(two sample intervals)
+      common /err/ model_error,reading_error
+ 
 c
 c  common for space and rms data of hypocenter
 c
@@ -93,20 +98,8 @@ c
 c
 c  common for damping factor
 c
-		real*8         sigma1(4)
-		common /sigm/  sigma1
-c
-c  common for rms_on_sphere points
-c
-		real           s_point(10)
-		common /point/ s_point
-c
-c  common for magnitude data
-c
-		real            avm             !average magnitude
-		real            sdm             !std. dev. of magnitude
-                real            xmag(nrec_max)
-                common /mag/    xmag,avm,sdm
+		real*8         sigma(4)
+		common /sigm/  sigma
 c
 c  common for time data
 c
@@ -129,12 +122,6 @@ c
 		common /origin/     year_orig,month_orig,day_orig,hour_orig,
      >                    minute_orig,t_orig
 c
-c  common for data from hypofile (amplitudes, frequencies)
-c
-		real                amp(nrec_max)   !array of amplitudes
-		real                freq(nrec_max)  !array of frequencies
-		common /ampli/      amp,freq
-c
 c  common for coord. of trial hypocenter
 c
 		real                x0,y0,z0        !coord. of trial hypocenter
@@ -156,21 +143,11 @@ c
 		real                dly(nStation)   !stations delays for surf. events
 		common /rec/        nrec,xstat,ystat,zstat,dly
 c
-c  common for types of arrivals
-c
-		character*1         type(nrec_max)  !type of arrival
-		common /chrec/      type
-c
 c  common for evaluated beam data (travel time and its derivatives)
 c
 		real                tcal(nrec_max)  !calc. travel times
 		real                xc(4,nrec_max)  !travel time derivatives
 		common /cal_time/   tcal,xc
-c
-c  common for take off angles
-c
-		real                toa(nrec_max)   !take-off angles
-		common /toa/        toa
 c
 c  common for flags of fixed depth (fixed surface, fixed depth), no. of it.
 c
@@ -188,28 +165,6 @@ c
                 real                sumw,sumw2
 		common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
 c
-c  common of hypofile items ... character part
-c
-		character*4         rec_name(nrec_max) !name of recording site
-		common /chhyp/      rec_name
-c
-c  include file for common with station models (for HYPO1D) resp. only array
-c  of keys (for HYPO3D)
-c
-      include 'stmod.fi'
-c
-c  common for date items, numbers of channels
-c
-		real*8              datum8(nrec_max)!whole date of arrival
-		integer             ichan(nrec_max) !no. of channel
-		common /dat8/       datum8,ichan
-c
-c  common for station names, no. of stations
-c
-		integer             nstat           !no. of stations
-		character*4         stat_name(nStation) !name of station
-		common /stnam/      nstat,stat_name
-c
 c  common for subprogram iteration_1 ... noncharacter part
 c
 		real            c_hypo(3)           !coord. of hypocenter
@@ -218,19 +173,12 @@ c
 		logical         endit               !end of iteration process?
 		common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
 c
-c  common for subprogram iteration_1 ... character part
-c
-		character*1     old_it          !symbol for iteration with rms
-						!of res greater then previous succ.
-						!iteration
-		common /ch_it1/ old_it
-c
 c  common for subprogram iteration_2
 c
 		real*8          c(4,4)              !Hessian matrix resp. inv. Hess. m.
 		real*8          b(4)                !vector of right side
 		real*8          det                 !determinant of matrix c
-		real            scale(4)            !scale vector for Hessian matrix
+		real*8          scale(4)            !scale vector for Hessian matrix
 		common /it2/    c,b,det,scale
 c
 c  common for scan depth mode
@@ -297,22 +245,10 @@ c
 		logical        w_changes
 		common /ernam/ err_stname,w_changes
 c
-c  common for arrays for travel time evaluating
-c
-		real            tid(z_layer,z_layer)
-		real            did(z_layer,z_layer)
-		common /trace/  tid,did
-c
 c  common for flag for locfile writting
 c
 		logical       loc                   !was written locfile?
 		common /wloc/ loc
-c
-c  common for angle between x-axis and north
-c
-c
-		real            nangle
-		common /nangl/  nangle
 c
 c	common for file names - VD
 c
@@ -321,17 +257,14 @@ c
 		common /hymofn/	hypfn,modfn
 c  functions
 c
-		integer iargc, lnblnk, getcwd, status,string_length
-		integer index
-		character*255 string,hyponame, hyp3name
-		character*255 ch_model_name   !name of crustal model
+		integer iargc, lnblnk
 c
 c common for ray profile coordinates
 c
-		integer n_poi
-		real poi(2*z_layer)
-		real z_coor(2*z_layer)
-      common  /ray/ n_poi, poi, z_coor
+c		integer n_poi
+c		real poi(2*z_layer)
+c		real z_coor(2*z_layer)
+c      common  /ray/ n_poi, poi, z_coor
 c
 
 c  *******************
@@ -346,7 +279,6 @@ c
 c  initialization of model_error variable (and other variables -VD)
 c
       model_error=-1.0
-	status=getcwd(cwd)
 	ch_model_name=' '
 	hyponame=' '
 	hyp3name=' '
@@ -432,7 +364,7 @@ c
 c  init. # of location
 c
 		n_of_location=0
-10    continue
+
 c
 c  increment number of locations
 c
@@ -503,7 +435,7 @@ c
 c
 c  fatal situation in original hypofile
 c
-			     call Abort
+			     call abort
 c
 		else if (no_valid_arrivals.eq.3 .and. .not.fix_depth
      >       .and. .not.fix_surface  .and. .not.scan_depth
@@ -529,7 +461,7 @@ c
 c
 c  end of program
 c
-			 call Abort
+			 call abort
 c
 125       continue
 c
@@ -567,7 +499,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-		call spline_value (0,c_hypo1,vd,0)
+		call spline_value (0,c_hypo1,vd)
 		zsurf=-vd(1)
 c
 c  test whether given start point isn't above the surface
@@ -658,7 +590,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-			 call spline_value (0,c_hypo1,vd,0)
+			 call spline_value (0,c_hypo1,vd)
 			 zsurf=-vd(1)
 c
 c  test on point in air
@@ -745,7 +677,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-			     call spline_value (0,c_hypo1,vd,0)
+			     call spline_value (0,c_hypo1,vd)
 			     zsurf=-vd(1)
 c
 c  test on trial hypocenter in air
@@ -936,7 +868,7 @@ c
 c
 c  test on damping in the last iteration
 c
-			     if (sigma1(1).gt.0) then
+			     if (sigma(1).gt.0) then
 						rmsres_co=9.99**2
 			     else
 c
@@ -963,14 +895,14 @@ c
 c  compute adjustment vector
 c
 			 do i=1,4
-			     sum4=0.0
+			     sum8=0.0
 			     do j=1,4
-						sum4=sum4+c(i,j)*b(j)
+						sum8=sum8+c(i,j)*b(j)
 			     end do
 c
 c  for scaled matrix C
 c
-			     d(i)=sum4/scale(i)
+			     d(i)=real(sum8/scale(i),4)
 			 end do
 		endif
 c
@@ -999,7 +931,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-		call spline_value (0,c_hypo1,vd,0)
+		call spline_value (0,c_hypo1,vd)
 		zsurf=-vd(1)
 c
 c  test on hypocenter in air

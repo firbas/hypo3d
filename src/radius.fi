@@ -1,7 +1,0 @@
-      real       sphere_radius            !radius of sphere (centered on
-                                          !hypocenter) on which rms of res.
-                                          !will be computed (in kilometers)
-      parameter (sphere_radius=1.0)
-  
-      real    half_side                   !half of side of cube in sphere
-      parameter (half_side=sphere_radius/1.73205)

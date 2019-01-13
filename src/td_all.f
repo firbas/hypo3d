@@ -54,7 +54,6 @@ c
 c  global parameters
 c
 		include 'param.fi'
-      include 'list.fi'
 c
 c  local variables
 c
@@ -125,15 +124,12 @@ c
               c_hypo(3)=temp
   
               exchange=.true.
-  
-D     WRITE (LULIST,*) 'EXCHANGE IN COORDINATES'
-  
           endif
 c
 c  initialisation of layer system for this station
 c  z-axis is downward  ...  in subroutine layer is upward (according model)
 c
-          call layer((xstat(key(i))),(ystat(key(i))),(-zstat(key(i))))
+          call layer(-zstat(key(i)))
 c
 c  calculate average velocities for this configuration of station, hypocenter
 c  and layers

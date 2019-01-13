@@ -35,14 +35,6 @@ c                            loc_write,rp,i_menu)
 c
 c----------------------------------------------------------------------------
 c
-c  external references:
-c
-c     CLEAR_DISPLAY       mw subroutine
-c     ABORT               mw subroutine
-c     CASEFOLD            RL subroutine
-c
-c----------------------------------------------------------------------------
-c
 c  programmed:  87-04  01.00  mw
 c
 c*****************************************************************************

@@ -53,7 +53,6 @@ c  global parameters
 c
 		include 'param.fi'
 		include 'pname.fi'
-		include 'error.fi'
 c
 c  local variables
 c
@@ -66,6 +65,12 @@ c
       real*8          sum8
 c
 c  global variables
+c
+      real         model_error            !estimated error of model
+                                          !in miliseconds
+      real         reading_error          !estimated reading error in ms
+                                          !(two sample intervals)
+      common /err/ model_error,reading_error
 c
       real              tcal(nrec_max)
       real              xc  (4,nrec_max)
@@ -168,7 +173,7 @@ c
               sum8=sum8+(trec(i)-tcal(i)-coef*delay)*wt(i)
           end do
 c
-          t0=sum8/no_valid_arrivals
+          t0=real(sum8/no_valid_arrivals,4)
           t0_norm = .false.
       endif
 c

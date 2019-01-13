@@ -1,5 +1,0 @@
-      real    min_shift_epi               !minimum shift in epicenter coord.
-      real    min_shift_depth             !minimum shift in depth
-  
-      parameter (min_shift_epi  =0.005)
-      parameter (min_shift_depth=0.010)

@@ -55,8 +55,6 @@ c
 c  include files ... global constants, variables
 c
 		include 'param.fi'
-		include 'list.fi'
-c		include 'term.fi'
 c
 c  input parameters
 c
@@ -98,12 +96,12 @@ cc		real srt
 		real u
 		real u1
 c
-c common for ray profile coordinates
 c
 		integer n_poi
 		real poi(2*z_layer)
 		real z_coor(2*z_layer)
-      common  /ray/ n_poi, poi, z_coor
+cc common for ray profile coordinates
+c      common  /ray/ n_poi, poi, z_coor
 c
 		real x_sour1,y_sour1
 		real x_sour2,y_sour2
