@@ -224,7 +224,7 @@ c  set flag for error in station names
 c
                err_stname=.true.
 c
-               write (*,'(1x,a,": Error - station ",a4,
+               write (*,'(1x,a,": Error - station ",a5,
      >        " not found in station list -> will be ignored.")')
      >         prog_name,rec_name(j)
 c

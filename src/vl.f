@@ -15,23 +15,18 @@ c
          include 'param.fi'
 c
          real v3(x_layer,y_layer,z_layer)
-         common/model_3d/ v3
+         common /model_3d/ v3
 
          integer nxl,nyl,nzl
          real xl(x_layer-1)
          real yl(y_layer-1)
          real zl(z_layer-1)
-         common/layers/ nxl,xl,nyl,yl,nzl,zl
+         common /layers/ nxl,xl,nyl,yl,nzl,zl
 
          integer nl
          real d(z_layer)
          real thk(z_layer)
-         common/zlayer/ d,nl,thk
-
-         logical        exchange
-         real           zair
-         real           vtemp
-         common/surf/   exchange,zair,vtemp
+         common /zlayer/ d,nl,thk
 c
          integer i,j
          integer n

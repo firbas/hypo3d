@@ -436,7 +436,7 @@ c
 c
 c  set default values
 c
-               do i=1,n_fix_coord
+               do i=1,4
                   temp_array(i)=0.0
                end do
             else

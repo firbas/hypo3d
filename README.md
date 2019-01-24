@@ -51,9 +51,14 @@ the linearization approach, which can be successfully applied in seismic tomogra
 is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases,
 whose ray paths are passing close to the curved surface. -->
 
+<p align="center">
+<img src="doc/img/downdip.png" alt="Hypo3d ray tracing" width="60%" />
+<br>
+Hypo3d ray tracing along the dipping planar interface.
+</p>
+
 The HYPO3D program was originally designed to locate an earthquake using short-distance direct phases in a local seismic network.
 In the case of the location of an regional-distance earthquake in a complex 3-dimensional velocity model, the problem may not be sufficiently regular.
-
 
 ### Coordinates
 The map coordinate system S-JTSK Křovák EPSG:5513 is used for program input and output
@@ -112,7 +117,7 @@ No further development is foreseen but for further use it is needed:
 
 ## Upgrades
 
-There are only minor changes compared to the original version 1.50, 
+There are only minor changes compared to the original version 10.50, 
 which does not change the features of the computer program.
 
 1. To clear the code, about 9,000 lines of program code were removed.
