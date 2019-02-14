@@ -3,9 +3,9 @@
 c
 c***************************************************************************
 c
-c             program   H Y P O 1 D  resp.  H Y P O 3 D
+c             program   H Y P O 3 D
 c
-c     - locates hypocenter in 1-D model  resp. 3-D model
+c     - locates hypocenter in 3-D model
 c
 c     - iteration process is ended in three cases:
 c       1/ difference in coord. of two following iterations is less then
@@ -16,11 +16,9 @@ c       4/ break flag is set and operator choices end of iteration
 c
 c     - input data are taken from these files:
 c       1) file containing crustal model and station list
-c       2) file with known sources
-c       3) file with start points
-c       4) file with surface definition
-c       5) xHEADER.DAT, xSTATIO.DAT
-c       6) output hypofile from VISUAL, GRAF
+c       2) file with surface definition
+c       3) hypofile containing seismic phase arrival data
+c
 c  ************
 c  declarations
 c  ************
@@ -258,14 +256,6 @@ c  functions
 c
          integer iargc, lnblnk
 c
-c common for ray profile coordinates
-c
-c        integer n_poi
-c        real poi(2*z_layer)
-c        real z_coor(2*z_layer)
-c        common  /ray/ n_poi, poi, z_coor
-c
-
 c  *******************
 c  end of declarations
 c  *******************
@@ -297,11 +287,10 @@ c
 c  call runstring parameters information
 c
                write(*,*) 'Online information is not available'
-c                else if (string(1:2).eq.'-D'.or.string(1:2).eq.'-d') then
 c
             else if (string(1:2).eq.'-i'.or.string(1:2).eq.'-I') then
 c
-c  name of first hypofile to location
+c  name of hypofile
 c
                hyponame=string(3:lnblnk(string))
 
@@ -310,15 +299,14 @@ c
 c  name of output file
 c
                hyp3name=string(3:lnblnk(string))
-
 c
             else if (string(1:2).eq.'-M'.or.string(1:2).eq.'-m') then
 c
 c  name of model file
 c
-               ch_model_name(1:string_length-2)=
-     >                       string(3:string_length)
+               ch_model_name=string(3:lnblnk(string))
             else
+c
                write (*,
      >         '(1x,a,": Error - wrong parameter ",a)')
      >          prog_name,string(1:2)
@@ -336,8 +324,6 @@ c
             call exit
          endif
          if (ch_model_name.eq.' ') then
-c      complete path to hypofile probably defined => the velocity model
-c       name must NOT be derived => option -M required
             write(*,*) 'Error: Modelfile name not given'
             write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
             call exit
@@ -1040,7 +1026,6 @@ c
             write (*,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
      >      i0,xp,yp,zp,t0,sqrt(rmsres)
 c
-cc      call pause
 c
             write (lulist,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
      >      i0,xp,yp,zp,t0,sqrt(rmsres)
@@ -1097,11 +1082,6 @@ c
          else if (i_menu.eq.4) then
 
          endif
-c ====================================================================
-c      write(14,*) n_poi
-c      write(14,*) 0,c_hypo(3),z0,best_z0
-c      write(14,'(F7.3,F6.2)') (poi(j),z_coor(j),j=1,n_poi)
-c ====================================================================
 c
 c  end of main program
 c

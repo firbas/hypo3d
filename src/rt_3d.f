@@ -38,7 +38,12 @@ c                                          in point one (hypocenter)
 c     TOA       ... take off angle of ray from point one (hypocenter) with
 c                   respect to z-axis
 c-----------------------------------------------------------------------------
-c
+c external references:
+c --------------------
+c function isnan() - GNU extension
+c          LT
+c          TERM 
+c-----------------------------------------------------------------------------
 c progr.: 01.00               original version
 c         02.00     05.86 mw  improved version
 c         02.00  19.06.86 mw  'spy on' travel path in 3d model
@@ -47,7 +52,12 @@ c         03.01  17.12.86 mw  computed derivatives for general positions
 c                             of stations in 3d
 c         04.00  12.02.87 mw  streamlined computation of derivatives
 c         05.00  16.06.87 mw  new version ... input,output parameters
-c        10.64 2017-04-23 pz  added common /ray/
+c        10.72 2019-02-10 pz  toas=sin(take-off angle), test isnan()
+c-----------------------------------------------------------------------------
+c 2019-02-10 pz
+c This subroutine has been identified as a modification of TRVDRV
+c writen by J.P. Eaton (HYPOLAYR, 1969), 
+c which is part of  HYPO71, LEE AND LAHR (USGS OPEN-FILE REPORT 75-311, 1975).
 c**************************************************************************
 
          implicit none
@@ -69,6 +79,9 @@ c
 c
 c  local variables
 c
+      real(8) toas  
+      real(8) toac 
+
          real x_temp,y_temp,z_temp
          real xovmax
          real delxtr
@@ -92,7 +105,6 @@ c
          real xbig
          real dx
          real dy
-cc            real srt
          real u
          real u1
 c
@@ -100,17 +112,13 @@ c
          integer n_poi
          real poi(2*z_layer)
          real z_coor(2*z_layer)
-cc common for ray profile coordinates
-c      common  /ray/ n_poi, poi, z_coor
 c
          real x_sour1,y_sour1
          real x_sour2,y_sour2
          real t
-cc            real temp
          integer ii,j,jj,l,k,ll,m
          integer j1
          integer jl
-         integer nl
          integer type_of_wave                !type of wave attaching station
 
 c-----------------------------------------------------------------c
@@ -133,23 +141,19 @@ c
 c
 c-----------------------------------------------------------------------------
 c
-c
 c  common for structure of 1D model
 c
+         integer nl
          real   d(z_layer),thk(z_layer)      !structure of d-layers
          common /zlayer/   d,nl,thk          !structure of d-layers
 c
 c-----------------------------------------------------------------------------
 c
-c
 c  common for terms tid, did
 c
          real   tid(z_layer,z_layer),did(z_layer,z_layer)
-                                             !travel times from top
-                                             !of layer one ... of layer nl
          common /trace/    tid,did           !travel times from top
                                              !of layer one, ..., of layer nl
-c
 c
 c===========================================================================
 c
@@ -272,9 +276,9 @@ c
          end do
 
          if (exchange) then
-            toa=-v(1)/v(k)
+            toas=-v(1)/v(k)
          else
-            toa=-v(jl)/v(k)
+            toas=-v(jl)/v(k)
          endif
          go to 260
 c
@@ -300,9 +304,9 @@ c
          n_poi=0
 
          if (exchange) then
-            toa=-delta/sqt
+            toas=-delta/sqt
          else
-            toa=delta/sqt
+            toas=delta/sqt
          endif
 
          go to 260
@@ -395,9 +399,9 @@ c
          end do
 
          if (exchange) then
-            toa=-v(1)/v(jl)
+            toas=-v(1)/v(jl)
          else
-            toa=0.9999999
+            toas=1D0
          endif
 
          go to 260
@@ -428,16 +432,12 @@ c
 
          if (exchange) then
             u1=v(1)/v(jl)*u
-            toa=-u1
+            toas=-u1
          else
-            toa=u
+            toas=u
          endif
 
 260      continue
-c ====================================================================
-c      write(*,'(1X,7(F7.3,F6.2,";"))') (poi(j),z_coor(j),j=1,n_poi)
-c ====================================================================
-c
 c
 c-------------------------------------------------------------------------
 c
@@ -503,19 +503,14 @@ c
             td(1) =td(1) + t
          endif
 
-         if (toa.ne.0.9999999) then
-            toa=-toa
-         endif
 c
 c  derivative on x  of travel time
 c
-         td(2)=-1./v_hypo* (c_stat(1)-c_hypo(1))
-     >           / delta * abs(toa)
+         td(2)=real(-1./v_hypo*(c_stat(1)-c_hypo(1))/delta*abs(toas))
 c
 c  derivative on y
 c
-         td(3)=-1./v_hypo* (c_stat(2)-c_hypo(2))
-     >           / delta * abs(toa)
+         td(3)=real(-1./v_hypo*(c_stat(2)-c_hypo(2))/delta*abs(toas))
 c
 c  test on exchange of station and hypocenter
 c
@@ -527,33 +522,24 @@ c
             td(3)=-td(3)
          endif
 c
-c---------------------------------------------------------------------c
+c === 2019-02-10 v10.72 pz ===========================================
+c  derivative on z
+         td(4)=0.0
+         toac = dsqrt(1D0-toas*toas)
+         if(.not. isnan(toac)) then
+            td(4)=real(1.D0/v_hypo*dsign(toac,toas))
+         endif
+
+c  conversion to degrees
+         toa=real(asin(-toas)/(4.0*atan(1.0))*180.0)
+         if (toa < 0.0) toa = toa+180
+c ====================================================================
+
 c  Convention:                                                        c
 c          if  toa < 0.0  then take-off angle alfa                    c
 c                                 is given by equation                c
 c                                                                     c
 c              alfa=pi-arcsin(abs(toa))                               c
-c                                                                     c
 c---------------------------------------------------------------------c
-
-         if (toa.lt.0.0) then
-            toa=asin(abs(toa))
-            toa=pi-toa
-         else
-            toa=asin(toa)
-         endif
-c
-c  derivative on z
-c
-         td(4)=-1./v_hypo*cos(toa)
-c
-c  conversion radians to degrees
-c
-         if(toa.eq.0.9999999) then
-            toa=90.0
-         else
-            toa=180./pi*toa
-         endif
-
          return
       end subroutine rt_3d

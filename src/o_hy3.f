@@ -36,7 +36,7 @@ c----------------------------------------------------------------------------
 c
 c  programmed:  87-07  01.00  mw OUTPUT.F
 c  programmed:2017-04  10.59  pz O_HY3 cloned from OUTPUT.F
-c  programmed"2017-04  10.62  pz Rotation of the diagonal elements
+c  programmed:2017-04  10.62  pz Rotation of the diagonal elements
 c                                in the co matrix from local to Krovak
 c  programmed:2017-04  10.64  pz function mconvergence
 c  programmed:2018-10  10.69  pz hyr
@@ -136,10 +136,10 @@ c
          character*1         type(nrec_max)
          common /chrec/      type
 c
-         real            co(4,4)
-         real            rmsres
-         real            rmsres_co
-         common /cov/    co,rmsres,rmsres_co
+         real                co(4,4)
+         real                rmsres
+         real                rmsres_co
+         common /cov/        co,rmsres,rmsres_co
 c
          logical             hyr
          real                trec(nrec_max)
@@ -151,8 +151,8 @@ c
          common /chhyp/      rec_name
 c
          real                tcal(nrec_max)
-         real              xc  (4,nrec_max)
-         common /cal_time/ tcal,xc
+         real                xc(4,nrec_max)
+         common /cal_time/   tcal,xc
 c
          real                toa(nrec_max)
          common /toa/        toa
@@ -215,14 +215,13 @@ c  *******************
 c  end of declarations
 c  *******************
 c
-c=============================================================================
          PI_D=4.D0*datan(1.D0)
          RAD2DEG=180.D0/PI_D
          DEG2RAD=PI_D/180.D0
 c
-c The covariance matrix co was computed in local coord. For this
-c in the case of fix_x or fix_y (in view to Krovak coord.)
-c it is not possible to estimate errors dxer and dyer.
+c --------------------------------------------------------------------
+c In the case of coordinate fixation, the calculation of the error 
+c covariance matrix is not reduced.
 c
 c modify covariance matrix for fixed coordinates
 c
@@ -252,6 +251,7 @@ c --------------------------------------------------------------------
 c --------------------------------------------------------------------
 c
 !      if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
+      if (rmsres_co.ne.9.99**2) then
 c error ellipse for epicenter
 c computed in local coordinates
          deter=co(1,1)*co(2,2)-co(1,2)*co(2,1)
@@ -290,7 +290,7 @@ c l1 is major axis
             theta=theta+90.0
          endif
 c
-!      endif      ! fix
+      endif      ! rmsres_co = 9.99**2
 c
 c --------------------------------------------------------------------
          if (rmsres_co.ne.9.99**2) then
@@ -300,7 +300,8 @@ c    of hypocenter coordinate estimates
 c
 c ====================================================================
 c 2017-04-08 pz
-c  rotation of the diagonal elements in the co matrix from local to Krovak
+c The covariance matrix co was computed in local coord. To compensate this,
+c the diagonal elements in the co matrix are rotated from the local to Krovak.
             dxer=0.0
             dyer=0.0
 !           if (.not.fix_x .and. .not.fix_y) then
@@ -314,7 +315,7 @@ c  rotation of the diagonal elements in the co matrix from local to Krovak
 c ====================================================================
             dzer=sqrt(abs(co(3,3)))
             dter=sqrt(abs(co(4,4)))
-         endif
+         endif      ! rmsres_co = 9.99**2
 c
 c --------------------------------------------------------------------
 c hypocenter to Krovak
@@ -327,12 +328,13 @@ c local to Krovak
          meridian_con = mconvergence(xp,yp)
 c      write(*,*) "m.k: ",meridian_con
 c
+         if (rmsres_co.ne.9.99**2) then
 c coordinates local --> Krovak
-         theta = mod(360.0+theta+p_fi,360.0)
+            theta = mod(360.0+theta+p_fi,360.0)
 c coordinates Krovak --> geofraphic
-c      az_theta = theta-nangle
-         az_theta = theta-180.0-meridian_con
-         az_theta = mod(360.0+az_theta,360.0)
+            az_theta = theta-180.0-meridian_con
+            az_theta = mod(360.0+az_theta,360.0)
+         endif      ! rmsres_co = 9.99**2
 c --------------------------------------------------------------------
          j = 0
          do i = 1,nrec
@@ -375,9 +377,7 @@ c
      >   '(2(i2.2,"-"),i2.2,2x,2(i2.2,":"),i2.2,".",i3.3)')
      >   year_orig,month_orig,day_orig,hour_orig,minute_orig,isec,msec
 c
-c --------------------------------------------------------------------
-c
-c regular output to dbfile begins ###
+c ====================================================================
 c
 
          write (lulist,'("program       :",a)') prog_name1//prog_name2
@@ -392,7 +392,6 @@ c
 c
 c  get system time
 c
-c  Following 7 lines replace call exec:
          stime = time ()
          call ltime (stime,ita)
          itime(2)=ita(1)
@@ -527,9 +526,9 @@ c     >                          3x,"(azimuth:",f6.1," deg)")
 c
          return
       end subroutine o_hy3
-
-
 c
+
+
       real function mconvergence(X, Y)
 c
 c X,Y [km]

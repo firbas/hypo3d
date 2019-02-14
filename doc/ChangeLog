@@ -1,7 +1,10 @@
+2019-02-14 pz v10.72
+
+If the error ellipse is not estimated, 9.99 will be printed.
+========================================================================
 2019-01-25 pz v10.72
 
 dialog_3.f: fixed the uninitialized variable temp_array
-
 ========================================================================
 2019-01-14 pz v10.72
 

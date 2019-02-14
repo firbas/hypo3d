@@ -160,6 +160,8 @@ c  open the hypofile ... it must exist! (status=old)
 c
          open (luhypo,file=hypfn,iostat=ios,status='OLD')
          if (ios.ne.0) then
+            write (*,'(1x,a,": File ",a," failed to read.")') prog_name,
+     >                                     hypfn(1:lnblnk(hypfn))
             call EXIT(1)
          endif
 c
@@ -167,7 +169,9 @@ c  open crustal model file
 c
          open (lucrmod,file=modfn,iostat=ios,status='OLD')
          if (ios.ne.0) then
-            call abort
+            write (*,'(1x,a,": File ",a," failed to read.")') prog_name,
+     >                                     modfn(1:lnblnk(modfn))
+            call EXIT(1)
          endif
 c
 c  read crustal model file, read in station data

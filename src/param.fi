@@ -25,9 +25,6 @@ c      parameter (z_layer  = 100)          !possible extension
       real    p_decrease                  !parameter of decreasing of step in
       parameter (p_decrease = 2.)         !unsuccessful iteration
 
-      real    pi                          !Ludolf number
-      parameter (pi = 3.1415926)
-
       real surf_ev
       parameter (surf_ev = 1000.)         !switch for station delays
                                           !depth of hypocenter < surf_ev -->

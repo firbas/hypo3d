@@ -8,8 +8,9 @@ This software has been in use at the Institute of Physics of the Earth, Masaryk 
 ## Program features and limitations
 
 The program is an implementation of the classical Geiger’s method for earthquake location.
-Another inspiration was the HYPO71 (http://www.jclahr.com/science/software/hypo71/index.html),
-especially when programming forward modeling.
+Another inspiration was the HYPO71 (http://www.jclahr.com/science/software/hypo71/index.html)
+[[Lee and Lahr 1975](#lee1975)], 
+ray tracing is based on a modified TRVDRV subroutine written by [[Eaton 1969](#eaton1969)].
 
 ### Velocity model
 The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
@@ -90,7 +91,7 @@ which means that their weighting effect is rather weak (except code ```4 - no we
 <td>Initial work.</td>
 </tr>
 <tr class="even">
-<td><a href="https://cz.linkedin.com/in/milan-werl-a174357?trk=org-employees_mini-profile_cta"><strong>Milan Werl</strong></a></td>
+<td><a href="https://cz.linkedin.com/in/milan-werl-a174357"><strong>Milan Werl</strong></a></td>
 <td>1986-1987</td>
 <td>Researcher and programmer for the most of the code.</td>
 </tr>
@@ -161,10 +162,14 @@ and consider the limited capabilities of the program.
 
 ## Literature
 
-<a name="romanov1972"></a>Романов В. Г. (1972). Некоторые обратные задачи для уравнений гиперболического типа. Издательство "Наукa", Новосибирск, 1972
+<a name="eaton1969"></a>Eaton, J. P. (1969). HYPOLAYR, a computer program for determining hypocenters of local earthquakes in an earth consisting of uniform flat layers over a half space, Open File Report, U.S. Geological Survey, 155 pp.
 
 <a name="firbas1984"></a>Firbas, P. & Vaněk, J. (1984). Travel time curves for complex inhomogeneous slightly anisotropic media. Stud Geophys Geod (1984) 28: 393-406.
 DOI https://doi.org/10.1007/BF01642992
+
+<a name="lee1975"></a>Lee, W. H. K. and J. C. Lahr (1975). HYP071 (Revised): A computer program for determining hypocenter, magnitude, and first motion pattern of local earthquakes, U. S. Geological Survey Open File Report 75-311, 113 pp. 
+
+<a name="romanov1972"></a>Романов В. Г. (1972). Некоторые обратные задачи для уравнений гиперболического типа. Издательство "Наукa", Новосибирск, 1972
 
 <a name="ryaboy2001"></a>Ryaboy V., Baumgardt D.R., Firbas P., Dainty A.M. (2001). Application of 3-D crustal and upper mantle velocity model of North America for Location of Regional Seismic Events. Pure appl. geophys. 158 (2001) 79-103. Birkhäuser Verlag, Basel, 2001.
 DOI https://doi.org/10.1007/PL00001169

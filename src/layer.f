@@ -76,9 +76,9 @@ c
          integer         nzl
          common /layers/ nxl,xl,nyl,yl,nzl,zl
 c
+         integer         nl
          real            d  (z_layer)
          real            thk(z_layer)
-         integer         nl
          common /zlayer/ d,nl,thk
 c
 c  functions  ...  none

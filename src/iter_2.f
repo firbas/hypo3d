@@ -51,9 +51,7 @@ c
 c  local parameters  ...  none
 c
          real*8  damp_level
-         real*8  lambda
          parameter (damp_level=1.00d-03)
-         parameter (lambda    =1.00d+08)
 c
 c  global parameters
 c
@@ -99,11 +97,11 @@ c
          real            avwt,sumw,sumw2
          common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
-         real            cep(3)
+         real            c_hypo(3)
          integer         no_valid_arrivals
          logical         t0_norm
          logical         endit
-         common /it1/    t0_norm,cep,no_valid_arrivals,endit
+         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
 c
          integer         i0
          logical         fix_depth
@@ -149,7 +147,7 @@ c
          do j=1,4
             sum8=0.0
             do i=1,nrec
-               if (cep(3).lt.surf_ev) then
+               if (c_hypo(3).lt.surf_ev) then
 c
 c  model for surface event ... with station delays
 c
@@ -190,7 +188,8 @@ c
             end do
          end do
 c
-c  store upper triangual part of symmetric matrix C to vector C1
+c  store upper triangular portion of symmetric matrix C to vector C1,
+c  EIGEN storage mode code = 1
 c
          k=0
          do j=1,4
@@ -210,15 +209,13 @@ c  eigenvalues are stored on diagonal in decreasing order
 c  i.e. minimal value is in last element
 c
          if (.not.endit) then
-cc    if (.true.    ) then
 c
 c  test: minimal value of eigenvalues greater then damp level?
 c
-            if (c1(10).gt.damp_level) then
+            if (abs(c1(10)).gt.damp_level) then
 c
 c  yes ... no damping
 c
-cc        if (c1(1)/c1(10).lt.lambda) then
                do i=1,4
                   sigma(i)=0.0
                end do
@@ -228,7 +225,6 @@ c  no ... switch on damping
 c
                do i=1,4
                   sigma(i)=damp_level
-cc                sigma(i)=c1(1)/lambda
                end do
             endif
 c
@@ -307,7 +303,7 @@ c
 c
          if (endit) then
 c
-            if (c1(10).lt.1.e-07 .or. det.eq.0.0) then
+            if (abs(c1(10)).lt.1.00d-07 .or. det.eq.0.0) then
 c
 c  no error estimation
 c

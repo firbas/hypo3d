@@ -103,11 +103,11 @@ c
          real            avwt,sumw,sumw2
          common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
-         real            cep(3)
+         real            c_hypo(3)
          integer         no_valid_arrivals
          logical         t0_norm
          logical         endit
-         common /it1/    t0_norm,cep,no_valid_arrivals,endit
+         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
 c
          integer         i0
          logical         fix_depth
@@ -156,7 +156,7 @@ c  initialize of origin time
 c
             sum8=0.0
             do i=1,nrec
-               if (cep(3).lt.surf_ev) then
+               if (c_hypo(3).lt.surf_ev) then
 c
 c  model for surface event ... with station delays
 c
@@ -183,7 +183,7 @@ c
          rmsres_co=0.0
 c
          do i=1,nrec
-            if (cep(3).lt.surf_ev) then
+            if (c_hypo(3).lt.surf_ev) then
 c
 c  model for surface event ... with station delays
 c
