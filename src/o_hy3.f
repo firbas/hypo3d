@@ -30,11 +30,11 @@ c
 c     TRANS               mw subroutine
 c     DATUM               mw subroutine
 c     SORT_X              mw subroutine
-c     EXEC                RL subroutine
-c
+c     XY2FL               pv subroutine
 c----------------------------------------------------------------------------
 c
 c  programmed:  87-07  01.00  mw OUTPUT.F
+c  programmed:2013-07  10.10  pv XY2FL subroutine, Krovak to WGS84 conversion
 c  programmed:2017-04  10.59  pz O_HY3 cloned from OUTPUT.F
 c  programmed:2017-04  10.62  pz Rotation of the diagonal elements
 c                                in the co matrix from local to Krovak
@@ -93,6 +93,10 @@ c
          real    xp,yp,zp
          real*8  fi, rla
          real    meridian_con
+
+         character*7 strFixX, strFixY, strFixZ, strFixT 
+         
+
 c
 c  global variables
 c
@@ -202,6 +206,9 @@ c
 c
          real                wt1(nrec_max)
          common /wt_1/       wt1
+
+         logical         nan_dx, nan_dy, nan_dz, nan_dt
+         common /nan/    nan_dx, nan_dy, nan_dz, nan_dt
 c
          double precision c,s,PI_D,RAD2DEG,DEG2RAD
 c
@@ -219,35 +226,14 @@ c
          RAD2DEG=180.D0/PI_D
          DEG2RAD=PI_D/180.D0
 c
-c --------------------------------------------------------------------
-c In the case of coordinate fixation, the calculation of the error 
-c covariance matrix is not reduced.
-c
-c modify covariance matrix for fixed coordinates
-c
-!      if (fix_depth .or. scan_depth) then
-!                   do i=1,4
-!                       co(3,i)=0.0
-!                       co(i,3)=0.0
-!                   end do
-!            endif
-c
-!      if (fix_otime) then
-!                   do i=1,4
-!                       co(4,i)=0.0
-!                       co(i,4)=0.0
-!                   end do
-!            endif
-c
-c --------------------------------------------------------------------
-         dxer=9.99
-         dyer=9.99
-         dzer=9.99
-         dter=9.99
-         l1=9.99
-         l2=9.99
-         theta=999.0
-         az_theta=999.0
+         dxer=99.99
+         dyer=99.99
+         dzer=99.99
+         dter=99.99
+         l1=99.99
+         l2=99.99
+         theta=999.99
+         az_theta=999.99
 c --------------------------------------------------------------------
 c
 !      if (.not.fix_x .and. .not.fix_y .and. rmsres_co.ne.9.99**2) then
@@ -264,26 +250,15 @@ c computed in local coordinates
          bl=d11*sin(theta)**2 - 2.*d21*cos(theta)*sin(theta) +
      >   d22*cos(theta)**2
 c
-c  test on numerical errors
-c
-         if (al.le.0.0) then
-            l1=999.99
-         else
-            l1=sqrt(1./al)
-         endif
-c
-         if (bl.le.0.0) then
-            l2=999.99
-         else
-            l2=sqrt(1./bl)
-         endif
+         l1=sqrt(1./al)
+         l2=sqrt(1./bl)
 c
 c theta is the angle from x-axis to the semi-major axis of the error ellipse
 c
 c local coordinates
          theta = real(theta*RAD2DEG,4)
 c l1 is major axis
-         if (l2 .gt. l1 .and. l2 .ne. 999.99 ) then
+         if (l2 .gt. l1) then
             tl=l1
             l1=l2
             l2=tl
@@ -294,9 +269,6 @@ c
 c
 c --------------------------------------------------------------------
          if (rmsres_co.ne.9.99**2) then
-c
-c  square root of diagonal elements of covariance matrix ... dispersion
-c    of hypocenter coordinate estimates
 c
 c ====================================================================
 c 2017-04-08 pz
@@ -316,7 +288,19 @@ c ====================================================================
             dzer=sqrt(abs(co(3,3)))
             dter=sqrt(abs(co(4,4)))
          endif      ! rmsres_co = 9.99**2
+c --------------------------------------------------------------------
+c In the case of coordinate fixation, the calculation of the error
+c covariance matrix is not reduced, except in the following cases:
 c
+c modify covariance matrix for fixed coordinates
+
+         if (fix_depth) then
+            dzer=0.0
+         endif
+
+         if (fix_otime) then
+            dter=0.0
+         endif
 c --------------------------------------------------------------------
 c hypocenter to Krovak
          xp=x0
@@ -408,9 +392,33 @@ c
      >   itime(3),itime(2)
          write (lulist,'("event",9x,":",a)') hypfn(1:lnblnk(hypfn))
 
-         write (lulist,'("start(x,y,z,t):(",
-     >f7.2,",",f7.2,",",f7.2,",",f7.2,")",//)')
+         write (lulist,'("start(x,y,z,t):   (",
+     >f7.2,",",f7.2,",",f7.2,",",f7.2,")")')
      >   x_start,y_start,z_start,ot_start
+         if (fix_x) then
+             strFixX=" fix X "
+         else
+             strFixX="       "
+         endif
+         if (fix_y) then
+             strFixY=" fix Y "
+         else
+             strFixY="       "
+         endif
+         if (fix_depth) then
+             strFixZ=" fix Z "
+         else
+             strFixZ="       "
+         endif
+         if (fix_otime) then
+             strFixT=" fix T "
+         else
+             strFixT="       "
+         endif
+         
+         write (lulist,'("fixed coordinates:(",a7,",",a7,",",a7,",",a7")")')
+     >   strFixX, strFixY, strFixZ, strFixT 
+         write (lulist,*)
          write (lulist,'("reference time:",
      >i2.2,"-",i2.2,"-",i2.2,1x,i2.2,":",i2.2)')
      >   rok,mesic,den,hodina,minuta
@@ -499,30 +507,48 @@ c
 c
          call XY2FL (yp*1000, xp*1000, fi, rla)
          print *,xp*1000,yp*1000,fi,rla
-         write (lulist,926) whole_date,dter,xp,dxer,fi,yp,dyer,rla,zp,dzer,
-     >                      avm,sdm,sqrt(rmsres),int(gap+0.5),i0,l1,l2,
-     >                      az_theta
-c     >                   theta, az_theta
-c
-c
-926      format (//
-     *   "hypocenter data:",/,"----------------",/,
-     *   "origin time          t:",2x,a22,1x,"+-",1x,f6.3,/,
-     *   "x-coordinate         x:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",
-     >                             5x,"(fi:",f10.6," deg)",/,
-     *   "y-coordinate         y:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",
-     >                             1x,"(lambda:",f10.6," deg)"/,
-     *   "depth                z:",2x,f7.2,1x,"+-",1x,f6.2,4x,"km",/,
-     *   "magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2,4x,/,
-     *   "rms of time residuals :",8x,f6.2,9x,"s",/,
-     *   "angular gap           :",11x,i3,9x,"deg",/,
-     *   "number of iterations  :",11x,i3,/,
-     *   "error ellipse axis l1 :",8x,f6.2,9x,"km",/,
-     *   "              axis l2 :",8x,f6.2,9x,"km",/,
-     *   "              theta   :",8x,f6.1,9x,"deg")
-c     *"              theta   :",3x,f6.1," deg (to grid)",
-c     >                          3x,"(azimuth:",f6.1," deg)")
 
+      write(lulist,'(//,"hypocenter data:",/,"----------------")')
+      write(lulist,'("origin time          t:",2x,a22,$)') whole_date
+      if (nan_dt) then
+         write(lulist,'(1x,"+-    NaN")')
+      else
+         write(lulist,'(1x,"+-",1x,f6.3)') dter
+      endif
+      write(lulist,'("x-coordinate         x:",2x,f7.2,$)') xp
+      if (nan_dx) then
+         write(lulist,'(1x,"+-    NaN")')
+      else
+         write(lulist,'(1x,"+-",1x,f6.2,4x,"km",$)') dxer
+      endif
+      write(lulist,'(5x,"(fi:",f10.6," deg)")') fi
+      write(lulist,'("y-coordinate         y:",2x,f7.2,$)') yp
+      if (nan_dy) then
+         write(lulist,'(1x,"+-    NaN")')
+      else
+         write(lulist,'(1x,"+-",1x,f6.2,4x,"km",$)') dyer
+      endif
+      write(lulist,'(1x,"(lambda:",f10.6," deg)")') rla
+      write(lulist,'("depth                z:",2x,f7.2,$)') zp
+      if (nan_dz) then
+         write(lulist,'(1x,"+-    NaN")')
+      else
+         write(lulist,'(1x,"+-",1x,f6.2,4x,"km")') dzer
+      endif
+      write(lulist,'("magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2)') avm, sdm
+      write(lulist,'("rms of time residuals :",8x,f6.2,9x,"s")') sqrt(rmsres)
+      write(lulist,'("angular gap           :",11x,i3,9x,"deg")') int(gap+0.5)
+      write(lulist,'("number of iterations  :",11x,i3)') i0
+      if(nan_dx .or. nan_dy) then
+         write(lulist,'("error ellipse axis l1 :",8x," NaN")')
+         write(lulist,'("              axis l2 :",8x," NaN")')
+      else
+         write(lulist,'("error ellipse axis l1 :",8x,f6.2,9x,"km")') l1
+         write(lulist,'("              axis l2 :",8x,f6.2,9x,"km")') l2
+      endif
+c      write(lulist,'("              theta   :",8x,f6.1,9x,"deg")') az_theta
+      write(lulist,'("              theta   :",2x,f6.1," deg (to grid)",$)') theta
+      write(lulist,'(3x,"(azimuth:",f6.1," deg)")') az_theta
 c
          return
       end subroutine o_hy3

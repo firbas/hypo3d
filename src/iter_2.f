@@ -131,6 +131,14 @@ c
          real            scan_end
          real            scan_step
          common /scan/   scan_depth,scan_start,scan_end,scan_step
+
+         logical         nan_dx, nan_dy, nan_dz, nan_dt
+         common /nan/    nan_dx, nan_dy, nan_dz, nan_dt
+c
+c  common for coord. of trial hypocenter
+c
+         real                x0,y0,z0        !coord. of trial hypocenter
+         common /centr/      x0,y0,z0
 c
 c  functions
 c
@@ -203,7 +211,11 @@ c
 c
 c  evaluate eigenvalues
 c
-         call EIGEN(c1,r,4,1)
+         call EIGEN_O(c1,r,4,1)
+         nan_dx=.false.
+         nan_dy=.false.
+         nan_dz=.false.
+         nan_dt=.false.
 c
 c  eigenvalues are stored on diagonal in decreasing order
 c  i.e. minimal value is in last element
@@ -212,7 +224,8 @@ c
 c
 c  test: minimal value of eigenvalues greater then damp level?
 c
-            if (abs(c1(10)).gt.damp_level) then
+c            if (abs(c1(10)).gt.damp_level) then
+            if (min(abs(c1(1)),abs(c1(3)),abs(c1(6)),abs(c1(10))).gt.damp_level) then
 c
 c  yes ... no damping
 c
@@ -257,7 +270,16 @@ c
                b(2)=0.0
             endif
 c
-            if (fix_depth .or. scan_depth) then
+            if (scan_depth) then
+               do i=1,4
+                  c(3,i)=0.0
+                  c(i,3)=0.0
+               end do
+               c(3,3)=1.0
+               b(3)=0.0
+            endif
+c
+            if (fix_depth) then
                do i=1,4
                   c(3,i)=0.0
                   c(i,3)=0.0
@@ -275,6 +297,46 @@ c
                b(4)=0.0
             endif
          endif ! .not.endit
+c ===========================================================================
+c 2019-02-26 pz v10.73
+         if (endit) then
+            if (abs(c1(1)).lt.1.00d-07 .and. .not. fix_x) then
+               do i=1,4
+                  c(i,i)=c(i,i)+1.00d-07
+               end do
+               nan_dx=.true.
+            endif  !c1
+            if (abs(c1(3)).lt.1.00d-07 .and. .not. fix_y) then
+               do i=1,4
+                  c(i,i)=c(i,i)+1.00d-07
+               end do
+               nan_dy=.true.
+            endif  !c1
+            if (abs(c1(6)).lt.1.00d-07 .and. .not. fix_depth) then
+c the singular value belongs to the z coordinate
+               do i=1,4
+                  c(i,i)=c(i,i)+1.00d-07
+               end do
+               nan_dz=.true.
+            endif  !c1
+            if (abs(c1(10)).lt.1.00d-07 .and. .not. fix_otime) then
+               do i=1,4
+                  c(i,i)=c(i,i)+1.00d-07
+               end do
+               nan_dt=.true.
+            endif  !c1
+c
+            if (fix_surface .or. (fix_depth .and. z0 < 0.1 )) then
+               do i=1,4
+                  c(3,i)=0.0
+                  c(i,3)=0.0
+               end do
+               c(3,3)=1.0
+c               b(3)=0.0
+            endif
+c
+         endif    !endit
+c ===========================================================================
 c
          if (.not.endit) then
 c
@@ -300,19 +362,5 @@ c  matrix inversion
 c
          call minv(c,4,det,l4,m4)
 c
-c
-         if (endit) then
-c
-            if (abs(c1(10)).lt.1.00d-07 .or. det.eq.0.0) then
-c
-c  no error estimation
-c
-               sigma(1)=1.0
-               det=1.0
-            else
-               sigma(1)=0.0
-            endif
-         endif
-c
-         return
+      return
       end subroutine iter_2

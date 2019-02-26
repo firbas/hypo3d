@@ -93,11 +93,6 @@ c
          integer        no_iter_orig
          common /org/   x_orig,y_orig,z_orig,rms_orig,no_iter_orig
 c
-c  common for damping factor
-c
-         real*8         sigma(4)
-         common /sigm/  sigma
-c
 c  common for time data
 c
          integer year
@@ -846,30 +841,22 @@ c
 c
 c  estimated error of model ... model_error
 c
-            if (rmsres_co.ne.9.99**2) then
-c
-c  test on damping in the last iteration
-c
-               if (sigma(1).gt.0) then
-                  rmsres_co=9.99**2
-               else
-c
+c            if (rmsres_co.ne.9.99**2) then
 c  degree of freedom is greater then 0
 c  set estimate of error for error analysis
 c
                   rmsres_co=rmsres_co+model_error**2
-               endif
-            endif
+c            endif
 c
 c  test on evaluatimg of errors
 c
-            if (rmsres_co.ne.9.99**2) then
+c            if (rmsres_co.ne.9.99**2) then
 c
 c  compute covariance matrix  co: (A+&)INV * A * (A+&)INV
 c   & ... damping
 c
                call cov_matrix
-            endif
+c            endif
 c
             go to 155
          else

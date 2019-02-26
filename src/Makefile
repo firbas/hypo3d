@@ -14,7 +14,7 @@ OBJ= trans.o    \
  dialog_1.o dialog_2.o dialog_2_1.o   \
  dialog_3.o rec_time_name.o \
  iter_1.o iter_2.o cov_matrix.o rms_net_1.o rms_net_2.o spline_value.o   \
- eigen.o minv.o \
+ eigenuo.o minv.o \
  surfb.o xy2fl.o
 
 hypo3d: hypo.o $(OBJ)
@@ -106,8 +106,8 @@ spline_value.o: spline_value.f
 surfb.o: surfb.f
 	$(FC) $(FFLAGS) surfb.f
 
-eigen.o: eigen.f
-	$(FC) $(FFLAGS) eigen.f
+eigenuo.o: eigenuo.f
+	$(FC) $(FFLAGS) eigenuo.f
 
 minv.o: minv.f
 	$(FC) $(FFLAGS) minv.f

@@ -42,7 +42,7 @@ c external references:
 c --------------------
 c function isnan() - GNU extension
 c          LT
-c          TERM 
+c          TERM
 c-----------------------------------------------------------------------------
 c progr.: 01.00               original version
 c         02.00     05.86 mw  improved version
@@ -56,7 +56,7 @@ c        10.72 2019-02-10 pz  toas=sin(take-off angle), test isnan()
 c-----------------------------------------------------------------------------
 c 2019-02-10 pz
 c This subroutine has been identified as a modification of TRVDRV
-c writen by J.P. Eaton (HYPOLAYR, 1969), 
+c writen by J.P. Eaton (HYPOLAYR, 1969),
 c which is part of  HYPO71, LEE AND LAHR (USGS OPEN-FILE REPORT 75-311, 1975).
 c**************************************************************************
 
@@ -79,8 +79,8 @@ c
 c
 c  local variables
 c
-      real(8) toas  
-      real(8) toac 
+      real(8) toas
+      real(8) toac
 
          real x_temp,y_temp,z_temp
          real xovmax
@@ -157,10 +157,6 @@ c
 c
 c===========================================================================
 c
-c
-c  velocity in hypocenter
-c
-         call lt(c_hypo(1),c_hypo(2),-c_hypo(3),0.0,0.0,0.0,v_hypo,1)
 c
 c  partial distances dx,dy; total 2D distance delta
 c
@@ -503,6 +499,13 @@ c
             td(1) =td(1) + t
          endif
 
+c  velocity in hypocenter
+c
+         if (exchange) then
+            call lt(c_stat(1),c_stat(2),-c_stat(3),0.0,0.0,0.0,v_hypo,1)
+         else
+            call lt(c_hypo(1),c_hypo(2),-c_hypo(3),0.0,0.0,0.0,v_hypo,1)
+         endif
 c
 c  derivative on x  of travel time
 c

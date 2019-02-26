@@ -1,3 +1,20 @@
+2019-02-26 pz v10.73
+
+1) rt_3d.f: the velocity in hypocenter was corrected, 
+in case the hypocenter is above sation. 
+This fix affects the calculation of travel-time derivations.
+2) In the case of coordinate fixation, the calculation of the error
+covariance matrix is not reduced in dimensions unless the hypocenter
+is on or near the surface.
+3) If a singular value of the normal matrix is small, the matrix 
+is slightly damped to calculate the covariance matrix.
+If the error interval is not estimated, NaN is printed.
+4) If a small number of measurements does not provide any degree of 
+freedom, only 'a priori' part of the standard deviation (parameter 
+reading error) is used to calculate the error ellipse.
+5) EIGEN_O subroutine calculates eigennumbers without sorting and 
+is derived from the eigen subroutine from the IBM SSL library.
+========================================================================
 2019-02-14 pz v10.72
 
 If the error ellipse is not estimated, 9.99 will be printed.

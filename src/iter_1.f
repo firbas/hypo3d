@@ -242,7 +242,8 @@ c
          if (fix_otime) n_constr=n_constr-1
 c
          if (no_valid_arrivals-n_constr.le.0) then
-            rmsres_co=9.99**2
+c            rmsres_co=9.99**2
+             rmsres_co=0.0
          else
             rmsres_co=rmsres_co/(no_valid_arrivals-n_constr)
          endif
