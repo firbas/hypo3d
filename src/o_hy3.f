@@ -517,38 +517,38 @@ c
       endif
       write(lulist,'("x-coordinate         x:",2x,f7.2,$)') xp
       if (nan_dx) then
-         write(lulist,'(1x,"+-    NaN")')
+         write(lulist,'(1x,"+-    NaN   km",$)')
       else
-         write(lulist,'(1x,"+-",1x,f6.2,4x,"km",$)') dxer
+         write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dxer
       endif
-      write(lulist,'(5x,"(fi:",f10.6," deg)")') fi
+      write(lulist,'(7x,"(fi:",f10.6," deg)")') fi
       write(lulist,'("y-coordinate         y:",2x,f7.2,$)') yp
       if (nan_dy) then
-         write(lulist,'(1x,"+-    NaN")')
+         write(lulist,'(1x,"+-    NaN   km",$)')
       else
-         write(lulist,'(1x,"+-",1x,f6.2,4x,"km",$)') dyer
+         write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dyer
       endif
-      write(lulist,'(1x,"(lambda:",f10.6," deg)")') rla
+      write(lulist,'(3x,"(lambda:",f10.6," deg)")') rla
       write(lulist,'("depth                z:",2x,f7.2,$)') zp
       if (nan_dz) then
-         write(lulist,'(1x,"+-    NaN")')
+         write(lulist,'(1x,"+-    NaN   km")')
       else
-         write(lulist,'(1x,"+-",1x,f6.2,4x,"km")') dzer
+         write(lulist,'(1x,"+-",1x,f6.2,3x,"km")') dzer
       endif
       write(lulist,'("magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2)') avm, sdm
-      write(lulist,'("rms of time residuals :",8x,f6.2,9x,"s")') sqrt(rmsres)
-      write(lulist,'("angular gap           :",11x,i3,9x,"deg")') int(gap+0.5)
+      write(lulist,'("rms of time residuals :",8x,f6.2,8x,"s")') sqrt(rmsres)
+      write(lulist,'("angular gap           :",11x,i3,8x,"deg")') int(gap+0.5)
       write(lulist,'("number of iterations  :",11x,i3)') i0
       if(nan_dx .or. nan_dy) then
-         write(lulist,'("error ellipse axis l1 :",8x," NaN")')
-         write(lulist,'("              axis l2 :",8x," NaN")')
+         write(lulist,'("error ellipse axis l1 :",10x," NaN",8x,"km")')
+         write(lulist,'("              axis l2 :",10x," NaN",8x,"km")')
       else
-         write(lulist,'("error ellipse axis l1 :",8x,f6.2,9x,"km")') l1
-         write(lulist,'("              axis l2 :",8x,f6.2,9x,"km")') l2
+         write(lulist,'("error ellipse axis l1 :",8x,f6.2,8x,"km")') l1
+         write(lulist,'("              axis l2 :",8x,f6.2,8x,"km")') l2
       endif
 c      write(lulist,'("              theta   :",8x,f6.1,9x,"deg")') az_theta
       write(lulist,'("              theta   :",2x,f6.1," deg (to grid)",$)') theta
-      write(lulist,'(3x,"(azimuth:",f6.1," deg)")') az_theta
+      write(lulist,'(4x,"(azimuth:",f6.1," deg)")') az_theta
 c
          return
       end subroutine o_hy3

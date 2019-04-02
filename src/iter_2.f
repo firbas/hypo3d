@@ -52,6 +52,8 @@ c  local parameters  ...  none
 c
          real*8  damp_level
          parameter (damp_level=1.00d-03)
+         real*8  kappa
+         parameter (kappa=1.00d-08)
 c
 c  global parameters
 c
@@ -212,10 +214,6 @@ c
 c  evaluate eigenvalues
 c
          call EIGEN_O(c1,r,4,1)
-         nan_dx=.false.
-         nan_dy=.false.
-         nan_dz=.false.
-         nan_dt=.false.
 c
 c  eigenvalues are stored on diagonal in decreasing order
 c  i.e. minimal value is in last element
@@ -299,32 +297,30 @@ c
          endif ! .not.endit
 c ===========================================================================
 c 2019-02-26 pz v10.73
+         nan_dx=.false.
+         nan_dy=.false.
+         nan_dz=.false.
+         nan_dt=.false.
          if (endit) then
-            if (abs(c1(1)).lt.1.00d-07 .and. .not. fix_x) then
-               do i=1,4
-                  c(i,i)=c(i,i)+1.00d-07
-               end do
+            if (abs(c1(1)).lt.10*kappa .and. .not. fix_x) then
                nan_dx=.true.
             endif  !c1
-            if (abs(c1(3)).lt.1.00d-07 .and. .not. fix_y) then
-               do i=1,4
-                  c(i,i)=c(i,i)+1.00d-07
-               end do
+            if (abs(c1(3)).lt.10*kappa .and. .not. fix_y) then
                nan_dy=.true.
             endif  !c1
-            if (abs(c1(6)).lt.1.00d-07 .and. .not. fix_depth) then
+            if (abs(c1(6)).lt.10*kappa .and. .not. fix_depth) then
 c the singular value belongs to the z coordinate
-               do i=1,4
-                  c(i,i)=c(i,i)+1.00d-07
-               end do
                nan_dz=.true.
             endif  !c1
-            if (abs(c1(10)).lt.1.00d-07 .and. .not. fix_otime) then
-               do i=1,4
-                  c(i,i)=c(i,i)+1.00d-07
-               end do
+            if (abs(c1(10)).lt.10*kappa .and. .not. fix_otime) then
                nan_dt=.true.
             endif  !c1
+c
+            if (nan_dx .or. nan_dy .or. nan_dz .or. nan_dt) then
+               do i=1,4
+                  c(i,i)=c(i,i)+kappa
+               end do
+            endif  !nan
 c
             if (fix_surface .or. (fix_depth .and. z0 < 0.1 )) then
                do i=1,4
@@ -356,7 +352,7 @@ c
                end do
             end do
 c
-         endif !  .not.endif
+         endif !  .not.endit
 c
 c  matrix inversion
 c
