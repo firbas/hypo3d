@@ -24,7 +24,7 @@ c
 c  formal parameters:
 c
 c     logical     RP               ... flag for repeat of location   I
-c     logical     CORRECT          ... flag for correct. in hypofile I
+c     logical     CORRECT          ... flag for correct. in hypfile  I
 c     integer     NO_VALID_ARRIVAL ... no. of valid arrivals         O
 c     integer     N_INCREASE       ... no. of increasing in trec()   I/O
 c     integer     INUMBER          ... switch for the run of progr.  I
@@ -251,7 +251,7 @@ c  test on no. of recording
 c
          if (nrec .lt. 3) then
             write (*,
-     >      '(1x,a,": Error - no. of arrivals in hypofile ",
+     >      '(1x,a,": Error - no. of arrivals in hypfile ",
      >    " < 3.")') prog_name
 c
             return
@@ -261,7 +261,7 @@ c
 c
 40       continue
 c
-c  test on repeat of location or correct of hypofile
+c  test on repeat of location or correct of hypfile
 c
          if (rp .or. correct) then
 c
@@ -318,7 +318,7 @@ c  cycle for norming of datum variables, evaluating of no_valid_arrival
 c
          do i=1,nrec
 c
-c  test on repeat of location or correct hypofile
+c  test on repeat of location or correct hypfile
 c
             if (rp .or. correct) then
 c

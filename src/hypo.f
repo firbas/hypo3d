@@ -17,7 +17,7 @@ c
 c     - input data are taken from these files:
 c       1) file containing crustal model and station list
 c       2) file with surface definition
-c       3) hypofile containing seismic phase arrival data
+c       3) hypfile containing seismic phase arrival data
 c
 c  ************
 c  declarations
@@ -73,7 +73,7 @@ c
          integer i,j                         !aux. var.
 
          integer string_length
-         character*255 string, hyponame, hyp3name
+         character*255 string, hypname, hy3name
          character*255 ch_model_name         !name of crustal model
 
 c
@@ -148,7 +148,7 @@ c
          integer             i0              !no. of iter. cycle
          common /srfc/       fix_surface,fix_depth,i0
 c
-c  common of hypofile items ... noncharacter part, average weight
+c  common of hypfile items ... noncharacter part, average weight
 c
          logical             hyr
          real                trec(nrec_max)  !observed times
@@ -264,70 +264,93 @@ c  initialization of model_error variable (and other variables -VD)
 c
          model_error=-1.0
          ch_model_name=' '
-         hyponame=' '
-         hyp3name=' '
+         hypname=' '
+         hy3name=' '
 c
 c  for the first: get runstring
 c
          j=iargc()
+
+         if ( j .lt. 3 .or. j .gt. 6 ) then
+            call runstrinf
+         endif 
 c
 c  for the second: decode parameters
 c
-         do i=1,j
+         i = 1
+         do while ( i .le. j)
             call getarg(i,string)
+            i = i + 1
             string_length=lnblnk(string)
-            if (string(1:2).eq.'-?'.or.string(1:2).eq.'-X'.or.
-     *            string(1:2).eq.'-x') then
+            if (string(1:2).eq.'-?') then
 c
-c  call runstring parameters information
-c
-               write(*,*) 'Online information is not available'
+               call runstrinf
 c
             else if (string(1:2).eq.'-i'.or.string(1:2).eq.'-I') then
+c  name of input hypfile
 c
-c  name of hypofile
-c
-               hyponame=string(3:lnblnk(string))
+               if (string_length .eq. 2) then
+                 call getarg(i,string) 
+                 if (string(1:1) .ne. '-') then
+                    hypname=string(1:lnblnk(string))
+                    i = i + 1
+                 endif
+               else
+                 hypname=string(3:lnblnk(string))
+               endif
 
             else if (string(1:2).eq.'-O'.or.string(1:2).eq.'-o') then
+c  name of output hy3file
 c
-c  name of output file
-c
-               hyp3name=string(3:lnblnk(string))
+               if (string_length .eq. 2) then
+                 call getarg(i,string)
+                 if (string(1:1) .ne. '-') then
+                    hy3name=string(1:lnblnk(string))
+                    i = i + 1
+                 endif
+               else
+                 hy3name=string(3:lnblnk(string))
+               endif
+
 c
             else if (string(1:2).eq.'-M'.or.string(1:2).eq.'-m') then
-c
 c  name of model file
 c
-               ch_model_name=string(3:lnblnk(string))
+               if (string_length .eq. 2) then
+                 call getarg(i,string)
+                 if (string(1:1) .ne. '-') then
+                    ch_model_name=string(1:lnblnk(string))
+                    i = i + 1
+                 endif
+               else
+                 ch_model_name=string(3:lnblnk(string))
+               endif
+
             else
 c
-               write (*,
-     >         '(1x,a,": Error - wrong parameter ",a)')
-     >          prog_name,string(1:2)
+               write (*,'(1x,a,": Error - wrong parameter ",a)')
+     >           prog_name,string
+               call runstrinf
             endif
          end do                                ! decoding of parameters
 c
-         if(hyponame.eq.' ') then
-            write(*,*) 'Error: Hypofile name not given'
-            write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
-            call exit
+         if(hypname.eq.' ') then
+            write(*,*) 'Error: Hypfile name not given'
+            call runstrinf
          endif
-         if(hyp3name.eq.' ') then
-            write(*,*) 'Error: Hypofile name not given'
-            write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
-            call exit
+         if(hy3name.eq.' ') then
+            write(*,*) 'Error: Hy3file name not given'
+            call runstrinf
          endif
          if (ch_model_name.eq.' ') then
             write(*,*) 'Error: Modelfile name not given'
-            write(*,*) 'Usage: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
-            call exit
+            call runstrinf
          endif
-         hypfn=hyponame
+         hypfn=hypname
          modfn=ch_model_name
 c
 c
-         write(*,*) 'Hypofile is  ',hypfn(1:lnblnk(hypfn))
+         write(*,*) 'Hypfile is  ',hypfn(1:lnblnk(hypfn))
          write(*,*) 'Model is  ',modfn(1:lnblnk(hypfn))
          rms_on_sphere = .false.
          loc_write     = .false.
@@ -350,13 +373,13 @@ c  increment number of locations
 c
          n_of_location=n_of_location+1
 
-c  input of hypofile, crustal model, initialize of spline surface common
+c  input of hypfile, crustal model, initialize of spline surface common
 c
          call i_hyp_mod
 
          if (nrec .lt. 3) then
             write (*,
-     >      '(1x,a,": Error - no. of arrivals in hypofile ",
+     >      '(1x,a,": Error - no. of arrivals in hypfile ",
      >    " < 3.")') prog_name
             call exit
          endif
@@ -407,10 +430,10 @@ c
 c  number of valid arrivals must be 3 at least
 c
          if (no_valid_arrivals  .lt. 3) then
-            write (*,'(1x,a,": # of arrivals in hypofile  <  3 "/
-     >    "         Try another hypofile.")') prog_name
+            write (*,'(1x,a,": # of arrivals in hypfile  <  3 "/
+     >    "         Try another hypfile.")') prog_name
 c
-c  fatal situation in original hypofile
+c  fatal situation in original hypfile
 c
             call abort
 c
@@ -1057,7 +1080,7 @@ c
             go to 90
          else if (i_menu.eq.2) then
             write(*,*) 'Writing dbfile'
-            call create_dbfile(hyp3name)
+            call create_dbfile(hy3name)
 c
 c  next menu
 c
@@ -1073,3 +1096,9 @@ c
 c  end of main program
 c
       end program HYPO
+
+      subroutine runstrinf
+            write(*,*) 'Usage: hypo3d -i<input> -o<output> -m<model>'
+            write(*,*) 'Example: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
+            call exit
+      end subroutine runstrinf

@@ -33,7 +33,7 @@ The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for ea
 between the source and the receiver point.
 Travel-time is calculated for each source-receiver pair in the following steps:
 1) A vertical plane cross-section of the 3-d velocity model is made between the source and the receiver.
-2) The conversion procedure for the 1-d model consists in preserving horizontal layers (the floor in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity so that the travel-time between the source and the receiver in this layer is equivalent (time-averaged velocity).
+2) The conversion procedure for the 1-d model consists in preserving horizontal layers (floors in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity so that the travel-time between the source and the receiver placed in this layer is equivalent.
 3) A ray is computed in the 1-d velocity model, using two-point fast ray-tracing scheme taken from the HYPO71.
 4) The travel-time is then calculated by integrating in the 3-d velocity model along the ray path approximately calculated in the previous step.
 
@@ -55,7 +55,7 @@ whose ray paths are passing close to the curved surface. -->
 <p align="center">
 <img src="doc/img/downdip.png" alt="Hypo3d ray tracing" width="60%" />
 <br>
-Hypo3d ray tracing along the dipping planar interface.
+Hypo3d approximate ray tracing along the dipping planar interface.
 </p>
 
 The HYPO3D program was originally designed to locate an earthquake using short-distance direct phases in a local seismic network.
@@ -163,7 +163,7 @@ The original documentation of the program is in the report
 [Firbas P., Werl M.: HYPO3D, rev. 9.00. Lokalizace ve 3D blokovém prostředí. Etapová zpráva. Geofyzika n.p., Brno 1988](https://github.com/firbas/hypo3d/blob/master/doc/hypo3d_Werl.pdf)
 
 Additional information
-([starting the program](https://github.com/firbas/hypo3d/wiki#starting-the-hypo3d-program), formats)
+([running the program](https://github.com/firbas/hypo3d/wiki#starting-the-hypo3d-program), formats)
 is available at the wiki site:
 https://github.com/firbas/hypo3d/wiki
 

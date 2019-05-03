@@ -1,3 +1,8 @@
+2019-05-03 pz v10.74
+
+Parse command line options less strictly -- in the getopt short options
+style.
+========================================================================
 2019-04-02 pz v10.73
 
 1) o_hy3.f: Write the print into multiple instructions.

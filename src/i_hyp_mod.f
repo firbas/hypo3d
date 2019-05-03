@@ -9,7 +9,7 @@ c-----------------------------------------------------------------------------
 c
 c  purpose:
 c
-c     read crustal model and hypofile
+c     read crustal model and hypfile
 c
 c-----------------------------------------------------------------------------
 c
@@ -145,7 +145,7 @@ c  *******************
 c
 c=============================================================================
 c
-         write(*,*) 'INP: Hypofile is  ', hypfn(1:lnblnk(hypfn))
+         write(*,*) 'INP: Hypfile is  ', hypfn(1:lnblnk(hypfn))
 c ----------------------------------------------------------------------------
 c 2018-09 10.69
          hyr = .false.
@@ -156,7 +156,7 @@ c 2018-09 10.69
 c ----------------------------------------------------------------------------
          ios = 0
 c
-c  open the hypofile ... it must exist! (status=old)
+c  open the hypfile ... it must exist! (status=old)
 c
          open (luhypo,file=hypfn,iostat=ios,status='OLD')
          if (ios.ne.0) then
@@ -276,14 +276,14 @@ c  close the crustal model file
 c
          close (lucrmod,status='KEEP')
 c
-c  read in data from hypofile
+c  read in data from hypfile
 c
          i = 0
          j = 0
          do while (.true.)
             i = i + 1
 c
-c  read in one line from hypofile
+c  read in one line from hypfile
 c
             read (luhypo,'(a)',end=87) line
 c
@@ -362,18 +362,18 @@ c
 71          continue
          end do
 c
-c  part for error in reading of hypofile
+c  part for error in reading of hypfile
 c
 86       continue
 c
-c  close hypofile
+c  close hypfile
 c
          close (luhypo,status='KEEP')
          call EXIT(0)
 c
 87       continue
 c
-c  hypofile is OK
+c  hypfile is OK
 c
          close (luhypo,status='KEEP')
 c

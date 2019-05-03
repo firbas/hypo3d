@@ -184,7 +184,7 @@ c
 
          else if (answer .eq. 'E') then
 c
-c  go to the next hypofile (if exist)
+c  go to the next hypfile (if exist)
 c
             i_menu=4
          else
