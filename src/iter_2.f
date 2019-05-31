@@ -66,7 +66,10 @@ c
          integer*4  l4(4)
          integer*4  m4(4)
          real*8  c1(16)
-         real*8  r(16)
+c         real*8  r(16)
+         real*8  r(4,4)
+         real*8  e(4)
+         real*8  hax
          real    delay
          real    coef
 c
@@ -133,14 +136,15 @@ c
          real            scan_end
          real            scan_step
          common /scan/   scan_depth,scan_start,scan_end,scan_step
-
-         logical         nan_dx, nan_dy, nan_dz, nan_dt
-         common /nan/    nan_dx, nan_dy, nan_dz, nan_dt
 c
 c  common for coord. of trial hypocenter
 c
          real                x0,y0,z0        !coord. of trial hypocenter
          common /centr/      x0,y0,z0
+
+         logical         ee_nan(4)
+         common /nan/    ee_nan
+
 c
 c  functions
 c
@@ -213,7 +217,7 @@ c
 c
 c  evaluate eigenvalues
 c
-         call EIGEN_O(c1,r,4,1)
+         call EIGEN(c1,r,4,1)
 c
 c  eigenvalues are stored on diagonal in decreasing order
 c  i.e. minimal value is in last element
@@ -222,8 +226,7 @@ c
 c
 c  test: minimal value of eigenvalues greater then damp level?
 c
-c            if (abs(c1(10)).gt.damp_level) then
-            if (min(abs(c1(1)),abs(c1(3)),abs(c1(6)),abs(c1(10))).gt.damp_level) then
+            if (abs(c1(10)).gt.damp_level) then
 c
 c  yes ... no damping
 c
@@ -296,31 +299,8 @@ c
             endif
          endif ! .not.endit
 c ===========================================================================
-c 2019-02-26 pz v10.73
-         nan_dx=.false.
-         nan_dy=.false.
-         nan_dz=.false.
-         nan_dt=.false.
+c 2019-05-31 pz v10.75
          if (endit) then
-            if (abs(c1(1)).lt.10*kappa .and. .not. fix_x) then
-               nan_dx=.true.
-            endif  !c1
-            if (abs(c1(3)).lt.10*kappa .and. .not. fix_y) then
-               nan_dy=.true.
-            endif  !c1
-            if (abs(c1(6)).lt.10*kappa .and. .not. fix_depth) then
-c the singular value belongs to the z coordinate
-               nan_dz=.true.
-            endif  !c1
-            if (abs(c1(10)).lt.10*kappa .and. .not. fix_otime) then
-               nan_dt=.true.
-            endif  !c1
-c
-            if (nan_dx .or. nan_dy .or. nan_dz .or. nan_dt) then
-               do i=1,4
-                  c(i,i)=c(i,i)+kappa
-               end do
-            endif  !nan
 c
             if (fix_surface .or. (fix_depth .and. z0 < 0.1 )) then
                do i=1,4
@@ -328,8 +308,59 @@ c
                   c(i,3)=0.0
                end do
                c(3,3)=1.0
-c               b(3)=0.0
             endif
+c
+            if (fix_otime) then
+               do i=1,4
+                  c(4,i)=0.0
+                  c(i,4)=0.0
+               end do
+               c(4,4)=1.0
+            endif
+c Test the error ellipse solvability before calculating the covariance 
+c matrix using normal matrix eigenvector factorization.
+c
+c  store upper triangular portion of symmetric matrix C to vector C1,
+c  EIGEN storage mode code = 1
+         k=0
+         do j=1,4
+            do i=1,4
+               if(i.le.j) then
+                  k=k+1
+                  c1(k)=c(i,j)
+               endif
+            end do
+         end do
+c
+         call EIGEN(c1,r,4,0)
+
+         e(1)=c1(1)
+         e(2)=c1(3)
+         e(3)=c1(6)
+         e(4)=c1(10)
+
+c      write(*,'(1x,I5,"::",4F14.8)') (i,r(:,i)/sqrt(e(i)), i=1,4)
+     
+         do i=1,4
+            ee_nan(i) = .false.
+         end do
+          
+         do j=1,4
+            do i=1,4
+               hax = r(i,j)/sqrt(e(j))
+               if (abs(hax)*0.05 > 20.0 .or. hax-1 .eq. hax) then
+c The axis of the error ellipse is too long or even infinite.
+c x: i=1, y: i=2, z: i=3, t: i=4
+                  ee_nan(i) = .true.
+               endif
+            end do
+         end do
+
+            if (abs(c1(10)).lt.10*kappa) then
+               do i=1,4
+                  c(i,i)=c(i,i)+kappa
+               end do
+            endif  
 c
          endif    !endit
 c ===========================================================================

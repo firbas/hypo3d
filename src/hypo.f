@@ -864,22 +864,12 @@ c
 c
 c  estimated error of model ... model_error
 c
-c            if (rmsres_co.ne.9.99**2) then
-c  degree of freedom is greater then 0
-c  set estimate of error for error analysis
-c
                   rmsres_co=rmsres_co+model_error**2
-c            endif
-c
-c  test on evaluatimg of errors
-c
-c            if (rmsres_co.ne.9.99**2) then
 c
 c  compute covariance matrix  co: (A+&)INV * A * (A+&)INV
 c   & ... damping
 c
                call cov_matrix
-c            endif
 c
             go to 155
          else
@@ -985,7 +975,6 @@ c  set values of coord. of epicenter
 c
                x0=999.99
                y0=999.99
-               rmsres=9.99**2
             else
 c
 c  write message for the case of end of the location

@@ -40,7 +40,7 @@ C           H.S. WILF, JOHN WILEY AND SONS, NEW YORK, 1962, CHAPTER 7
 C
 C     ..................................................................
 C
-      SUBROUTINE EIGEN_O(A,R,N,MV)
+      SUBROUTINE EIGEN(A,R,N,MV)
          DIMENSION A(N*N),R(N*N)
 C
 C        ...............................................................
@@ -179,26 +179,25 @@ C
 C
 C        SORT EIGENVALUES AND EIGENVECTORS
 C
-  165    CONTINUE
-c  165    IQ=-N
-c         DO 185 I=1,N
-c            IQ=IQ+N
-c            LL=I+(I*I-I)/2
-c            JQ=N*(I-2)
-c            DO 185 J=I,N
-c               JQ=JQ+N
-c               MM=J+(J*J-J)/2
-c               IF(A(LL)-A(MM)) 170,185,185
-c  170          X=A(LL)
-c               A(LL)=A(MM)
-c               A(MM)=X
-c               IF(MV-1) 175,185,175
-c  175          DO 180 K=1,N
-c                  ILR=IQ+K
-c                  IMR=JQ+K
-c                  X=R(ILR)
-c                  R(ILR)=R(IMR)
-c  180          R(IMR)=X
-c  185    CONTINUE
+  165    IQ=-N
+         DO 185 I=1,N
+            IQ=IQ+N
+            LL=I+(I*I-I)/2
+            JQ=N*(I-2)
+            DO 185 J=I,N
+               JQ=JQ+N
+               MM=J+(J*J-J)/2
+               IF(A(LL)-A(MM)) 170,185,185
+  170          X=A(LL)
+               A(LL)=A(MM)
+               A(MM)=X
+               IF(MV-1) 175,185,175
+  175          DO 180 K=1,N
+                  ILR=IQ+K
+                  IMR=JQ+K
+                  X=R(ILR)
+                  R(ILR)=R(IMR)
+  180          R(IMR)=X
+  185    CONTINUE
          RETURN
-      END subroutine EIGEN_O
+      END subroutine EIGEN

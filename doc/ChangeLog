@@ -1,3 +1,12 @@
+2019-05-31 pz v10.75
+
+1) Test the error ellipse solvability before calculating the covariance 
+matrix using normal matrix eigenvector factorization.
+2) Return EIGEN with eigennumbers sorted by size.
+3) Do not use special values of numeric variables for computational 
+state (rmsres_co=9.99**2).
+4) Use logic variables for computational state (ee_nan).
+========================================================================
 2019-05-03 pz v10.74
 
 Parse command line options less strictly -- in the getopt short options
