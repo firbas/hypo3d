@@ -1,3 +1,12 @@
+2019-06-06 pz v10.75
+
+Take back the format changes of the hy3 output file (specifically,
+the broader field for the station name).
+Hypo3d can be called from geotool. But the hy3 parser is written very
+easily in geotool (data is read from fixed positions - rows and column
+numbers) and this prevents the modification of the hypo3d program - eg
+seismic station names from 4 to 5 characters.
+========================================================================
 2019-05-31 pz v10.75
 
 1) Test the error ellipse solvability before calculating the covariance 
