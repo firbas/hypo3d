@@ -231,12 +231,6 @@ c
          character*1     symbol_otime
          common /symb/   symbol_x,symbol_y,symbol_depth,symbol_otime
 c
-c  common for flag of existence of wrong station name
-c
-         logical        err_stname
-         logical        w_changes
-         common /ernam/ err_stname,w_changes
-c
 c  common for flag for locfile writting
 c
          logical       loc                   !was written locfile?

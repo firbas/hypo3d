@@ -157,6 +157,14 @@ which does not change the features of the computer program.
 
 <!-- The program would require such substantial modifications that it is better not to do so on this basis. -->
 
+## Installing
+
+The program was adapted for the Linux environment and the gfortran compiler.
+The easiest way to compile is to use the supplied Makefile which
+creates the binary hypo3d inside the source tree.
+This build is fully static and hypo3d can be manually copied to binary path.
+
+
 ## Documentation
 
 The original documentation of the program is in the report

@@ -162,10 +162,6 @@ c
          logical         endit               !end of iteration process?
          common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
 c
-         logical        err_stname
-         logical        w_changes
-         common /ernam/ err_stname,w_changes
-c
          real                wt1(nrec_max)
          common /wt_1/       wt1
 c
@@ -197,10 +193,6 @@ c  test on repeat of location
 c
          if (.not.rp) then
 c
-c  initialize of flag for error in station names
-c
-            err_stname=.false.
-c
             j = 0
             k = 0
             no_valid_arrival  = 0
@@ -220,9 +212,7 @@ c
                   endif
                end do
 c
-c  set flag for error in station names
-c
-               err_stname=.true.
+c  error in station name
 c
                write (*,'(1x,a,": Error - station ",a5,
      >        " not found in station list -> will be ignored.")')

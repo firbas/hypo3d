@@ -1,3 +1,11 @@
+2019-06-10 pz v10.76
+
+After modifying the geotool-hypo3d interface (geotool plugin Hypo3D.c)
+it is possible to continue editing the hypo3d program.
+Extend the station code to five characters to meet the SEED convention.
+In the hyp input file format and in the hy3 output file format,
+add one column (space) as the delimiter between station name and phase.
+========================================================================
 2019-06-06 pz v10.75
 
 Take back the format changes of the hy3 output file (specifically,
