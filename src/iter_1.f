@@ -236,10 +236,15 @@ c
 c  evaluate no. of constraints
 c
          n_constr=4
-         if (fix_x) n_constr=n_constr-1
-         if (fix_y) n_constr=n_constr-1
-         if (fix_depth) n_constr=n_constr-1
-         if (fix_otime) n_constr=n_constr-1
+c ----------------------------------------------------------------
+c 2020-02-01 pz v10.77
+c In the case of coordinate fixation, an unbiased estimate
+c of the standard deviation is still calculated
+c with four degrees of freedom
+c         if (fix_x) n_constr=n_constr-1
+c         if (fix_y) n_constr=n_constr-1
+c         if (fix_depth) n_constr=n_constr-1
+c         if (fix_otime) n_constr=n_constr-1
 c
          if (no_valid_arrivals-n_constr.le.0) then
 c            rmsres_co=9.99**2

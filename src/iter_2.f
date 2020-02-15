@@ -302,7 +302,7 @@ c ===========================================================================
 c 2019-05-31 pz v10.75
          if (endit) then
 c
-            if (fix_surface .or. (fix_depth .and. z0 < 0.1 )) then
+            if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
                do i=1,4
                   c(3,i)=0.0
                   c(i,3)=0.0

@@ -132,7 +132,11 @@ c
                   end do        !l
 c
 c  element i,m of cov. matrix
-                  co(i,m)=real(sum8_co*rmsres_co,4)
+c ---------------------------------------------------------------------
+c 2020-02-01 pz v10.77
+c compensate weights normed by avwt
+                  co(i,m)=real(sum8_co/avwt*rmsres_co,4)
+c ---------------------------------------------------------------------
                end do  !m
             end do     !i
 c

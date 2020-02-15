@@ -9,8 +9,8 @@ This software has been in use at the Institute of Physics of the Earth, Masaryk 
 
 The program is an implementation of the classical Geiger’s method for earthquake location.
 Another inspiration was the HYPO71 (http://www.jclahr.com/science/software/hypo71/index.html)
-[[Lee and Lahr 1975](#lee1975)],
-ray tracing is based on a modified TRVDRV subroutine written by [[Eaton 1969](#eaton1969)].
+\[[Lee and Lahr 1975](#lee1975)\],
+ray tracing is based on a modified TRVDRV subroutine written by \[[Eaton 1969](#eaton1969)\].
 
 ### Velocity model
 The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
@@ -38,14 +38,14 @@ Travel-time is calculated for each source-receiver pair in the following steps:
 4) The travel-time is then calculated by integrating in the 3-d velocity model along the ray path approximately calculated in the previous step.
 
 The authors of the computer program justify this approach by reference to
-[[Romanov 1972](#romanov1972), [Firbas 1984](#firbas1984)]
+\[[Romanov 1972](#romanov1972), [Firbas 1984](#firbas1984)\]
 and consider this solution to be a linearization approach.
 
 ### Applicability limits
 We see that the modeling solution described above is a kind of non-iterative perturbation method.
 This method assumes that the problem is regular (a small perturbance in ray-path will cause small difference in the travel-time).
 This is not case for all type of seismic phases.
-It is known [[Ryaboy 2001](#ryaboy2001)] that described procedure does not guarantee sufficient accuracy
+It is known \[[Ryaboy 2001](#ryaboy2001)\] that described procedure does not guarantee sufficient accuracy
 for refracted or head waves that pass along curved or sloping interfaces.
 <!-- [[Ryaboy 2001](#ryaboy2001)] writes that
 the linearization approach, which can be successfully applied in seismic tomography,
@@ -157,7 +157,7 @@ which does not change the features of the computer program.
 
 <!-- The program would require such substantial modifications that it is better not to do so on this basis. -->
 
-## Installing
+## Installation
 
 The program was adapted for the Linux environment and the gfortran compiler.
 The easiest way to compile is to use the supplied Makefile which

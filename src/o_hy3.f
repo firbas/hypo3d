@@ -193,12 +193,6 @@ c
          logical         fix_otime
          common /f_mode/ fix_x,fix_y,fix_otime
 c
-         logical         scan_depth
-         real            scan_start
-         real            scan_end
-         real            scan_step
-         common /scan/   scan_depth,scan_start,scan_end,scan_step
-c
          real            nangle
          common /nangl/  nangle
 
@@ -269,12 +263,11 @@ c ====================================================================
          dzer=sqrt(abs(co(3,3)))
          dter=sqrt(abs(co(4,4)))
 c --------------------------------------------------------------------
-c In the case of coordinate fixation, the calculation of the error
-c covariance matrix is not reduced, except in the following cases:
-c
-c modify covariance matrix for fixed coordinates
+c In the case of coordinate fixation, the calculation of the error ell
+c is not reduced, except in the following cases:
 
-         if (fix_depth) then
+c modify for fixed coordinates
+         if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
             dzer=0.0
          endif
 
@@ -394,7 +387,7 @@ c
              strFixT="       "
          endif
          
-         write (lulist,'("fixed coordinates:(",a7,",",a7,",",a7,",",a7")")')
+         write (lulist,'("fixed coordinates:(",a7,",",a7,",",a7,",",a7,")")')
      >   strFixX, strFixY, strFixZ, strFixT 
          write (lulist,*)
          write (lulist,'("reference time:",
