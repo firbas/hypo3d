@@ -74,8 +74,6 @@ c
          integer i,j
          integer isec,msec
 c
-         real    delay
-         real    coef
          real    dtemp
          real    deter
          real    d11,d21,d22
@@ -267,7 +265,8 @@ c In the case of coordinate fixation, the calculation of the error ell
 c is not reduced, except in the following cases:
 
 c modify for fixed coordinates
-         if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
+c         if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
+         if (fix_surface) then
             dzer=0.0
          endif
 
@@ -423,27 +422,16 @@ c
 c cycle for writing station distances,etc.
 c
          do i=1,nrec
-c
-            if (zp.lt.surf_ev) then
-c
-c  model for surface event ... with station delays
-c
-               delay=dly(key(i))
-            else
-               delay=0.0
-            endif
-c
+
             if (hyr) then
                if (type(i).eq.'S') then
-                  coef=p_over_s
                   write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0-coef*delay,
+     >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5),xmag(i)
                else
-                  coef=1.
                   write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0-coef*delay,
+     >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5)
                endif
@@ -451,15 +439,13 @@ c
             else      ! hyr == .false.
 c
                if (type(i).eq.'S') then
-                  coef=p_over_s
                   write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0-coef*delay,
+     >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5),xmag(i)
                else
-                  coef=1.
                   write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0-coef*delay,
+     >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5)
                endif

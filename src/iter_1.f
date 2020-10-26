@@ -60,8 +60,6 @@ c
          integer         n_constr            !# of constraints
          real            dtime
          real            dtime_co
-         real            delay
-         real            coef
          real*8          sum8
 c
 c  global variables
@@ -156,21 +154,7 @@ c  initialize of origin time
 c
             sum8=0.0
             do i=1,nrec
-               if (c_hypo(3).lt.surf_ev) then
-c
-c  model for surface event ... with station delays
-c
-                  delay=dly(key(i))
-               else
-                  delay=0.0
-               endif
-c
-               if (type(i).eq.'S') then
-                  coef=p_over_s
-               else
-                  coef=1.
-               endif
-               sum8=sum8+(trec(i)-tcal(i)-coef*delay)*wt(i)
+               sum8=sum8+(trec(i)-tcal(i))*wt(i)
             end do
 c
             t0=real(sum8/no_valid_arrivals,4)
@@ -183,21 +167,7 @@ c
          rmsres_co=0.0
 c
          do i=1,nrec
-            if (c_hypo(3).lt.surf_ev) then
-c
-c  model for surface event ... with station delays
-c
-               delay=dly(key(i))
-            else
-               delay=0.0
-            endif
-c
-            if (type(i).eq.'S') then
-               coef=p_over_s
-            else
-               coef=1.
-            endif
-            dtime = trec(i) - t0 - tcal(i) - coef*delay  !casova rezidua
+            dtime = trec(i) - t0 - tcal(i) !casova rezidua
 c
 c  endit=true ... for covariance matrix
 c

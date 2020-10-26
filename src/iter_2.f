@@ -70,8 +70,6 @@ c         real*8  r(16)
          real*8  r(4,4)
          real*8  e(4)
          real*8  hax
-         real    delay
-         real    coef
 c
 c  global variables
 c
@@ -161,26 +159,10 @@ c
          do j=1,4
             sum8=0.0
             do i=1,nrec
-               if (c_hypo(3).lt.surf_ev) then
-c
-c  model for surface event ... with station delays
-c
-                  delay=dly(key(i))
-               else
-                  delay=0.0
-               endif
-c
-               if (type(i).eq.'S') then
-                  coef=p_over_s
-               else
-                  coef=1.
-               endif
                if (hyr) then
-                  sum8=sum8+xc(j,i)*wt(i)
-     >               *(trec(i)-t0-tcal(i)-coef*delay)*wt(i)
+                  sum8=sum8+xc(j,i)*wt(i)*(trec(i)-t0-tcal(i))*wt(i)
                else
-                  sum8=sum8+xc(j,i)*wt(i)
-     >               *(trec(i)-t0-tcal(i)-coef*delay)
+                  sum8=sum8+xc(j,i)*wt(i)*(trec(i)-t0-tcal(i))
                endif    !hyr
             end do
             b(j)=sum8
@@ -302,7 +284,8 @@ c ===========================================================================
 c 2019-05-31 pz v10.75
          if (endit) then
 c
-            if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
+c            if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
+            if (fix_surface) then
                do i=1,4
                   c(3,i)=0.0
                   c(i,3)=0.0

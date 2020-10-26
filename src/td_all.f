@@ -62,6 +62,7 @@ c
          real              c_stat(3)
          real              td(4)
          integer           i
+         real              delay
 c
 c  global variables
 c
@@ -87,7 +88,8 @@ c
          real              toa(nrec_max)
          common /toa/      toa               !take-off angle
 c
-c  functions  ...  none
+         real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
+         common /p_over_s/   p_over_s
 c
 c
 c  *******************
@@ -168,6 +170,7 @@ c
 c
 c  set arrays for following computing
 c
+            delay=dly(key(i))
 c
 c  1) travel time
 c
@@ -188,18 +191,21 @@ c  4) derivative on the z
 c
             xc(3,i)=td(4)
 c
+c  station delay
+           tcal(i)=tcal(i)+delay
 c  test on S-wave
 c
             if (type(i) .eq. 'S') then
 c
 c  s-wave ... provide conversion
 c
-               tcal(i) =tcal(i)*p_over_s
-               xc(1,i)=xc(1,i)*p_over_s
-               xc(2,i)=xc(2,i)*p_over_s
-               xc(3,i)=xc(3,i)*p_over_s
+               tcal(i) = tcal(i)*p_over_s
+               xc(1,i) = xc(1,i)*p_over_s
+               xc(2,i) = xc(2,i)*p_over_s
+               xc(3,i) = xc(3,i)*p_over_s
             endif
 c
+
          end do                              !of main cycle
 c
          return

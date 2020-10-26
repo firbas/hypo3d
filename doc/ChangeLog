@@ -1,3 +1,12 @@
+2020-10-26 pz v10.78
+
+Revision focused on the application of station delay corrections.
+1) Add the station delay to the predicted time at only one place
+in the td_all.f.
+2) Print tcal also including station delay to output hy3.
+3) Remove the surf_ev switch that controls whether station delays are
+used depending on the depth of the hypocenter (nonsense).
+========================================================================
 2020-02-15 pz v10.77
 
 Compensate the weights normalized with avwt in the covariance matrix

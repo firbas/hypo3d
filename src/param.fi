@@ -16,16 +16,5 @@ c      parameter (z_layer  = 40)
       integer nrec_max                    !maximum number of recorded arrivals
       parameter (nrec_max = 80)
 
-      real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
-      common /p_over_s/   p_over_s
-
       real    vair                        !velocity of sound wave in air
       parameter (vair = 0.300)
-
-      real    p_decrease                  !parameter of decreasing of step in
-      parameter (p_decrease = 2.)         !unsuccessful iteration
-
-      real surf_ev
-      parameter (surf_ev = 1000.)         !switch for station delays
-                                          !depth of hypocenter < surf_ev -->
-                                          !use station delays

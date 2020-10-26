@@ -100,6 +100,9 @@ c
          real             p_x_shift, p_y_shift
          common /p_posun/ p_fi, p_x_shift, p_y_shift
 c
+         real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
+         common /p_over_s/   p_over_s
+
 c  *******************
 c  end of declarations
 c  *******************

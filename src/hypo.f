@@ -28,10 +28,13 @@ c
 c  local parameters
 c
          integer maxIter
-         real    max_change_z
-c
          parameter (maxIter = 50)            !max. number of iterations
+
+         real    max_change_z
          parameter (max_change_z = 5.)       !max. change of z-coord. in 1 it
+
+         real    p_decrease                  !parameter of decreasing of step in
+         parameter (p_decrease = 2.)         !unsuccessful iteration
 
 c  global parameters
 c
