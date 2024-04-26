@@ -75,8 +75,8 @@ c
          real            dly(nStation)   !stations delays for surf. events
          common /rec/    nrec,xstat,ystat,zstat,dly
 c
-         character*1     type(nrec_max)
-         common /chrec/  type
+         character*1     phase(nrec_max)
+         common /chrec/  phase
 c
          real            x0
          real            y0
@@ -126,21 +126,9 @@ c
             endif
 c
 
-c          if (type(i).eq.'P' .and. i.lt.nrec) then
-cc
-cc  evaluating for S-arr., if only P-arrival then eval. for P-arr.
-cc
-c              if (rec_name(i).eq.rec_name(i+1) .and.
-c     >           type(i+1).eq.'S' .and. amp(i+1).gt.0.0) then
-c                  xmag(i)=-9.9
-c                  go to 40
-c              endif
-c          endif
-
-c
             xmag(i)=-9.9
 
-            if (type(i).eq.'S' .and. amp(i)>0.0) then
+            if (phase(i).eq.'S' .and. amp(i)>0.0) then
 c
 c  distance hypocenter - record. station
 c
@@ -165,8 +153,6 @@ c
                sdm=sdm+xmag(i)**2
 
             endif
-
-
 
    40       continue
          end do

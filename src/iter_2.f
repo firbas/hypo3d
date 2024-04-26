@@ -88,12 +88,6 @@ c
          real              xc(4,nrec_max)
          common /cal_time/ tcal,xc
 c
-         character*1     type (nrec_max)
-         common /chrec/  type
-c
-         integer         key  (nrec_max)
-         common /stmod/  key
-c
          logical         hyr
          real            trec (nrec_max)
          real            wt   (nrec_max)

@@ -28,7 +28,6 @@ c
 c  external references:
 c
 c     READ_MODEL          pz subroutine
-c     lnblnk              RL subroutine
 c     SPLINE_IN           spline subroutine
 c
 c----------------------------------------------------------------------------
@@ -61,10 +60,6 @@ c
 c
 c  local variables
 c
-         integer     ix
-         integer     iy
-         integer     iz
-         integer     np
          integer     i
          integer     j
 c            integer     iwt
@@ -87,8 +82,6 @@ c            integer     iwt
          real   pwt, mwt
 c
 c  global variables
-         real                v3(x_layer,y_layer,z_layer)
-         common /model_3d/   v3
 c
          real                xl(x_layer-1)
          real                yl(y_layer-1)
@@ -105,8 +98,8 @@ c
          real                dly  (nStation)
          common /rec/        nrec,xstat,ystat,zstat,dly
 c
-         character*1         type(nrec_max)
-         common /chrec/      type
+         character*1         phase(nrec_max)
+         common /chrec/      phase
 c
          integer             key (nrec_max)
          common /stmod/      key
@@ -134,18 +127,18 @@ c
          character*255      hypfn
          character*255      modfn
          common /hymofn/ hypfn,modfn
-c
-c  functions
-c
-         integer             lnblnk
-c
-c  *******************
-c  end of declarations
-c  *******************
-c
+
+c ----------------------------------------------------------------------
+c 2024-04-22 pz
+c two velocity models
+         real v3p(x_layer,y_layer,z_layer)
+         real v3s(x_layer,y_layer,z_layer)
+         common /model_3d/ v3p,v3s
+
 c=============================================================================
+c        ip_v3=loc(v3p)
 c
-         write(*,*) 'INP: Hypfile is  ', hypfn(1:lnblnk(hypfn))
+         write(*,*) 'INP: Hypfile is  ', trim(hypfn)
 c ----------------------------------------------------------------------------
 c 2018-09 10.69
          hyr = .false.
@@ -157,123 +150,46 @@ c ----------------------------------------------------------------------------
          ios = 0
 c
 c  open the hypfile ... it must exist! (status=old)
-c
          open (luhypo,file=hypfn,iostat=ios,status='OLD')
          if (ios.ne.0) then
-            write (*,'(1x,a,": File ",a," failed to read.")') prog_name,
-     >                                     hypfn(1:lnblnk(hypfn))
+            write (*,'(1x,a,": File ",a," failed to read.")')
+     >           prog_name, trim(hypfn)
             call EXIT(1)
          endif
 c
 c  open crustal model file
-c
          open (lucrmod,file=modfn,iostat=ios,status='OLD')
          if (ios.ne.0) then
-            write (*,'(1x,a,": File ",a," failed to read.")') prog_name,
-     >                                     modfn(1:lnblnk(modfn))
+            write (*,'(1x,a,": File ",a," failed to read.")')
+     >           prog_name, trim(modfn)
             call EXIT(1)
          endif
 c
-c  read crustal model file, read in station data
+c  read crustal model file
+         write (*,'(1x,a,": Reading ",a)') prog_name, trim(modfn)
+c  read header data
+         call read_model_header(lucrmod)
+c  read station data
+         call read_model_sta(lucrmod)
+c  read name of SURFACE file
+         read (lucrmod, * ,iostat=ios,err=115,end=115) surname
+         go to 120
 c
-         call read_model(lucrmod,surname)
+c  label for error
+115      continue
+         call abort
+c
+120      continue
+c
+c read velocities
+         call read_model_vel(lucrmod)
 c
 c  initialize spline common for surface computing
-c
          call spline_in (lu_surface,surname)
-c
-c  write the message  ...  read crustal model
-c
-         write (*,'(1x,a,": Reading ",a)') prog_name,
-     >                                     modfn(1:lnblnk(modfn))
-c
-c  skip one comment line
-c
-         read (lucrmod,*,end=80)
-c
-c  read in number of layers in direction x, y, z
-c
-         read (lucrmod, * ,err=80,iostat=ios,end=80) nxl,nyl,nzl
-         np=nxl-1
-c
-c  skip one comment line
-c
-         read (lucrmod,*,end=80)
-c
-c  read in value of interfaces in directions x, y, z
-c
-c  direction x:
-c
-         read(lucrmod, * ,err=80,iostat=ios,end=80)(xl(j),j=1,np)
-         np=nyl-1
-c
-c  skip one comment line
-c
-         read (lucrmod,*,end=80)
-c
-c  direction y:
-c
-         read(lucrmod, * ,err=80,iostat=ios,end=80)(yl(j),j=1,np)
-         np=nzl-1
-c
-c  skip one comment line
-c
-         read (lucrmod,*,end=80)
-c
-c  direction z:
-c
-         read(lucrmod, * ,err=80,iostat=ios,end=80)(zl(j),j=1,np)
-c
-c  following nested cycles are for reading in values in blocks
-c
-         do iy = 1,nyl
-c
-c  skip one comment line
-c
-            read (lucrmod,*)
-            do ix = 1,nxl
-c
-c  skip one comment line
-c
-               read (lucrmod,*,end=80)
-               read (lucrmod,*,err=80,iostat=ios,end=80)
-     >         (v3(ix,iy,iz),iz = 1,nzl)
-            end do
-         end do
-         go to 85
-c
-c  part for errors in reading of crustal model
-c
-80       continue
-c
-c  error in reading of crustal models
-c
-         write (*,'(" ... [failed]")')
-c
-         if (ios.eq.0) then
-c
-c  end of file in unformatted reading from file
-c
-            ios=-1
-         endif
-c
-c
-c  close crustal model file
-c
-         close (lucrmod,status='KEEP')
-c
-c  end of program
-c
-         call EXIT(0)
-c
-85       continue
-c
-c  crustal model is OK
 c
          write (*,'(" ... [ok]")')
 c
 c  close the crustal model file
-c
          close (lucrmod,status='KEEP')
 c
 c  read in data from hypfile
@@ -308,12 +224,12 @@ c decode read in line: chars 1 to 5 are station name(5chars)
 c decode read in line: arrival phase
             iline=index(line(6:),'P');
             if (iline .gt. 0) then
-               type(i) = 'P'
+               phase(i) = 'P'
                go to 70
             endif
             iline=index(line(6:),'S');
             if (iline .gt. 0) then
-               type(i) = 'S'
+               phase(i) = 'S'
                go to 70
             endif
             i = i - 1
@@ -345,11 +261,11 @@ c
             wt1(i)=pwt
 c
 c
-c  test on type of arrival
+c  test on phase of arrival
 c
-            if (type(i) .eq. 'S') then
+            if (phase(i) .eq. 'S') then
                j = j + 1
-            else if (type(i) .ne. 'P') then
+            else if (phase(i) .ne. 'P') then
                write (*,
      >         '(1x,a," : Wrong type of arrival in record ",i2)')
      >         prog_name,i
@@ -384,7 +300,7 @@ c
 c  write input data to terminal
 c
          write (*,'(1x,a,": Phase data from ",a)')
-     >   prog_name,hypfn(1:lnblnk(hypfn))
+     >   prog_name, trim(hypfn)
 c
 c ---------------------------------------------------------------------
 c 2018-09  10.69
@@ -427,7 +343,7 @@ c
 c  one line with data for ane arrival
 c
             write(*,'(9x,a5,6x,a1,4x,f8.2,7x,f5.3)')
-     >      rec_name(i),type(i),trec(i),wt(i)/mwt
+     >      rec_name(i),phase(i),trec(i),wt(i)/mwt
          end do
 c
 c  one empty line

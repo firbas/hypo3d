@@ -82,12 +82,9 @@ c
 c
 c  global variables ... common blocks
 c
-         real         model_error            !estimated error of model
-                                             !in miliseconds
-         real         reading_error          !estimated reading error in ms
-                                             !(two sample intervals)
+         real         model_error
+         real         reading_error
          common /err/ model_error,reading_error
-
 c
 c  common for space and rms data of hypocenter
 c
@@ -108,14 +105,14 @@ c
 c
 c  common for data of origin time
 c
-         integer             year_orig
-         integer             month_orig
-         integer             day_orig
-         integer             hour_orig
-         integer             minute_orig
-         real                t_orig
-         common /origin/     year_orig,month_orig,day_orig,hour_orig,
-     >                 minute_orig,t_orig
+c         integer             year_orig
+c         integer             month_orig
+c         integer             day_orig
+c         integer             hour_orig
+c         integer             minute_orig
+c         real                t_orig
+c         common /origin/     year_orig,month_orig,day_orig,hour_orig,
+c     >                 minute_orig,t_orig
 c
 c  common for coord. of trial hypocenter
 c
@@ -132,11 +129,12 @@ c
 c  common for data of recording situ (space coordinates, delay; no. of arr.)
 c
          integer             nrec            !no. of arrivals
-         real                xstat(nStation) !\
-         real                ystat(nStation) ! >coordinates of stations
-         real                zstat(nStation) !/
-         real                dly(nStation)   !stations delays for surf. events
-         common /rec/        nrec,xstat,ystat,zstat,dly
+!         real                xstat(nStation) !\
+!         real                ystat(nStation) ! >coordinates of stations
+!         real                zstat(nStation) !/
+!         real                dly(nStation)   !stations delays for surf. events
+c!         common /rec/        nrec,xstat,ystat,zstat,dly
+         common /rec/        nrec
 c
 c  common for evaluated beam data (travel time and its derivatives)
 c
@@ -201,23 +199,24 @@ c
 c  common for data for rms_on_net mode
 c
          logical         rms_on_net
-         real            start_x
-         real            start_y
-         real            start_depth
-         real            start_otime
-         real            end_y
-         real            end_x
-         real            end_depth
-         real            end_otime
-         real            step_x
-         real            step_y
-         real            step_depth
-         real            step_otime
-         common /rmsnet/ rms_on_net,
-     >             start_x,end_x,step_x,
-     >             start_y,end_y,step_y,
-     >             start_depth,end_depth,step_depth,
-     >             start_otime,end_otime,step_otime
+!         real            start_x
+!         real            start_y
+!         real            start_depth
+!         real            start_otime
+!         real            end_y
+!         real            end_x
+!         real            end_depth
+!         real            end_otime
+!         real            step_x
+!         real            step_y
+!         real            step_depth
+!         real            step_otime
+c!         common /rmsnet/ rms_on_net,
+c!     >             start_x,end_x,step_x,
+c!     >             start_y,end_y,step_y,
+c!     >             start_depth,end_depth,step_depth,
+c!     >             start_otime,end_otime,step_otime
+         common /rmsnet/ rms_on_net
 c
 c  common for flags of fixed coord.
 c
@@ -243,17 +242,38 @@ c      common for file names - VD
 c
          character*255 hypfn
          character*255 modfn
-         common /hymofn/      hypfn,modfn
-c  functions
+         common /hymofn/  hypfn,modfn
+
+c ----------------------------------------------------------------------
+c 2024-04-22 pz
+c flag controlling ray tracing, set by the --split_ray keyword
+         logical split_rays
+c pointer for swapping between two velocity models
+         real v3
+         pointer(ip_v3,v3(x_layer,y_layer,z_layer))
+         common /model_stat/ ip_v3, split_rays
+
+c   In the case of the hypo3d location program, the question is whether
+c   to maintain independent ray tracing in each of the two velocity
+c   models for P waves and S waves. Since we're using only an approximate
+c   solution to the direct problem, and the perturbation procedure isn't
+c   applied perfectly (ray tracing is in a 1-D model while time
+c   integration is in a 3-D model), it suggests that it's unnecessary
+c   to trace the ray separately in each model. Instead, we can use
+c   a procedure where, in the first phase of the calculation,
+c   the ray is traced only in the velocity model for P-waves and,
+c   in the second phase of the calculation, this ray is used to calculate
+c   the propagation time in both velocity models
+c   for P-waves and for S-waves.
 c
-         integer iargc, lnblnk
-c
-c  *******************
-c  end of declarations
-c  *******************
-c
-c=============================================================================
-c
+c   Choose how the ray is traced
+c   by entering the command line keyword "--split_ray"
+c   1. "--split_ray" not entered (default): set flag split_rays = .false.
+c      The ray is traced only in the velocity model for P-waves.
+c  2. "--split_ray" entered: set flag split_rays = .true.
+c      The ray is traced in both velocity models independetly.
+c ----------------------------------------------------------------------
+
 c
 c  get and decode command line arguments -VD
 c
@@ -263,12 +283,14 @@ c
          ch_model_name=' '
          hypname=' '
          hy3name=' '
+
+         split_rays=.false.
 c
 c  for the first: get runstring
 c
          j=iargc()
 
-         if ( j .lt. 3 .or. j .gt. 6 ) then
+         if ( j .lt. 3 .or. j .gt. 7 ) then
             call runstrinf
          endif 
 c
@@ -279,11 +301,16 @@ c
             call getarg(i,string)
             i = i + 1
             string_length=lnblnk(string)
+            write(*,*) i, string_length, ':',string,':'
             if (string(1:2).eq.'-?') then
 c
                call runstrinf
 c
-            else if (string(1:2).eq.'-i'.or.string(1:2).eq.'-I') then
+            else if (string(1:12).eq.'--split_rays') then
+c
+               split_rays=.true.
+c
+            else if (string(1:2).eq.'-I'.or.string(1:2).eq.'-i') then
 c  name of input hypfile
 c
                if (string_length .eq. 2) then
@@ -347,8 +374,8 @@ c
          modfn=ch_model_name
 c
 c
-         write(*,*) 'Hypfile is  ',hypfn(1:lnblnk(hypfn))
-         write(*,*) 'Model is  ',modfn(1:lnblnk(hypfn))
+         write(*,*) 'Hypfile is  ',trim(hypfn)
+         write(*,*) 'Model is  ',trim(modfn)
          rms_on_sphere = .false.
          loc_write     = .false.
          reading_error = 0.016             !estimated reading error in ms
@@ -1084,7 +1111,10 @@ c
       end program HYPO
 
       subroutine runstrinf
-            write(*,*) 'Usage: hypo3d -i<input> -o<output> -m<model>'
-            write(*,*) 'Example: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
-            call exit
+      write(*,*)
+     >      'Usage: hypo3d [--split_ray] -i<input> -o<output> -m<model>'
+      write(*,*) 'Example: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
+      write(*,*) 'Keyword "--split_ray" sets, that the rays are traced'
+      write(*,*) 'in both velocity models for v_p and v_s independetly.'
+      call exit
       end subroutine runstrinf

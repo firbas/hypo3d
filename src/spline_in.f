@@ -18,21 +18,24 @@ C
          endif
 C
          nm=0
-         lu2=0
+C         lu2=0
          MM    = NM+1
          NXS(1)= 1
          NYS(1)= 1
          NWS(1)= 1
-         IF(LU2.GT.0) WRITE(LU2,90)
+C         IF(LU2.GT.0) WRITE(LU2,90)
 C
          DO 21 IM=1,MM
             READ (LU1,91) NX(IM),NY(IM)
-            IF(LU2.GT.0) WRITE(LU2,92) NX(IM),NY(IM)
-            IF (IM-1) 2,2,1
-1           NXS(IM)= NXS(IM-1)+NX(IM-1)
+C            IF(LU2.GT.0) WRITE(LU2,92) NX(IM),NY(IM)
+C            IF (IM-1) 2,2,1
+C1           CONTINUE
+            IF (IM .LT. 2) GOTO 2
+            NXS(IM)= NXS(IM-1)+NX(IM-1)
             NYS(IM)= NYS(IM-1)+NY(IM-1)
             NWS(IM)= NWS(IM-1)+NX(IM-1)*NY(IM-1)
-2           MXS= NXS(IM)
+2           CONTINUE
+            MXS= NXS(IM)
             MYS= NYS(IM)
             MWS= NWS(IM)
             MX = NX(IM)
@@ -40,21 +43,23 @@ C
 C
             J= MXS+MX-1
             READ (LU1,93) (X(I),I=MXS,J)
-            IF(LU2.GT.0) WRITE(LU2,94) (X(I),I=MXS,J)
+C            IF(LU2.GT.0) WRITE(LU2,94) (X(I),I=MXS,J)
             J= MYS+MY-1
             READ (LU1,93) (Y(I),I=MYS,J)
-            IF(LU2.GT.0) WRITE(LU2,94) (Y(I),I=MYS,J)
+C            IF(LU2.GT.0) WRITE(LU2,94) (Y(I),I=MYS,J)
             READ (LU1,97) SIGMA(IM)
-            IF(LU2.GT.0) WRITE(LU2,98) SIGMA(IM)
+C            IF(LU2.GT.0) WRITE(LU2,98) SIGMA(IM)
 C
             MWS= MWS+MX*MY
             DO 3 IY=1,MY
                J= MWS-1
                MWS= MWS-MX
                READ (LU1,95) (W(I),I=MWS,J)
-3           IF(LU2.GT.0) WRITE(LU2,96) (W(I),I=MWS,J)
+C            IF(LU2.GT.0) WRITE(LU2,96) (W(I),I=MWS,J)
+3           CONTINUE
             READ (LU1,93,end=100)
-100         IF(LU2.GT.0) WRITE(LU2,94)
+100         CONTINUE
+C100         IF(LU2.GT.0) WRITE(LU2,94)
 C
             MWS= NWS(IM)
             IF (MY-1) 10, 4, 5
@@ -79,14 +84,14 @@ c
 c
          RETURN
 C
-90       FORMAT(/' STRUCTURAL INTERFACES - INPUT DATA'
-     *          /' ----------------------------------')
+C90       FORMAT(/' STRUCTURAL INTERFACES - INPUT DATA'
+C     *          /' ----------------------------------')
 91       FORMAT(       16I5)
-92       FORMAT(4H IF*,31I5)
+C92       FORMAT(4H IF*,31I5)
 93       FORMAT(       13F6.0)
-94       FORMAT(4H IF*,31F6.0)
+C94       FORMAT(4H IF*,31F6.0)
 95       FORMAT(       16F5.1)
-96       FORMAT(4H IF*,31F5.2)
+C96       FORMAT(4H IF*,31F5.2)
 97       FORMAT(       16F5.2)
-98       FORMAT(4H IF*,31F5.2)
+C98       FORMAT(4H IF*,31F5.2)
       END subroutine spline_in

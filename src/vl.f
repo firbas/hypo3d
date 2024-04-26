@@ -14,8 +14,14 @@ c
 c
          include 'param.fi'
 c
-         real v3(x_layer,y_layer,z_layer)
-         common /model_3d/ v3
+c ----------------------------------------------------------------------
+c 2024-04-22 pz
+c pointer for swapping between two velocity models
+         logical split_rays
+         real v3
+         pointer(ip_v3,v3(x_layer,y_layer,z_layer))
+         common /model_stat/ ip_v3, split_rays
+c ----------------------------------------------------------------------
 
          integer nxl,nyl,nzl
          real xl(x_layer-1)

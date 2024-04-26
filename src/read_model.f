@@ -1,273 +1,326 @@
-c
-      subroutine read_model(lucrmod,surname)
-c
-c*****************************************************************************
-c
-c  subroutine READ_MODEL
-c
-c-----------------------------------------------------------------------------
-c
-c  purpose:
-c
-c     read crustal model
-c
-c-----------------------------------------------------------------------------
-c
-c  formal parameters:
-c
-c     integer       LUCRMOD     ...  lu for crustal model file        I
-c     character*16  SURNAME     ...  name of surface file for this
-c                                    model                            O
-c
-c----------------------------------------------------------------------------
-c
-c  calling convention:
-c
-c     call read_model(lucrmod,surname)
-c
-c----------------------------------------------------------------------------
-c
-c  external references:
-c
-c     TRANS               mw subroutine
-c
-c----------------------------------------------------------------------------
-c
-c  programmed:  87-02  01.00  mw  original version SEARCH_CR_MODEL.F
-c               87-07  01.01  mw  slightly modified version
-c             2017-04  10.59  pz  READ_MODEL.F cloned from SEARCH_CR_MODEL.F
-c
-c*****************************************************************************
-c
-c
-c  ************
-c  declarations
-c  ************
-c
-         implicit none
-c
-c
-c  formal parameters
-c
-         integer         lucrmod
-         character*255    surname
-c
-c  local parameters
-c
-c  global parameters
-c
-         include 'param.fi'
-         include 'pname.fi'
-c
-c  local variables
-c
-         real            temp
-         real            x_temp
-         real            y_temp
-         real            z_temp
-         integer         ios
-c            integer         i
-         integer         j
 
-c parameter model_error,reading_error reading
-         character*81 line
-         real         t_errparam(2)
-         integer      itep
+      subroutine split( line, vals, n )
+c https://stackoverflow.com/questions/32022062/reading-a-sequence-of-integer-in-a-line-with-unknown-bound-in-fortran
+      implicit none
+      character(*) line
+      real  vals(*)
+      integer n
+
+      real  buf( 10 ) 
+
+      n = 1
+      do
+         read(line,*, end=100, err=100) buf(1:n)
+         vals(1:n) = buf(1:n)
+         n = n + 1
+      end do
+100   continue
+      n = n - 1
+      end subroutine split
+
+      subroutine read_model_header(lu)
 c
+      implicit none
+      integer         lu
+
 c  global variables
-c
-         real         model_error            !estimated error of model
-                                             !in miliseconds
-         real         reading_error          !estimated reading error in ms
-                                             !(two sample intervals)
-         common /err/ model_error,reading_error
-c
-         integer         nrec
-         real            xstat(nStation)
-         real            ystat(nStation)
-         real            zstat(nStation)
-         real            dly  (nStation)
-         common /rec/    nrec,xstat,ystat,zstat,dly
-c
-         integer         nstat
-         character*5     stat_name(nStation)
-         common /stnam/  nstat,stat_name
-c
-         real            nangle
-         common /nangl/  nangle
-c
-         real             p_fi
-         real             p_x_shift, p_y_shift
-         common /p_posun/ p_fi, p_x_shift, p_y_shift
-c
-         real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
-         common /p_over_s/   p_over_s
+      real  model_error
+      real  reading_error
+      common /err/ model_error, reading_error
 
-c  *******************
-c  end of declarations
-c  *******************
-c
-         read (lucrmod,*,iostat=ios) p_over_s
-         if (ios.ne.0) then
-            write (*,'(" ... Abort 666")')
-            call abort
-         endif
-         write (*,*) p_over_s
-c local coordinates rotation to Krovak coordinates
-         read (lucrmod,*,iostat=ios) p_fi
-         if (ios.ne.0) then
-            write (*,'(" ... Abort 2")')
-            call abort
-         endif
-c
-c local coordinates origin at Krovak coordinates
-c
-         read (lucrmod,*,iostat=ios) p_x_shift
-         if (ios.ne.0) then
-            call abort
-         endif
-c
-         read (lucrmod,*,iostat=ios) p_y_shift
-         if (ios.ne.0) then
-            call abort
-         endif
-c
-c =============================================================
-c 2017-03-28
-c Extended by the ability to read parameter reading_error
-c and override its default value.
-c The reading_error parameter value can optionally be specified
-c by editing the velocity model line number 5th.
+      real            nangle
+      common /nangl/  nangle
+
+      real             p_fi
+      real             p_x_shift, p_y_shift
+      common /p_posun/ p_fi, p_x_shift, p_y_shift
+
+      real    p_over_s   !p_velocity / s_velocity = sqrt(3.)
+      real    vpA, vpB
+      common /p_over_s/   p_over_s, vpA, vpB
+
+c local variables
+      real          l_param(5)
+      integer       n_param
+      integer         ios
+      character(256)  iom
+      character(100)  line
+
+c line number 1st
+c vP_over_vS, vpA (optional), vpB (optional)
+      p_over_s=1.70
+      vpA=0.0
+      vpB=1.0
+
+      l_param=-1.0
+      line=""
+      read (lu,'(A)',err=90,iostat=ios,end=90,iomsg=iom) line
+      call split(trim(line), l_param, n_param)
+      if (n_param .gt. 0) then
+        p_over_s = l_param(1)
+        vpA= 0.0
+        vpB= 1.0
+      end if
+      if (n_param .eq. 3) then
+        vpA=l_param(2)
+        vpB=l_param(3)
+      end if
+   
+c line number 2nd
+c mode coordinates rotation to Krovak coordinates
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) p_fi
+
+c line number 3th, 4th
+c origin of model coordinates relative to Krovak coordinates
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) p_x_shift
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) p_y_shift
+
+c line number 5th.
+c model_error, reading_error (optional)
 c On line 5, you can enter two parameters:
 c         model_error as the first mandatory argument
 c         and reading_error as second optional argument.
 c Both parameters are entered in seconds.
 
-         line=""
-         t_errparam(1)=-1
-         t_errparam(2)=-1
-         read (lucrmod,'(A)',iostat=ios) line
-         if (len_trim(line)==0) then
-            write(*,*) 'Invalid model file.'//
-     >      ' Empty line for model_error and reading_error parameter.'
-            call abort
-         else
-            read (line,*,end=210, iostat=ios)
-     >           (t_errparam(itep),itep=1,2)
-         endif
-         goto 215
-210      continue
-         if (ios.ne.-1) then
-            write(*,*) 'Error while loading model file, model_error'//
-     >                 ' or reading_error parameter.'
-            call abort
-         endif
-         itep=1
-215      continue
-c temp: model_error
-         temp=0
-         if (t_errparam(1) .gt. 0) then
-            temp=t_errparam(1)
-         endif
-c reading_error
-         if (t_errparam(2) .ge. 0) then
-            reading_error=t_errparam(2)
-         endif
-c          write(*,*) 'model_err=',temp,'reading_err=',reading_error
-c =============================================================
+      model_error=0.0        ! default 0.0 sec
+      reading_error=0.016    ! default 0.016 sec
 
+      l_param=-1.0
+      line=""
+      read (lu,'(A)',err=90,iostat=ios,end=90,iomsg=iom) line
+      call split(trim(line), l_param, n_param)
+      if (n_param .gt. 0) then
+         model_error=l_param(1)
+      end if
+      if (n_param .eq. 2) then
+         reading_error=l_param(2)
+      end if
+   
+c angle between x-axis and north
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) nangle
+   
+      return
+
+c  error in reading
+90    continue
+      if (ios/=0) then
+         write(*,*) 'iostat = ', ios
+         write(*,*) 'iomsg: '//trim(iom)
+         stop
+      end if
+      end subroutine read_model_header
+
+
+      subroutine read_model_sta(lu)
 c
-c  test on meaningful value of model error
-c
-         if (temp.lt.0.0) then
-c
-c  wrong choice of model error value
-c
-            call abort
-         endif
-c
-         if (model_error.lt.0.0) then
-c
-c  no runstring choice of model error
-c
-            model_error=temp
-         endif
-c
-c  Read in value of angle between x-axis and north
-c
-         read (lucrmod,*,iostat=ios) nangle
-         if (ios.ne.0) then
-            call abort
-         endif
-c
-c  read in number of stations
-c
-         read (lucrmod, * ,iostat=ios,err=50,end=50) nstat
-c
-c  do a test on allowed number of stations:
-c  nstat requested; nStation dimensioned
-c
-         if(nstat.gt.nStation)then
-            write (*,'(1x,a,": Too many stations. Max:",i3)')
-     *      nStation
-            call abort
-         endif
-c
-c  continue
-c
-         go to 70
-c
-c  label for error
-c
-50       continue
+      implicit none
+      integer         lu
+
+c  global parameters
+      include 'param.fi'
+      include 'pname.fi'
+
+c  global variables
+      integer         nrec
+      real            xstat(nStation)
+      real            ystat(nStation)
+      real            zstat(nStation)
+      real            dly  (nStation)
+      common /rec/    nrec,xstat,ystat,zstat,dly
+
+      integer         nstat
+      character*5     stat_name(nStation)
+      common /stnam/  nstat,stat_name
+
+c  local variables
+      real            x_temp
+      real            y_temp
+      real            z_temp
+      integer         j
+      integer         ios
+      character(256)  iom
+
+c  read number of stations
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) nstat
+c  test on number of stations:  nstat requested; nStation dimensioned
+      if(nstat.gt.nStation)then
+         write (*,'(1x,a,": Too many stations. Max:",i3)')  nStation
          call abort
-c
-c  read in station names
-c
-70       continue
-c
-c  cycle over stations
-c
-         do j = 1, nstat
-            read (lucrmod, * ,iostat=ios,err=90,end=90)
-     >      stat_name(j),xstat(j),ystat(j),zstat(j),dly(j)
-            go to 110
-c
-c  label for error
-c
-90          continue
-            call abort
-c
-110         continue
-c
+      endif
+
+c  load station list
+      do j = 1, nstat
+         read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+     >   stat_name(j),xstat(j),ystat(j),zstat(j),dly(j)
 c  z-coordinate in model file is upward
 c  --> set to downward
+         zstat(j)=-zstat(j)
+
+c  transform station coordinates  Krovak to local
+         x_temp=xstat(j)
+         y_temp=ystat(j)
+         z_temp=zstat(j)
+         call Trans (x_temp,y_temp,z_temp,1)
+         xstat(j)=x_temp
+         ystat(j)=y_temp
+         zstat(j)=z_temp
+      end do
+
+      return
+
+c  error in reading
+90    continue
+      if (ios/=0) then
+         write(*,*) 'iostat = ', ios
+         write(*,*) 'iomsg: '//trim(iom)
+         stop
+      end if
+      end subroutine read_model_sta
+
+      function vs_vp(vp)
 c
-            zstat(j)=-zstat(j)
+      implicit none
+      real vs_vp
+      real vp
+c global variables 
+      real    p_over_s                    !p_velocity / s_velocity = sqrt(3.)
+      real    vpA, vpB
+      common /p_over_s/   p_over_s, vpA, vpB
+c local
+      real vpovs
+      
+      vpovs=p_over_s
+
+      if (vp .ge. vpB) then
+         vs_vp=vp/vpovs
+      else
+         vs_vp=(vp-vpA)/(vpB-vpA)*vpB/vpovs
+      end if
+
+      end function vs_vp
+
+
+      subroutine read_model_vel(lu)
+
+c ----------------------------------------------------------------------
+c  With the update to version 10.79, the program now allows the input
+c  of two velocity models for P-wave and S-wave velocities.
+c  The velocity model v_p is entered explicitly and the velocity model
+c  v_s can be entered:
+c   1. By constant velocity ratio v_s/v_p, as before.
+c   2. By entering the parameters of a function representing
+c      the relationship between velocity v_s and velocity v_p.
+c   3. By explicitly entering two velocity models for v_s and v_p.
 c
-c  transform station coordinates
-c  Krovak to local
-c
-            x_temp=xstat(j)
-            y_temp=ystat(j)
-            z_temp=zstat(j)
-            call Trans (x_temp,y_temp,z_temp,1)
-            xstat(j)=x_temp
-            ystat(j)=y_temp
-            zstat(j)=z_temp
+c  The segments of the velocity model are labelled as "wave S".
+c  However, the first segment corresponding to the P-waves is
+c  not labelled as such for compatibility with older versions.
+c ----------------------------------------------------------------------
+      implicit none
+      integer lu
+
+      include 'param.fi'
+c global
+      real                xl(x_layer-1)
+      real                yl(y_layer-1)
+      real                zl(z_layer-1)
+      integer             nxl
+      integer             nyl
+      integer             nzl
+      common /layers/     nxl,xl,nyl,yl,nzl,zl
+
+c ----------------------------------------------------------------------
+c 2024-04-22 pz
+c two velocity models
+         real v3p(x_layer,y_layer,z_layer)
+         real v3s(x_layer,y_layer,z_layer)
+         common /model_3d/ v3p,v3s
+c ----------------------------------------------------------------------
+
+c local
+      integer     ix
+      integer     iy
+      integer     iz
+      integer     np
+      integer     j
+      integer         ios
+      character(256)  iom
+      character(100)  line
+c functions
+      real vs_vp
+
+c  number of layers
+      !skip one comment line
+      !read (lu,'(A)',err=90,iostat=ios,end=90,iomsg=iom) line
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) nxl,nyl,nzl
+
+c  x-interfaces
+      !skip one comment line
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+      np=nxl-1
+      read(lu,*,err=90,iostat=ios,end=90,iomsg=iom)(xl(j),j=1,np)
+
+c  y-interfaces
+      !skip one comment line
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+      np=nyl-1
+      read(lu,*,err=90,iostat=ios,end=90,iomsg=iom)(yl(j),j=1,np)
+
+c  z-interfaces
+      !skip one comment line
+      read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+      np=nzl-1
+      read(lu,*,err=90,iostat=ios,end=90,iomsg=iom)(zl(j),j=1,np)
+
+c  read P velocities
+      do iy = 1,nyl
+        !skip one comment line
+        read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+        do ix = 1,nxl
+          read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+          read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+     >        (v3p(ix,iy,iz),iz = 1,nzl)
+        end do
+      end do
+
+      read (lu,'(A)',err=90,iostat=ios,end=70,iomsg=iom) line
+      if ((index(line,"wave") .eq. 1) .and. (index(line,"S") .gt. 0)) then 
+c  read S velocities
+      do iy = 1,nyl
+         !skip one comment line
+         read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+         do ix = 1,nxl
+            !skip one comment line
+            read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+            read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
+     >          (v3s(ix,iy,iz),iz = 1,nzl)
          end do
-c
-c  read in name of SURFACE file
-c
-         read (lucrmod, * ,iostat=ios,err=115,end=115) surname
-         go to 120
-c
-c  label for error
-c
-115      continue
-         call abort
-c
-120      continue
-c
-         return
-      end subroutine read_model
+      end do
+   
+      return
+      end if
+
+70    continue
+c  calculate S velocities
+c   v3s=v3p/p_over_s
+   
+      do iy = 1,nyl
+         do ix = 1,nxl
+             do iz = 1,nzl
+c               v3s(ix,iy,iz)=v3p(ix,iy,iz)/p_over_s
+                v3s(ix,iy,iz)=vs_vp(v3p(ix,iy,iz))
+             end do
+         end do
+      end do
+
+      return
+
+c  error in reading
+90    continue
+      if (ios/=0) then
+         write(*,*) 'iostat = ', ios
+         write(*,*) 'iomsg: '//trim(iom)
+         stop
+      end if
+      end subroutine read_model_vel

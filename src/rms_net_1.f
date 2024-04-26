@@ -197,10 +197,8 @@ c
 c
 c  write second part of header
 c
-         write (lulist,'(" Name of used model        :",a)')
-     >         modfn(1:lnblnk(modfn))
-         write (lulist,'(" Name of hypfile           :",a)')
-     >         hypfn(1:lnblnk(hypfn))
+         write (lulist,'(" Name of used model        :",a)') trim(modfn)
+         write (lulist,'(" Name of hypfile           :",a)') trim(hypfn)
          write (lulist,'(" Minimal recorded arr. time:",
      >2(i2.2,"-"),i2.2,1x,i2.2,":",i2.2,/)')
      >   year,month,day,hour,minute

@@ -137,8 +137,8 @@ c
          real                dly(nStation)
          common /rec/        nrec,xstat,ystat,zstat,dly
 c
-         character*1         type(nrec_max)
-         common /chrec/      type
+         character*1         phase(nrec_max)
+         common /chrec/      phase
 c
          real                co(4,4)
          real                rmsres
@@ -335,7 +335,7 @@ c --------------------------------------------------------------------
 c
 
          write (lulist,'("program       :",a)') prog_name1//prog_name2
-         write (lulist,'("model         :",a)') modfn(1:lnblnk(modfn))
+         write (lulist,'("model         :",a)') trim(modfn)
          if (hyr) then
             write (lulist,'("model error   :")')
             write (lulist,'("reading error :")')
@@ -360,7 +360,7 @@ c
          write (lulist,'("create time   :",i2.2,"-",i2.2,"-",i2.2,1x,
      >i2.2,":",i2.2,":",i2.2)') iyear,itime(1),itime(5),itime(4),
      >   itime(3),itime(2)
-         write (lulist,'("event",9x,":",a)') hypfn(1:lnblnk(hypfn))
+         write (lulist,'("event",9x,":",a)') trim(hypfn)
 
          write (lulist,'("start(x,y,z,t):   (",
      >f7.2,",",f7.2,",",f7.2,",",f7.2,")")')
@@ -386,12 +386,13 @@ c
              strFixT="       "
          endif
          
-         write (lulist,'("fixed coordinates:(",a7,",",a7,",",a7,",",a7,")")')
-     >   strFixX, strFixY, strFixZ, strFixT 
+         write (lulist,
+     >    '("fixed coordinates:(",a7,",",a7,",",a7,",",a7,")")')
+     >    strFixX, strFixY, strFixZ, strFixT 
          write (lulist,*)
-         write (lulist,'("reference time:",
-     >i2.2,"-",i2.2,"-",i2.2,1x,i2.2,":",i2.2)')
-     >   rok,mesic,den,hodina,minuta
+         write (lulist,
+     >    '("reference time:",i2.2,"-",i2.2,"-",i2.2,1x,i2.2,":",i2.2)')
+     >    rok,mesic,den,hodina,minuta
 c
 c header for station data
 c
@@ -424,13 +425,13 @@ c
          do i=1,nrec
 
             if (hyr) then
-               if (type(i).eq.'S') then
-                  write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
+               if (phase(i).eq.'S') then
+                  write (lulist,917) rec_name(i),phase(i),trec(i),tcal(i)+t0,
      >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5),xmag(i)
                else
-                  write (lulist,917) rec_name(i),type(i),trec(i),tcal(i)+t0,
+                  write (lulist,917) rec_name(i),phase(i),trec(i),tcal(i)+t0,
      >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5)
@@ -438,13 +439,13 @@ c
 c
             else      ! hyr == .false.
 c
-               if (type(i).eq.'S') then
-                  write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
+               if (phase(i).eq.'S') then
+                  write (lulist,916) rec_name(i),phase(i),trec(i),tcal(i)+t0,
      >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5),xmag(i)
                else
-                  write (lulist,916) rec_name(i),type(i),trec(i),tcal(i)+t0,
+                  write (lulist,916) rec_name(i),phase(i),trec(i),tcal(i)+t0,
      >            trec(i)-tcal(i)-t0,
      >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
      >            int(toa(i)+0.5)

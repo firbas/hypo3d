@@ -154,6 +154,11 @@ which does not change the features of the computer program.
    is used to calculate the error ellipse. 
    If the error interval is not estimated, NaN is printed
    (v10.73)
+9. Until now, the seismic location programme has assumed that the ratio
+   between the P-wave and S-wave velocities is constant.
+   With the update to version 10.79, the program now allows the input of two 
+   velocity models. This allows the seismic location to be based on a more
+   accurate relationship between P-wave and S-wave velocities.
 
 <!-- The program would require such substantial modifications that it is better not to do so on this basis. -->
 

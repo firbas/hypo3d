@@ -82,18 +82,12 @@ c
          real            t0
          common /otime/  year,month,day,hour,minute,t0
 c
-         character*1     type (nrec_max)
-         common /chrec/  type
-c
          real            xstat (nStation)
          real            ystat (nStation)
          real            zstat (nStation)
          real            dly   (nStation)
          integer         nrec
          common /rec/    nrec,xstat,ystat,zstat,dly
-c
-         integer         key  (nrec_max)
-         common /stmod/  key
 c
          logical         hyr
          real            trec (nrec_max)

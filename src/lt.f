@@ -40,7 +40,6 @@ c
 
          real tm
          real pom
-         real v3(x_layer,y_layer,z_layer)
          real xl(x_layer-1)
          real yl(y_layer-1)
          real zl(z_layer-1)
@@ -52,8 +51,16 @@ c
          real zpr((x_layer-1)+(y_layer-1)+(z_layer-1))
          real dist((x_layer-1)+(y_layer-1)+(z_layer-1))
 
-         common/model_3d/ v3
          common/layers/ nxl,xl,nyl,yl,nzl,zl
+         
+c ----------------------------------------------------------------------
+c 2024-04-22 pz
+c pointer for swapping between two velocity models
+         logical split_rays
+         real v3
+         pointer(ip_v3,v3(x_layer,y_layer,z_layer))
+         common /model_stat/ ip_v3, split_rays
+c ----------------------------------------------------------------------
 
 c
 c  layer indexes of first point

@@ -420,7 +420,7 @@ C
 C
          INTEGER NX,NY,NW1,IERR
          REAL X(NX),Y(NY),W(NW1,NY),C(NX,NY),VX(5,NX),VY(5,NY),
-     *        TEMP(1),SIGMA
+     *        TEMP(*),SIGMA
 C
 C                            FROM FITPACK -- AUGUST 31, 1981
 C                                 CODED BY ALAN KAYLOR CLINE

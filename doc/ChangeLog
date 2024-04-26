@@ -1,3 +1,10 @@
+2024-04-22 pz v10.79
+
+Allow the input of two velocity models for v_p and v_s.
+The method of raytracing is controlled by the keyword '--split_ray'. 
+read_model.f, i_hyp_mod.f - read velocity model 
+td_all.f - swapping velocity models acording arrival phase
+========================================================================
 2020-10-26 pz v10.78
 
 Revision focused on the application of station delay corrections.
