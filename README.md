@@ -1,56 +1,58 @@
 
 # hypo3d
-HYPO3D is a computer program for determining hypocenter and magnitude of local earthquakes.
-The program is an attempt to solve the location of the earthquake in a 3-dimensional velocity model.
-Author Milan Werl wrote this program under the guidance of Petr Firbas in the years 1986-1988.
-This software has been in use at the Institute of Physics of the Earth, Masaryk University in Brno.
 
-## Program features and limitations
+HYPO3D is a software tool designed to determine the hypocenter and magnitude
+of local earthquakes.
+The program aims to solve earthquake location within a 3-dimensional velocity model.
+Authored by Milan Werl under the guidance of Petr Firbas between 1986 and 1988,
+this software has been utilized at the Institute of Physics of the Earth,
+Masaryk University in Brno.
 
-The program is an implementation of the classical Geiger’s method for earthquake location.
-Another inspiration was the HYPO71 (http://www.jclahr.com/science/software/hypo71/index.html)
-\[[Lee and Lahr 1975](#lee1975)\],
-ray tracing is based on a modified TRVDRV subroutine written by \[[Eaton 1969](#eaton1969)\].
+## Program Features and Limitations
 
-### Velocity model
-The 3-dimensional velocity model is constructed from rectangular homogeneous blocks.
-The space of the model is divided into blocks in three perpendicular directions by parallel planes with irregular spacings.
-The number of blocks is limited to 100x100x100.
-The velocities of longitudial seismic waves in units of [km/s] are assigned to these blocks.
+HYPO3D implements the classical Geiger’s method for earthquake location, with
+inspiration drawn from HYPO71 \[[Lee and Lahr 1975](#lee1975)\].
+Ray tracing is based on a modified TRVDRV subroutine developed by \[[Eaton 1969](#eaton1969)\].
+
+### Velocity Model
+
+The 3-dimensional velocity model consists of rectangular homogeneous blocks
+of rectilinear structure with irregular spacing in three perpendicular directions.
+The model is limited to 100x100x100 blocks,
+with seismic wave velocities assigned in units of [km/s].
 
 <p align="center">
-<img src="doc/img/panelak.png" alt="Cross-wall construction" width="40%" />
+<img src="doc/img/panelak.png" alt="Rectilinear structure of the 3-d velocity model" width="40%" />
 <br>
-Cuboid structure of the 3-d velocity model
+Rectilinear structure of the 3-d velocity model
 </p>
 
-On the upper side the structure is bounded by a surface, which is defined by spline interpolation in the network of points.
+The upper boundary of the model is defined by a surface, interpolated using splines.
 
+### Forward Modeling
 
-### Forward modelling
-The program HYPO3D reflects the 3-dimensional model only in a limited way.
-The ray-tracing is solved in 1-dimensional layered model reduced from 3-d for each section
-between the source and the receiver point.
-Travel-time is calculated for each source-receiver pair in the following steps:
-1) A vertical plane cross-section of the 3-d velocity model is made between the source and the receiver.
-2) The conversion procedure for the 1-d model consists in preserving horizontal layers (floors in the cross-wall structure of the 3-d model) and the seismic velocities in each layer are merged into one velocity so that the travel-time between the source and the receiver placed in this layer is equivalent.
-3) A ray is computed in the 1-d velocity model, using two-point fast ray-tracing scheme taken from the HYPO71.
-4) The travel-time is then calculated by integrating in the 3-d velocity model along the ray path approximately calculated in the previous step.
+HYPO3D reflects the 3-dimensional model by solving ray tracing in a 1-dimensional
+layered model for each section between the earthquake source and receiver point.
+The travel-time computation involves several steps:
+
+1. Creating a vertical plane cross-section of the 3-dimensional velocity model
+   between the source and receiver.
+2. Converting the 3-dimensional model into a 1-dimensional model, preserving
+   horizontal layers.
+3. Computing the ray trajectory in the 1-dimensional velocity model, utilizing
+   a two-point fast ray-tracing scheme similar to HYPO71.
+4. Calculating the travel-time by integrating along the ray path
+   in the 3-dimensional velocity model.
 
 The authors of the computer program justify this approach by reference to
 \[[Romanov 1972](#romanov1972), [Firbas 1984](#firbas1984)\]
 and consider this solution to be a linearization approach.
 
-### Applicability limits
-We see that the modeling solution described above is a kind of non-iterative perturbation method.
-This method assumes that the problem is regular (a small perturbance in ray-path will cause small difference in the travel-time).
-This is not case for all type of seismic phases.
-It is known \[[Ryaboy 2001](#ryaboy2001)\] that described procedure does not guarantee sufficient accuracy
-for refracted or head waves that pass along curved or sloping interfaces.
-<!-- [[Ryaboy 2001](#ryaboy2001)] writes that
-the linearization approach, which can be successfully applied in seismic tomography,
-is not directly applicable to our problem because it does not guarantee the accuracy needed for regional phases,
-whose ray paths are passing close to the curved surface. -->
+### Applicability Limits
+
+The method assumes regularity, making it suitable for some seismic phases but not for all.
+It is known that this approach may not provide sufficient accuracy for refracted
+or head waves passing along curved or sloping interfaces, as discussed by \[[Ryaboy 2001](#ryaboy2001)\].
 
 <p align="center">
 <img src="doc/img/downdip.png" alt="Hypo3d ray tracing" width="60%" />
@@ -58,31 +60,25 @@ whose ray paths are passing close to the curved surface. -->
 Hypo3d approximate ray tracing along the dipping planar interface.
 </p>
 
-The HYPO3D program was originally designed to locate an earthquake using short-distance direct phases in a local seismic network.
-In the case of the location of an regional-distance earthquake in a complex 3-dimensional velocity model, the problem may not be sufficiently regular.
+Originally designed for short-distance direct phases, HYPO3D may have limitations
+in locating regional-distance earthquakes within complex 3-dimensional velocity models.
 
 ### Coordinates
-The map coordinate system S-JTSK Křovák EPSG:5513 is used for program input and output
-(but the unit is [km]).
-This coordinate system is defined only for Czech Republic, Slovakia, and near border regions.
 
-The velocity model is defined in local coordinates.
-For most internal calculations, the model local coordinate system is used.
-This brings some limitations, especially in the case of fixing hypocenter in some coordinates.
+The map coordinate system S-JTSK Křovák EPSG:5513 is utilized for program input
+and output (with units in [km]).
+The velocity model, however, is defined in local coordinates, which may impose
+limitations, particularly in fixing hypocenters.
 
 ### Weighting
-The weighted least squares algorithm takes into account the specified weight codes
-for phase arrivals measurements.
-These weight codes are:
-```
- 0 - full weight, 1 - 3/4 weight, 2 - half weight, 3 - 1/4 weight, 4 - no weight
-(as in HYPO71, HYPOINVERSE)
-```
 
-Weights are used as coefficients of the objective function linearly, not quadraticaly,
-which means that their weighting effect is rather weak (except code ```4 - no weight```).
+The weighted least squares algorithm considers weight codes for phase arrivals
+measurements.
+These weight codes range from full weight (0) to no weight (4),
+following the conventions of HYPO71 and HYPOINVERSE.
 
 ## Authors
+
 <table>
 <tbody>
 <tr class="odd">
@@ -107,19 +103,16 @@ The program includes parts of the library FITPACK (coded by Alan Kaylor Cline) a
 subroutines of IBM SSP (Scientific Subroutine Package).
 
 ## Plans
-HYPO3D program has been used for 30 years with minimal modifications.
-This project is intended for maintenance of code and documentation and
-to test and document the limitations of this program.
-No further development is foreseen but for further use it is needed:
 
-1. Reduce unnecessary code for clarity.
-1. Fix some known bugs.
-1. Gather documentation of this software.
+The project aims to maintain code and documentation, and to identify program limitations.
+No further development is intended.
 
 ## Upgrades
 
-There are only minor changes compared to the original version 10.50,
-which does not change the features of the computer program.
+Minor changes compared to the original version were primarily focused
+on code clarity and bug fixes.
+Further upgrades enhanced functionality, addressing issues such as coordinate
+consistency and model limitations.
 
 1. To clear the code, about 9,000 lines of program code were removed.
    Deleting unreachable or unusable code did not affect the functionality.
@@ -159,32 +152,26 @@ which does not change the features of the computer program.
    With the update to version 10.79, the program now allows the input of two 
    velocity models. This allows the seismic location to be based on a more
    accurate relationship between P-wave and S-wave velocities.
-
-<!-- The program would require such substantial modifications that it is better not to do so on this basis. -->
+   (v10.79)
 
 ## Installation
 
-The program was adapted for the Linux environment and the gfortran compiler.
-The easiest way to compile is to use the supplied Makefile which
-creates the binary hypo3d inside the source tree.
-This build is fully static and hypo3d can be manually copied to binary path.
-
+HYPO3D is adapted for the Linux environment and the gfortran compiler.
+Compilation is facilitated through the supplied Makefile, resulting in the binary
+hypo3d, which can be manually copied to the binary path.
 
 ## Documentation
 
-The original documentation of the program is in the report
-[Firbas P., Werl M.: HYPO3D, rev. 9.00. Lokalizace ve 3D blokovém prostředí. Etapová zpráva. Geofyzika n.p., Brno 1988](https://github.com/firbas/hypo3d/blob/master/doc/hypo3d_Werl.pdf)
+The original documentation of the program is available in the report by
+Firbas P. and Werl M. ([PDF](https://github.com/firbas/hypo3d/blob/master/doc/hypo3d_Werl.pdf)).
+Additional information, including running the program and formats, is provided
+in the [wiki](https://github.com/firbas/hypo3d/wiki).
 
-Additional information
-([running the program](https://github.com/firbas/hypo3d/wiki#starting-the-hypo3d-program), formats)
-is available at the wiki site:
-https://github.com/firbas/hypo3d/wiki
+## License
 
-## Licence
-HYPO3D is primarily designed for users in Institute of Physics of the Earth, Masaryk University in Brno.
-The computer program is free to use.
-But note that this is the working repository and not an end-user release
-and consider the limited capabilities of the program.
+HYPO3D is freely available, primarily for users at the Institute of Physics of the Earth,
+Masaryk University in Brno.
+However, it's a working repository, not intended for end-user release.
 
 ## Literature
 
