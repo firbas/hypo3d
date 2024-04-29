@@ -114,45 +114,46 @@ on code clarity and bug fixes.
 Further upgrades enhanced functionality, addressing issues such as coordinate
 consistency and model limitations.
 
-1. To clear the code, about 9,000 lines of program code were removed.
-   Deleting unreachable or unusable code did not affect the functionality.
-2. The parameter reading_error was originally hard coded.
-   Now the default value can be overwritten
-   as a second optional argument in the velocity model file (line number 5th).
+1. To streamline the code, approximately 9,000 lines of program code were removed.
+   Removing unreachable or redundant code had no impact on functionality.
+2. Originally, the parameter reading_error was hardcoded.
+   Now, its default value can be overridden as a second optional argument
+   in the velocity model file (line number 5).
    (v10.50)
-3. The coordinates x,y of the epicenter and their estimate errors dxer,dyer
-   were presented in different coordinate systems.
+3. The coordinates (x, y) of the epicenter and their estimated errors (dxer, dyer)
+   were previously presented in different coordinate systems
    (Epicenter in map coordinates Křovák EPSG:5513 but errors in model local coordinates).
-   Now it is consistently in map coordinates.
+   Now, they are consistently presented in map coordinates.
    (v10.62)
-4. In the case of coordinate fixation,
+4. In cases of coordinate fixation,
    the calculation of the error covariance matrix is not reduced in dimensions
    unless the hypocenter is on or near the surface.
    (v10.73)
 5. The azimuth of rays emerging from the focus and the angle
-   of rotation of the error ellipse is counted with respect
-   to meridian convergence of Křovák coordinates at the focal point.
+   of rotation of the error ellipse are now calculated with respect
+   to the meridian convergence of Křovák coordinates at the focal point.
    (v10.64)
-6. The limitation of the number of blocks of the velocity model was extended
+6. The limitation on the number of blocks in the velocity model has been extended
    from the original 15x15x40 to 100x100x100.
    (v10.73)
-7. A posteriori estimation of the arrivals variance was not an unbiased estimate
-   because the individual residues were first modified
-   according to a priori specified reading error.
-   Newly, the estimate of the arrivals variance is calculated first
-   and then adjusted by the reading error value.
+7. Previously,
+   the a posteriori estimate of the arrival variance was not unbiased
+   because the individual residuals were first adjusted
+   based on the a priori determined reading error.
+   Now, the arrival variance estimate is calculated first
+   and then adjusted according to the value of the reading error.
    (v10.70)
 8. If a small number of measurements does not provide any degree of freedom,
-   only 'a priori' part of the standard deviation (parameter reading error)
-   is used to calculate the error ellipse. 
-   If the error interval is not estimated, NaN is printed
+   only the 'a priori' part of the standard deviation (parameter reading error)
+   is used to calculate the error ellipse.
+   If the error interval cannot be estimated, NaN is printed.
    (v10.73)
-9. Until now, the seismic location programme has assumed that the ratio
-   between the P-wave and S-wave velocities is constant.
-   With the update to version 10.79, the program now allows the input of two 
-   velocity models. This allows the seismic location to be based on a more
-   accurate relationship between P-wave and S-wave velocities.
+9. Previously, the seismic location program assumed a constant ratio between
+   P-wave and S-wave velocities. With the update to version 10.79, the program
+   now allows the input of two velocity models, enabling seismic location based
+   on a more accurate relationship between P-wave and S-wave velocities.
    (v10.79)
+
 
 ## Installation
 
