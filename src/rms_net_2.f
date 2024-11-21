@@ -68,11 +68,9 @@ c
          real            rmsres_co
          common /cov/    co,rmsres,rmsres_co
 c
-         real            c_hypo(3)
-         integer         no_valid_arrivals
          logical         t0_norm
          logical         endit
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm,endit
 c
          logical         rms_on_net
          real            start_x
@@ -93,28 +91,16 @@ c
      >                   start_depth,end_depth,step_depth,
      >                   start_otime,end_otime,step_otime
 c
-         logical         fix_x
-         logical         fix_y
-         logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
-c
-         logical         fix_depth
          logical         fix_surface
-         integer             i0              !no. of iter. cycle
-         common /srfc/   fix_surface,fix_depth,i0
+         common /srfc/   fix_surface
 c
          real            x0
          real            y0
          real            z0
          common /centr/  x0,y0,z0
 c
-         integer         year
-         integer         month
-         integer         day
-         integer         hour
-         integer         minute
          real            t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0
 c
 c  functions  ...  none
 c
@@ -127,7 +113,7 @@ c=============================================================================
 c
 c  local to Krovak
 c
-         call trans (x0,y0,z0,0)
+         call trans(x0,y0,z0,0)
 c
 c  write one line of results
 c
@@ -245,7 +231,7 @@ c
 c
 c  Krovak to local
 c
-         call trans (x0,y0,z0,1)
+         call trans(x0,y0,z0,1)
 c
          return
       end subroutine rms_net_2

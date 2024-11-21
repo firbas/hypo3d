@@ -69,7 +69,7 @@ c
          integer         hour
          integer         minute
          real            t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0,year,month,day,hour,minute
 c
          integer             year_orig
          integer             month_orig
@@ -77,15 +77,11 @@ c
          integer             hour_orig
          integer             minute_orig
          real                t_orig
-         common /origin/     year_orig,month_orig,day_orig,hour_orig,
-     >                 minute_orig,t_orig
+         common /origin/     t_orig,year_orig,month_orig,day_orig,
+     >                              hour_orig,minute_orig
 c
          integer             nrec            !no. of arrivals
-         real                xstat(nStation) !\
-         real                ystat(nStation) ! >coordinates of stations
-         real                zstat(nStation) !/
-         real                dly(nStation)   !stations delays for surf. events
-         common /rec/        nrec,xstat,ystat,zstat,dly
+         common /rec/        nrec
 c
          logical             hyr
          real                trec(nrec_max)  !observed times
@@ -134,7 +130,7 @@ c  normalize datum variables
 c
             isec=0
             call datum
-     >      (year_orig,month_orig,day_orig,hour_orig,minute_orig,isec)  !0)
+     >      (year_orig,month_orig,day_orig,hour_orig,minute_orig,isec)
 c
          else if (t0.lt.0.0) then
 c
@@ -154,10 +150,10 @@ c
 c  normalize datum variables
 c
             isec=0
-            call datum(year,month,day,hour,minute,isec)  !0)
+            call datum(year,month,day,hour,minute,isec)
             isec=0
             call datum
-     >      (year_orig,month_orig,day_orig,hour_orig,minute_orig,isec)  !0)
+     >      (year_orig,month_orig,day_orig,hour_orig,minute_orig,isec)
 c
 c  encode dmin8
 c

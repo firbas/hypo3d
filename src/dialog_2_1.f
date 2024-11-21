@@ -58,9 +58,6 @@ c
          logical loc_write
          integer i_menu
 c
-c  local parameters  ...  none
-c
-c
 c  global parameters
 c
          include 'pname.fi'
@@ -68,14 +65,6 @@ c
 c  local variables
 c
          character*1 answer
-c
-c  global variables
-c
-         logical       loc
-         common /wloc/ loc
-c
-c  functions  ...  none
-c
 c
 c  *******************
 c  end of declarations
@@ -131,9 +120,6 @@ c  read answer
 c
          read (*,'(a)',end=10) answer
 
-cc            call clear_display
-
-cc            call CaseFold(answer)
          if(answer.eq.'l')answer='L'
          if(answer.eq.'e')answer='E'
          if(answer.eq.'c')answer='C'
@@ -168,7 +154,6 @@ c
 c
 c  set flags
 c
-            loc=.true.
             endit=.false.
             loc_write=.true.
             i_menu=2

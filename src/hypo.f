@@ -60,6 +60,7 @@ c
          character*1     old_it              !symbol for iteration with rms
                                              !of res greater then previous succ.
                                              !iteration
+         real    c_hypo(3)                   !coord. of hypocenter
          real    c_hypo1(3)                  !epicenter local coordinates
          real    bx0, by0, bz0 !, bt0        !values of succesful iteration
          real    rmsresp                     !previous rms of residuals
@@ -69,7 +70,6 @@ c
          real    zsurf                       !value of fix_surface
          real    vd(10)                      !auxiliary field
          integer n_increase                  !# of increasing in origin time norm
-         integer n_of_location               !# of locations
          integer i_menu                      !selected way in menu
          integer ios                         !error variable
          integer n_recomp_it                 !number of recomputing of iter.
@@ -95,24 +95,8 @@ c
 c
 c  common for time data
 c
-         integer year
-         integer month
-         integer day
-         integer hour
-         integer minute
          real    t0
-         common /otime/      year,month,day,hour,minute,t0
-c
-c  common for data of origin time
-c
-c         integer             year_orig
-c         integer             month_orig
-c         integer             day_orig
-c         integer             hour_orig
-c         integer             minute_orig
-c         real                t_orig
-c         common /origin/     year_orig,month_orig,day_orig,hour_orig,
-c     >                 minute_orig,t_orig
+         common /otime/  t0
 c
 c  common for coord. of trial hypocenter
 c
@@ -129,11 +113,6 @@ c
 c  common for data of recording situ (space coordinates, delay; no. of arr.)
 c
          integer             nrec            !no. of arrivals
-!         real                xstat(nStation) !\
-!         real                ystat(nStation) ! >coordinates of stations
-!         real                zstat(nStation) !/
-!         real                dly(nStation)   !stations delays for surf. events
-c!         common /rec/        nrec,xstat,ystat,zstat,dly
          common /rec/        nrec
 c
 c  common for evaluated beam data (travel time and its derivatives)
@@ -160,11 +139,10 @@ c
 c
 c  common for subprogram iteration_1 ... noncharacter part
 c
-         real            c_hypo(3)           !coord. of hypocenter
          integer         no_valid_arrivals   !no. of valid arrivals
          logical         t0_norm             !norm of origin time?
          logical         endit               !end of iteration process?
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm,endit,no_valid_arrivals
 c
 c  common for subprogram iteration_2
 c
@@ -233,11 +211,6 @@ c
          character*1     symbol_otime
          common /symb/   symbol_x,symbol_y,symbol_depth,symbol_otime
 c
-c  common for flag for locfile writting
-c
-         logical       loc                   !was written locfile?
-         common /wloc/ loc
-c
 c      common for file names - VD
 c
          character*255 hypfn
@@ -270,7 +243,7 @@ c   Choose how the ray is traced
 c   by entering the command line keyword "--split_ray"
 c   1. "--split_ray" not entered (default): set flag split_rays = .false.
 c      The ray is traced only in the velocity model for P-waves.
-c  2. "--split_ray" entered: set flag split_rays = .true.
+c   2. "--split_ray" entered: set flag split_rays = .true.
 c      The ray is traced in both velocity models independetly.
 c ----------------------------------------------------------------------
 
@@ -301,7 +274,6 @@ c
             call getarg(i,string)
             i = i + 1
             string_length=lnblnk(string)
-            write(*,*) i, string_length, ':',string,':'
             if (string(1:2).eq.'-?') then
 c
                call runstrinf
@@ -352,7 +324,7 @@ c
 
             else
 c
-               write (*,'(1x,a,": Error - wrong parameter ",a)')
+               write(*,'(1x,a,": Error - wrong parameter ",a)')
      >           prog_name,string
                call runstrinf
             endif
@@ -382,31 +354,24 @@ c
                                            !(two sample intervals)
 c  header of the program
 c
-         write (*,'(1x,a)') long_prog_name
-         write (*,'(1x,a,//)') prog_name2
+         write(*,'(1x,a)') long_prog_name
+         write(*,'(1x,a,//)') prog_name2
 c
-c  init. loc-write flag
-c
-         loc=.false.
-c  init. # of location
-c
-         n_of_location=0
-
-c
-c  increment number of locations
-c
-         n_of_location=n_of_location+1
-
 c  input of hypfile, crustal model, initialize of spline surface common
 c
          call i_hyp_mod
 
-         if (nrec .lt. 3) then
-            write (*,
-     >      '(1x,a,": Error - no. of arrivals in hypfile ",
-     >    " < 3.")') prog_name
+c         if (nrec .lt. 3) then
+c            write (*,
+c     >      '(1x,a,": Error - no. of arrivals in hypfile ",
+c     >    " < 3.")') prog_name
+         if (nrec .lt. 1) then
+            write (*,'(1x,a,
+     >         ": Error - there is no arrival in the hyp file")')
+     >         prog_name
             call exit
          endif
+c
          rp=.false.
 90       continue
 c
@@ -427,7 +392,7 @@ c
 c
 c  test on number of arrivals
 c
-            if (nrec.lt.3) then
+            if (nrec.lt.1) then
 c
                call exit
             endif
@@ -453,32 +418,36 @@ c
 c
 c  number of valid arrivals must be 3 at least
 c
-         if (no_valid_arrivals  .lt. 3) then
-            write (*,'(1x,a,": # of arrivals in hypfile  <  3 "/
-     >    "         Try another hypfile.")') prog_name
+         if (no_valid_arrivals .lt. 3) then
+            if (fix_X .and. fix_Y .and.
+     >          (fix_depth .or. fix_surface)) then
+c              solve a forward problem
+               continue
+            else if (rms_on_net) then
+               continue
+            else
+               write (*,'(1x,a,": # of arrivals in hypfile  <  3 "/
+     >    " Try a different hypfile or",
+     >    " enter the XYZ coordinates of the hypocenter.")') prog_name
+               call exit
+            endif
+         endif
 c
-c  fatal situation in original hypfile
-c
-            call abort
-c
-         else if (no_valid_arrivals.eq.3 .and. .not.fix_depth
-     >    .and. .not.fix_surface  .and. .not.scan_depth
-     >    .and. .not.fix_x  .and. .not.fix_y
-     >    .and. .not.fix_otime) then
-c
-c  in the case of undetermined problem give a chance to location with fixed
-c   depth
-c
+         if (no_valid_arrivals .eq. 3 .and.
+     >       .not. (fix_depth .or. fix_surface .or. scan_depth
+     >              .or. fix_x  .or. fix_y .or. fix_otime) ) then
+c        in case of a poorly conditioned task, give a chance
+c        to a location with a fixed depth
             fix_depth=.true.
 c
 115         continue
-            write (*,'(1x,a,": Only 3 valid arrivals.",/,
+            write(*,'(1x,a,": Only 3 valid arrivals.",/,
      >                "         Enter value of fixed depth:_")')
      >      prog_name
 c
 c  reset value of z-coor. of start point
 c
-            read (*,*,err=115,end=120,iostat=ios) z_start
+            read(*,*,err=115,end=120,iostat=ios) z_start
             go to 125
 c
 120         continue
@@ -523,7 +492,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-         call spline_value (0,c_hypo1,vd)
+         call spline_value(0,c_hypo1,vd)
          zsurf=-vd(1)
 c
 c  test whether given start point isn't above the surface
@@ -602,7 +571,7 @@ c
 c  test on rms_on_sphere mode
 c
          if (rms_on_sphere) then
-            call sphere_step (i0,rmsres,endit,t0_norm)
+            call sphere_step(i0,rmsres,endit,t0_norm)
 c
 c  transform local to Krovak coordinates for surface computing
 c
@@ -614,7 +583,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-            call spline_value (0,c_hypo1,vd)
+            call spline_value(0,c_hypo1,vd)
             zsurf=-vd(1)
 c
 c  test on point in air
@@ -640,7 +609,7 @@ c
          c_hypo(3)=z0
 c  evaluate travel times and derivatives for every recording station
 c
-         call td_all (c_hypo)
+         call td_all(c_hypo)
 c  first part of iteration process: init. t0, compute rmsres, rmsres_co
 c
          call iter_1
@@ -670,7 +639,7 @@ c
 c
 c  load segment
 
-            call sphere_step (i0,rmsres,endit,t0_norm)
+            call sphere_step(i0,rmsres,endit,t0_norm)
 c
 c  test on end of rms_sphere_mode
 c
@@ -684,7 +653,7 @@ c  load segment
 c
 c  evaluate travel times and derivatives for every recording station
 c
-               call td_all (c_hypo)
+               call td_all(c_hypo)
 c
 c  end of mode, show next menu
 c
@@ -701,7 +670,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-               call spline_value (0,c_hypo1,vd)
+               call spline_value(0,c_hypo1,vd)
                zsurf=-vd(1)
 c
 c  test on trial hypocenter in air
@@ -733,7 +702,7 @@ c
 c
 c  transform local coord. to Krovak
 c
-            call trans (xp,yp,zp,0)
+            call trans(xp,yp,zp,0)
 c
 c  set grafics symbol for successful and unsuccessful iteration
 c
@@ -751,9 +720,8 @@ c
 c
 c  not scanned depth mode ... detailed description of this iteration
 c
-            write (*,
-     >      '(i4,a1,3x,2(f8.3,a1,1x),f8.3,a1,1x,f8.3,a1,2x,f6.3,
-     >    3x,f6.3)')
+            write(*,'(i4,a1,3x,2(f8.3,a1,1x),f8.3,a1,
+     >            1x,f8.3,a1,2x,f6.3,3x,f6.3)')
      >      i0,old_it,xp,symbol_x,yp,symbol_y,zp,symbol_depth,
      >      t0,symbol_otime,sqrt(rmsres),absd
          endif
@@ -877,7 +845,7 @@ c
 c
 c  matrix is singular
 c
-            write (*,'(1x,a,": Hessian matrix C is singular.")')
+            write(*,'(1x,a,": Hessian matrix C is singular.")')
      >      prog_name
             go to 160
          endif
@@ -937,7 +905,7 @@ c
 c  z-coordinate of surface for epicenter coordinates c_hypo(1),c_hypo(2)
 c  in computing of z-coordinate of surface ... z-axis is upward
 c
-         call spline_value (0,c_hypo1,vd)
+         call spline_value(0,c_hypo1,vd)
          zsurf=-vd(1)
 c
 c  test on hypocenter in air
@@ -1003,7 +971,7 @@ c
 c
 c  write message for the case of end of the location
 c
-               write (lulist,'(/,9x,"No convergent criterion satisfied "
+               write(lulist,'(/,9x,"No convergent criterion satisfied "
      >        ,"in ",i2," iterations!!!",/,9x,
      >"---------------------------------------------------",/)')
      >         maxIter
@@ -1015,7 +983,7 @@ c  test on locmode
 c
          if (.not.scan_depth) then
 c  normalize orig. time
-            call origin_time (n_increase,dmin8)
+            call origin_time(n_increase,dmin8)
 c
 c  magnitude estimation
 c
@@ -1042,15 +1010,15 @@ c
 c
 c  local to Krovak
 c
-            call trans (xp,yp,zp,0)
+            call trans(xp,yp,zp,0)
 c
 c  scan depth mode ... write results
 c
-            write (*,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
+            write(*,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
      >      i0,xp,yp,zp,t0,sqrt(rmsres)
 c
 c
-            write (lulist,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
+            write(lulist,'(3x,i2,3x,f8.3,2x,3(1x,f7.3,2x),3x,f7.3)')
      >      i0,xp,yp,zp,t0,sqrt(rmsres)
             z0=z0+scan_step
             if (z0.le.scan_end) then
@@ -1068,7 +1036,7 @@ c
 c
 c  show menu with rms of res. on sphere centered on the hypocenter
 c
-         call dialog_2 (endit,scan_depth,rms_on_net,rms_on_sphere)
+         call dialog_2(endit,scan_depth,rms_on_net,rms_on_sphere)
 c
          if (rms_on_sphere) then
 c
@@ -1081,9 +1049,8 @@ c
 c
 c  show menu
 c
-         call dialog_2_1
-     >   (endit,prt,scan_depth,i0,maxIter,rms_on_net,
-     >   loc_write,rp,i_menu)
+         call dialog_2_1(endit,
+     >         prt,scan_depth,i0,maxIter,rms_on_net,loc_write,rp,i_menu)
 
 c
          if (i_menu.eq.1) then

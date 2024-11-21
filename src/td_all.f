@@ -24,7 +24,8 @@ c  global variables
       real    ystat(nstation)
       real    zstat(nstation)
       real    dly(nStation)
-      common /rec/ nrec,xstat,ystat,zstat,dly
+      real    dly_s(nStation)
+      common /rec/ nrec,xstat,ystat,zstat,dly,dly_s
 
       real    tcal(nrec_max)    !computed travel times
       real    xc(4,nrec_max)    !derivatives and residuals
@@ -89,12 +90,14 @@ c  1D velocity model for source-receiver profile
             call velocity
      >          (c_hypo(1),c_hypo(2),(xstat(key(i))),(ystat(key(i))))
          endif
-
+        
 c  swap P-velocity and S-velocity model
          if (phase(i) .eq. 'S') then
             ip_v3=loc(v3s)
+            delay=dly_s(key(i))
          else
             ip_v3=loc(v3p)
+            delay=dly(key(i))
          end if
 
          if (split_rays) then
@@ -125,8 +128,6 @@ c  return coordinates of points to original status
             c_hypo(3)=zstat(key(i))
             zstat(key(i))=temp
          endif
-
-         delay=dly(key(i))
 
 c  1) travel time
          tcal(i)=td(1)

@@ -73,13 +73,8 @@ c         real*8  r(16)
 c
 c  global variables
 c
-         integer         year
-         integer         month
-         integer         day
-         integer         hour
-         integer         minute
          real            t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0
 c
          real*8           sigma(4)
          common /sigm/    sigma
@@ -94,11 +89,9 @@ c
          real            avwt,sumw,sumw2
          common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
-         real            c_hypo(3)
-         integer         no_valid_arrivals
          logical         t0_norm
          logical         endit
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm,endit
 c
          integer         i0
          logical         fix_depth
@@ -116,12 +109,8 @@ c
          real*8          scale(4)
          common /it2/    c,b,det,scale
 c
-         real            xstat (nStation)
-         real            ystat (nStation)
-         real            zstat (nStation)
-         real            dly   (nStation)
          integer         nrec
-         common /rec/    nrec,xstat,ystat,zstat,dly
+         common /rec/    nrec
 c
          logical         scan_depth
          real            scan_start
@@ -178,8 +167,7 @@ c
             end do
          end do
 c
-c  store upper triangular portion of symmetric matrix C to vector C1,
-c  EIGEN storage mode code = 1
+c  store upper triangular portion of symmetric matrix C to vector C1
 c
          k=0
          do j=1,4
@@ -191,7 +179,8 @@ c
             end do
          end do
 c
-c  evaluate eigenvalues
+c  evaluate eigenvalues 
+c  EIGEN storage mode code = 1 (COMPUTE EIGENVALUES ONLY)
 c
          call EIGEN(c1,r,4,1)
 c
@@ -297,8 +286,7 @@ c
 c Test the error ellipse solvability before calculating the covariance 
 c matrix using normal matrix eigenvector factorization.
 c
-c  store upper triangular portion of symmetric matrix C to vector C1,
-c  EIGEN storage mode code = 1
+c  store upper triangular portion of symmetric matrix C to vector C1
          k=0
          do j=1,4
             do i=1,4
@@ -309,6 +297,7 @@ c  EIGEN storage mode code = 1
             end do
          end do
 c
+c  EIGEN storage mode code = 0 (COMPUTE EIGENVALUES AND EIGENVECTORS)
          call EIGEN(c1,r,4,0)
 
          e(1)=c1(1)

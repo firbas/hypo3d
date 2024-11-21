@@ -69,11 +69,8 @@ c
 c
 c  global variables
 c
-         real            c_hypo(3)
-         integer         no_valid_arrivals
          logical         t0_norm
-         logical         endit
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm
 c
          logical         rms_on_net
          real            start_x
@@ -94,15 +91,8 @@ c
      >                   start_depth,end_depth,step_depth,
      >                   start_otime,end_otime,step_otime
 c
-         logical         fix_x
-         logical         fix_y
-         logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
-c
-         logical         fix_depth
          logical         fix_surface
-         integer             i0              !no. of iter. cycle
-         common /srfc/   fix_surface,fix_depth,i0
+         common /srfc/   fix_surface
 c
          real            x0
          real            y0
@@ -115,7 +105,7 @@ c
          integer         hour
          integer         minute
          real            t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0,year,month,day,hour,minute
 c
 c
 c  functions  ...  none
@@ -176,20 +166,10 @@ c      if (start_otime.eq.0.0) then
 c
 c  write first part of header
 c
-         if (fix_surface) then
-            write (*,
-     >      '(/,1x,a,": Rms of residuals on net (surface)"/)')
-     >      prog_name
-            write (lulist,'(1x,a,
-     >    "   location  ...  rms of residuals on net (surface)"/)')
-     >      long_prog_name
-         else
-            write (*,'(/,1x,a,": Rms of residuals on net "/)')
-     >      prog_name
-            write (lulist,
+         write (*,'(/,1x,a,": Rms of residuals on net "/)') prog_name
+         write (lulist,
      >      '(1x,a,"   location  ...  rms of residuals on net "/)')
      >      long_prog_name
-         endif
 c
 c  decode datum
 c

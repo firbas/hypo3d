@@ -112,7 +112,7 @@ c
          integer hour
          integer minute
          real    t0
-         common /otime/      year,month,day,hour,minute,t0
+         common /otime/ t0,year,month,day,hour,minute
 c
 c  functions ... none
 c

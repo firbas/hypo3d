@@ -72,8 +72,7 @@ c
          real            xstat(nStation)
          real            ystat(nStation)
          real            zstat(nStation)
-         real            dly(nStation)   !stations delays for surf. events
-         common /rec/    nrec,xstat,ystat,zstat,dly
+         common /rec/    nrec,xstat,ystat,zstat
 c
          character*1     phase(nrec_max)
          common /chrec/  phase

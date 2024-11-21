@@ -73,22 +73,11 @@ c
          integer        no_iter_orig
          common /org/   x_orig,y_orig,z_orig,rms_orig, no_iter_orig
 c
-         integer             year_orig
-         integer             month_orig
-         integer             day_orig
-         integer             hour_orig
-         integer             minute_orig
          real                t_orig
-         common /origin/     year_orig,month_orig,day_orig,hour_orig,
-     >                       minute_orig,t_orig
+         common /origin/     t_orig
 c
-         integer year
-         integer month
-         integer day
-         integer hour
-         integer minute
          real    t0
-         common /otime/      year,month,day,hour,minute,t0
+         common /otime/ t0
 c
 c  static variable
 c

@@ -125,8 +125,9 @@ c  global variables
       real            xstat(nStation)
       real            ystat(nStation)
       real            zstat(nStation)
-      real            dly  (nStation)
-      common /rec/    nrec,xstat,ystat,zstat,dly
+      real            dly(nStation)
+      real            dly_s(nStation)
+      common /rec/    nrec,xstat,ystat,zstat,dly,dly_s
 
       integer         nstat
       character*5     stat_name(nStation)
@@ -139,7 +140,8 @@ c  local variables
       integer         j
       integer         ios
       character(256)  iom
-
+      character(100)  line
+      real            delay_p,delay_s
 c  read number of stations
       read (lu,*,err=90,iostat=ios,end=90,iomsg=iom) nstat
 c  test on number of stations:  nstat requested; nStation dimensioned
@@ -150,8 +152,20 @@ c  test on number of stations:  nstat requested; nStation dimensioned
 
 c  load station list
       do j = 1, nstat
-         read (lu,*,err=90,iostat=ios,end=90,iomsg=iom)
-     >   stat_name(j),xstat(j),ystat(j),zstat(j),dly(j)
+         read(lu,'(A)') line
+c  to handle the case where delay values are not enntered
+         line=trim(line)//" -99.9 -99.9"
+         read (line,*,err=90,iostat=ios,end=90,iomsg=iom)
+     >         stat_name(j),xstat(j),ystat(j),zstat(j),delay_p,delay_s
+         if (delay_p<-99.0) then
+            delay_p=0.0
+            delay_s=0.0
+         else if (delay_s<-99.0) then
+            delay_s=delay_p
+         end if
+         dly(j)=delay_p
+         dly_s(j)=delay_s
+         write(*,*) stat_name(j),dly(j),dly_s(j)
 c  z-coordinate in model file is upward
 c  --> set to downward
          zstat(j)=-zstat(j)

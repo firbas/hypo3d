@@ -1,3 +1,14 @@
+2024-11-20 pz v10.80
+
+1) Station delay corrections may differ for P-waves and S-waves.
+2) In the input hyp file tolerate naming of seismic phases
+   as Pg, Sg, Lg, ...
+3) If the xyz coordinates of the hypocenter are given, solve
+   the forward problem even if the number of arrivals is less than 3.
+4) Shorten the list of variables in common blocks
+   /otime/, /origin/, /rec/, /hyp/, /it1/
+========================================================================
+
 2024-04-22 pz v10.79
 
 Allow the input of two velocity models for v_p and v_s.

@@ -81,11 +81,7 @@ c
          common /cal_time/ tcal,xc
 c
          integer             nrec            !no. of arrivals
-         real                xstat(nStation) !\
-         real                ystat(nStation) ! >coordinates of stations
-         real                zstat(nStation) !/
-         real                dly(nStation)   !stations delays for surf. events
-         common /rec/        nrec,xstat,ystat,zstat,dly
+         common /rec/        nrec
 c
 c  functions  ...  none
 c

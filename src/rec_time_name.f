@@ -137,7 +137,7 @@ c
          integer hour
          integer minute
          real    t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0,year,month,day,hour,minute
 c
          real            x_start
          real            y_start
@@ -153,14 +153,10 @@ c
          real            xstat(nstation)
          real            ystat(nstation)
          real            zstat(nstation)
-         real                dly(nStation)
-         common /rec/    nrec,xstat,ystat,zstat,dly
+         common /rec/    nrec,xstat,ystat,zstat
 c
-         real            c_hypo(3)           !coord. of hypocenter
-         integer         no_valid_arrivals   !no. of valid arrivals
          logical         t0_norm             !norm of origin time?
-         logical         endit               !end of iteration process?
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm
 c
          real                wt1(nrec_max)
          common /wt_1/       wt1
@@ -239,11 +235,16 @@ c
 c
 c  test on no. of recording
 c
-         if (nrec .lt. 3) then
-            write (*,
-     >      '(1x,a,": Error - no. of arrivals in hypfile ",
-     >    " < 3.")') prog_name
+c         if (nrec .lt. 3) then
+c            write (*,
+c     >      '(1x,a,": Error - no. of arrivals in hypfile ",
+c     >    " < 3.")') prog_name
+         if (nrec .lt. 1) then
+            write (*,'(1x,a,
+     >         ": Error - there is no valid arrival in the hyp file")')
+     >         prog_name
 c
+            no_valid_arrival=0
             return
 c
             go to 100

@@ -123,7 +123,7 @@ c
          integer             hodina
          integer             minuta
          real                t0
-         common /otime/      rok,mesic,den,hodina,minuta,t0
+         common /otime/      t0,rok,mesic,den,hodina,minuta
 c
          real                x0
          real                y0
@@ -131,11 +131,10 @@ c
          common /centr/      x0,y0,z0
 c
          integer             nrec
-         real                xstat(nStation)
-         real                ystat(nStation)
-         real                zstat(nStation)
-         real                dly(nStation)
-         common /rec/        nrec,xstat,ystat,zstat,dly
+         real                xstat (nStation)
+         real                ystat (nStation)
+         real                zstat (nStation)
+         common /rec/        nrec,xstat,ystat,zstat
 c
          character*1         phase(nrec_max)
          common /chrec/      phase
@@ -183,8 +182,8 @@ c
          integer             hour_orig
          integer             minute_orig
          real                t_orig
-         common /origin/     year_orig,month_orig,day_orig,hour_orig,
-     >                       minute_orig,t_orig
+         common /origin/     t_orig,year_orig,month_orig,day_orig,
+     >                              hour_orig, minute_orig
 c
          logical         fix_x
          logical         fix_y
@@ -426,29 +425,29 @@ c
 
             if (hyr) then
                if (phase(i).eq.'S') then
-                  write (lulist,917) rec_name(i),phase(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0,
-     >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
-     >            int(toa(i)+0.5),xmag(i)
+                  write (lulist,917) rec_name(i),phase(i),trec(i),
+     >               tcal(i)+t0,trec(i)-tcal(i)-t0,amp(i),freq(i),
+     >               int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >               int(toa(i)+0.5),xmag(i)
                else
-                  write (lulist,917) rec_name(i),phase(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0,
-     >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
-     >            int(toa(i)+0.5)
+                  write (lulist,917) rec_name(i),phase(i),trec(i),
+     >               tcal(i)+t0,trec(i)-tcal(i)-t0,amp(i),freq(i),
+     >               int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >               int(toa(i)+0.5)
                endif
 c
             else      ! hyr == .false.
 c
                if (phase(i).eq.'S') then
-                  write (lulist,916) rec_name(i),phase(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0,
-     >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
-     >            int(toa(i)+0.5),xmag(i)
+                  write (lulist,916) rec_name(i),phase(i),trec(i),
+     >               tcal(i)+t0,trec(i)-tcal(i)-t0,amp(i),freq(i),
+     >               int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >               int(toa(i)+0.5),xmag(i)
                else
-                  write (lulist,916) rec_name(i),phase(i),trec(i),tcal(i)+t0,
-     >            trec(i)-tcal(i)-t0,
-     >            amp(i),freq(i),int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
-     >            int(toa(i)+0.5)
+                  write (lulist,916) rec_name(i),phase(i),trec(i),
+     >               tcal(i)+t0,trec(i)-tcal(i)-t0,amp(i),freq(i),
+     >               int(wt1(i)),d_epi(i),d_hypo(i),int(az(i)+0.5),
+     >               int(toa(i)+0.5)
                endif
 c
             endif     ! hyr
@@ -493,9 +492,13 @@ c
       else
          write(lulist,'(1x,"+-",1x,f6.2,3x,"km")') dzer
       endif
-      write(lulist,'("magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2)') avm, sdm
-      write(lulist,'("rms of time residuals :",8x,f6.2,8x,"s")') sqrt(rmsres)
-      write(lulist,'("angular gap           :",11x,i3,8x,"deg")') int(gap+0.5)
+      write(lulist,
+     >        '("magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2)')
+     >         avm, sdm
+      write(lulist,'("rms of time residuals :",8x,f6.2,8x,"s")')
+     >        sqrt(rmsres)
+      write(lulist,'("angular gap           :",11x,i3,8x,"deg")')
+     >        int(gap+0.5)
       write(lulist,'("number of iterations  :",11x,i3)') i0
       if(ee_nan(1) .or. ee_nan(2)) then
          write(lulist,'("error ellipse axis l1 :",10x," NaN",8x,"km")')
@@ -506,10 +509,13 @@ c
       endif
 c      write(lulist,'("              theta   :",8x,f6.1,9x,"deg")') az_theta
       if(ee_nan(1) .or. ee_nan(2)) then
-         write(lulist,'("              theta   :",2x,"NaN deg (to grid)",$)')
+         write(lulist,
+     >      '("              theta   :",2x,"NaN deg (to grid)",$)')
          write(lulist,'(4x,"(azimuth:",2x,"NaN deg)")')
       else
-         write(lulist,'("              theta   :",2x,f6.1," deg (to grid)",$)') theta
+         write(lulist,
+     >      '("              theta   :",2x,f6.1," deg (to grid)",$)')
+     >      theta
          write(lulist,'(4x,"(azimuth:",f6.1," deg)")') az_theta
       endif
 c

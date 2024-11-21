@@ -58,51 +58,14 @@ c
          include 'param.fi'
          include 'pname.fi'
 c
-c  local variables
-c
-         integer     i
-         integer     j
-c            integer     iwt
-         integer     isign
-         integer     ios
-         integer     micros
-         integer     msec
-         integer     isec
-         integer     minute
-         integer     hour
-         integer     day
-         integer     month
-         integer     year
-         real        ampcon
-         real        period
-         character*255 line
-         integer     iline
-         character*255 surname
-
-         real   pwt, mwt
-c
 c  global variables
 c
-         real                xl(x_layer-1)
-         real                yl(y_layer-1)
-         real                zl(z_layer-1)
-         integer             nxl
-         integer             nyl
-         integer             nzl
-         common /layers/     nxl,xl,nyl,yl,nzl,zl
 c
          integer             nrec
-         real                xstat(nStation)
-         real                ystat(nStation)
-         real                zstat(nStation)
-         real                dly  (nStation)
-         common /rec/        nrec,xstat,ystat,zstat,dly
+         common /rec/        nrec
 c
          character*1         phase(nrec_max)
          common /chrec/      phase
-c
-         integer             key (nrec_max)
-         common /stmod/      key
 c
          real                amp (nrec_max)
          real                freq(nrec_max)
@@ -115,8 +78,8 @@ c
          logical             hyr
          real                trec(nrec_max)
          real                wt  (nrec_max)
-         real                avwt,sumw,sumw2    !average weight
-         common /hyp/        hyr,trec,wt,avwt,sumw,sumw2
+         real                avwt             !average weight
+         common /hyp/        hyr,trec,wt,avwt
 c
          real                wt1(nrec_max)
          common /wt_1/       wt1
@@ -127,6 +90,28 @@ c
          character*255      hypfn
          character*255      modfn
          common /hymofn/ hypfn,modfn
+c
+c  local variables
+c
+         integer     i
+         integer     j
+         integer     psign
+         integer     ios
+         integer     micros
+         integer     msec
+         integer     isec
+         integer     minute
+         integer     hour
+         integer     day
+         integer     month
+         integer     year
+         real        ampcon
+         real        period
+         character*255 line
+         character*255 surname
+
+         character*10 ph
+         real   pwt, mwt
 
 c ----------------------------------------------------------------------
 c 2024-04-22 pz
@@ -221,25 +206,21 @@ c
 
 c decode read in line: chars 1 to 5 are station name(5chars)
             read (line,'(a5)') rec_name(i)
-c decode read in line: arrival phase
-            iline=index(line(6:),'P');
-            if (iline .gt. 0) then
-               phase(i) = 'P'
-               go to 70
-            endif
-            iline=index(line(6:),'S');
-            if (iline .gt. 0) then
-               phase(i) = 'S'
-               go to 70
-            endif
-            i = i - 1
-            go to 71
-70          continue
-            iline = iline + 6
 c decode read in line: arrival data in free format
-            read (line(iline:),*,iostat=ios,err=86,end=86)
+            read (line(6:),*,iostat=ios,err=86,end=86)
+     >      ph,
      >      ichan(i),year,month,day,hour,minute,isec,msec,micros,
-     >      pwt,ampcon,isign,amp(i),period
+     >      pwt,ampcon,psign,amp(i),period
+c decode read in line: arrival phase
+            if (ph(1:1) .eq. 'P' .or. ph(1:1) .eq. 'p') then
+               phase(i) = 'P'
+            else if (ph(1:1) .eq. 'S' .or.
+     >               ph(1:1) .eq. 's' .or. ph(1:1) .eq. 'L') then
+               phase(i) = 'S'
+            else
+               i = i-1
+               goto 71
+            endif
 c
 c  evaluate frequency
 c

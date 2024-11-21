@@ -74,20 +74,11 @@ c
          real              xc  (4,nrec_max)
          common /cal_time/ tcal,xc
 c
-         integer         year
-         integer         month
-         integer         day
-         integer         hour
-         integer         minute
          real            t0
-         common /otime/  year,month,day,hour,minute,t0
+         common /otime/  t0
 c
-         real            xstat (nStation)
-         real            ystat (nStation)
-         real            zstat (nStation)
-         real            dly   (nStation)
          integer         nrec
-         common /rec/    nrec,xstat,ystat,zstat,dly
+         common /rec/    nrec
 c
          logical         hyr
          real            trec (nrec_max)
@@ -95,11 +86,10 @@ c
          real            avwt,sumw,sumw2
          common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
 c
-         real            c_hypo(3)
          integer         no_valid_arrivals
          logical         t0_norm
          logical         endit
-         common /it1/    t0_norm,c_hypo,no_valid_arrivals,endit
+         common /it1/    t0_norm,endit,no_valid_arrivals
 c
          integer         i0
          logical         fix_depth
@@ -200,15 +190,15 @@ c
 c  evaluate no. of constraints
 c
          n_constr=4
+c         if (fix_x) n_constr=n_constr-1
+c         if (fix_y) n_constr=n_constr-1
+c         if (fix_depth) n_constr=n_constr-1
+c         if (fix_otime) n_constr=n_constr-1
 c ----------------------------------------------------------------
 c 2020-02-01 pz v10.77
 c In the case of coordinate fixation, an unbiased estimate
 c of the standard deviation is still calculated
 c with four degrees of freedom
-c         if (fix_x) n_constr=n_constr-1
-c         if (fix_y) n_constr=n_constr-1
-c         if (fix_depth) n_constr=n_constr-1
-c         if (fix_otime) n_constr=n_constr-1
 c
          if (no_valid_arrivals-n_constr.le.0) then
 c            rmsres_co=9.99**2
