@@ -165,7 +165,6 @@ c  to handle the case where delay values are not enntered
          end if
          dly(j)=delay_p
          dly_s(j)=delay_s
-         write(*,*) stat_name(j),dly(j),dly_s(j)
 c  z-coordinate in model file is upward
 c  --> set to downward
          zstat(j)=-zstat(j)

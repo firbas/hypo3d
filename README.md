@@ -153,6 +153,9 @@ consistency and model limitations.
    now allows the input of two velocity models, enabling seismic location based
    on a more accurate relationship between P-wave and S-wave velocities.
    (v10.79)
+10. Station corrections can be entered separately for both P-wave and S-wave
+   seismic phases.
+   (v10.80)
 
 
 ## Installation

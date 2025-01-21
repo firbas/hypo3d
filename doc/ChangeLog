@@ -1,3 +1,10 @@
+2025-01-21 pz (v10.80)
+
+1) README.md
+2) Shorten the list of variables in common blocks /srfc/ and /hyp/.
+3) rec_time_name.f:
+Change the variable name "type" to the more specific name "phase".
+========================================================================
 2024-11-20 pz v10.80
 
 1) Station delay corrections may differ for P-waves and S-waves.

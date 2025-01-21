@@ -101,24 +101,23 @@ c
          character*5     stat_name(nrec_max)
          common /stnam/  nstat,stat_name
 c
-         character*1     type    (nrec_max)
-         common /chrec/  type
+         character*1     phase(nrec_max)
+         common /chrec/  phase
 c
-         integer         key     (nrec_max)
+         integer         key(nrec_max)
          common /stmod/  key
 c
          logical         hyr
-         real            trec    (nrec_max)
-         real            wt      (nrec_max)
-         real            avwt,sumw,sumw2        !average weight
-         common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
+         real            trec(nrec_max)
+         real            wt(nrec_max)
+         common /hyp/    hyr,trec,wt
 c
-         real*8          datum8  (nrec_max)
-         integer         ichan   (nrec_max)
+         real*8          datum8(nrec_max)
+         integer         ichan(nrec_max)
          common /dat8/   datum8,ichan
 c
-         real            amp     (nrec_max)
-         real            freq    (nrec_max)
+         real            amp(nrec_max)
+         real            freq(nrec_max)
          common /ampli/  amp,freq
 c
          real            x0
@@ -128,8 +127,7 @@ c
 c
          logical         fix_surface
          logical         fix_depth
-         integer             i0              !no. of iter. cycle
-         common /srfc/   fix_surface,fix_depth,i0
+         common /srfc/   fix_surface,fix_depth
 c
          integer year
          integer month
@@ -218,7 +216,7 @@ c  take out the wrong station
 c
                do l = j,nrec-1
                   rec_name(l) = rec_name(l+1)
-                  type(l) = type(l+1)
+                  phase(l) = phase(l+1)
                   ichan(l) = ichan(l+1)
                   trec(l) = trec(l+1)
                   wt1(l) = wt1(l+1)
@@ -415,7 +413,7 @@ c
          n0=1
          t0=1e20
          do i=1,nrec
-            if (type(i) .eq. 'S') then
+            if (phase(i) .eq. 'S') then
                go to 120
             endif
             if (trec(i) .gt. t0) then

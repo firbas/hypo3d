@@ -86,8 +86,7 @@ c
          logical         hyr
          real            trec (nrec_max)
          real            wt   (nrec_max)
-         real            avwt,sumw,sumw2
-         common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
+         common /hyp/    hyr,trec,wt
 c
          logical         t0_norm
          logical         endit

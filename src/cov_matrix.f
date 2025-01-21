@@ -73,8 +73,8 @@ c
          logical         hyr
          real            trec (nrec_max)
          real            wt   (nrec_max)
-         real            avwt,sumw,sumw2
-         common /hyp/    hyr,trec,wt,avwt,sumw,sumw2
+         real            avwt
+         common /hyp/    hyr,trec,wt,avwt
 c
          real              tcal(nrec_max)
          real              xc  (4,nrec_max)
