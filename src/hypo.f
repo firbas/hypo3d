@@ -82,9 +82,11 @@ c
 c
 c  global variables ... common blocks
 c
+
+         logical      ee3          !flag controlling error estimation 
          real         model_error
          real         reading_error
-         common /err/ model_error,reading_error
+         common /err/ model_error,reading_error,ee3
 c
 c  common for space and rms data of hypocenter
 c
@@ -105,10 +107,9 @@ c
 c
 c  common for data for covariance matrix evaluation
 c
-         real            co(4,4)
          real            rmsres
          real            rmsres_co
-         common /cov/    co,rmsres,rmsres_co
+         common /cov/    rmsres,rmsres_co
 c
 c  common for data of recording situ (space coordinates, delay; no. of arr.)
 c
@@ -120,13 +121,6 @@ c
          real                tcal(nrec_max)  !calc. travel times
          real                xc(4,nrec_max)  !travel time derivatives
          common /cal_time/   tcal,xc
-c
-c  common for flags of fixed depth (fixed surface, fixed depth), no. of it.
-c
-         logical             fix_depth       !fixed depth?
-         logical             fix_surface     !fixed surface?
-         integer             i0              !no. of iter. cycle
-         common /srfc/       fix_surface,fix_depth,i0
 c
 c  common of hypfile items ... noncharacter part, average weight
 c
@@ -177,31 +171,23 @@ c
 c  common for data for rms_on_net mode
 c
          logical         rms_on_net
-!         real            start_x
-!         real            start_y
-!         real            start_depth
-!         real            start_otime
-!         real            end_y
-!         real            end_x
-!         real            end_depth
-!         real            end_otime
-!         real            step_x
-!         real            step_y
-!         real            step_depth
-!         real            step_otime
-c!         common /rmsnet/ rms_on_net,
-c!     >             start_x,end_x,step_x,
-c!     >             start_y,end_y,step_y,
-c!     >             start_depth,end_depth,step_depth,
-c!     >             start_otime,end_otime,step_otime
          common /rmsnet/ rms_on_net
+c
+         integer             i0
+         common /citer/      i0
+c
+c  common for flags of fixed depth (fixed surface, fixed depth), no. of it.
+c
+         logical             fix_surface
+         common /srfc/       fix_surface
 c
 c  common for flags of fixed coord.
 c
+         logical         fix_depth
          logical         fix_x
          logical         fix_y
          logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
+         common /fix_mode/ fix_depth,fix_x,fix_y,fix_otime
 c
 c  common for symbols for output
 c
@@ -258,6 +244,7 @@ c
          hy3name=' '
 
          split_rays=.false.
+         ee3=.false.
 c
 c  for the first: get runstring
 c
@@ -281,6 +268,10 @@ c
             else if (string(1:12).eq.'--split_rays') then
 c
                split_rays=.true.
+c
+            else if (string(1:5).eq.'--ee3') then
+c
+               ee3=.true.
 c
             else if (string(1:2).eq.'-I'.or.string(1:2).eq.'-i') then
 c  name of input hypfile
@@ -419,7 +410,7 @@ c
 c  number of valid arrivals must be 3 at least
 c
          if (no_valid_arrivals .lt. 3) then
-            if (fix_X .and. fix_Y .and.
+            if (fix_x .and. fix_y .and.
      >          (fix_depth .or. fix_surface)) then
 c              solve a forward problem
                continue
@@ -1083,5 +1074,9 @@ c
       write(*,*) 'Example: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
       write(*,*) 'Keyword "--split_ray" sets, that the rays are traced'
       write(*,*) 'in both velocity models for v_p and v_s independetly.'
+      write(*,*) 'The keyword "--ee3" sets the error estimation mode'
+      write(*,*) 'in which the entire error ellipsoid is calculated'
+c      write(*,*) 'even if some hypocenter coordinate is fixed.'
+      write(*,*) 'even if hypocenter depth coordinate is fixed.'
       call exit
       end subroutine runstrinf

@@ -1,5 +1,5 @@
       integer nStation                    !maximum number of stations
-      parameter (nStation = 80)
+      parameter (nStation = 180)
 
       integer x_layer                     !maximum number of x_layers
 c      parameter (x_layer  = 15)
@@ -14,7 +14,7 @@ c      parameter (z_layer  = 40)
       parameter (z_layer  = 100)          !max possible extension
 
       integer nrec_max                    !maximum number of recorded arrivals
-      parameter (nrec_max = 80)
+      parameter (nrec_max = 180)
 
       real    vair                        !velocity of sound wave in air
       parameter (vair = 0.300)

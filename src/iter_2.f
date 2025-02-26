@@ -92,20 +92,19 @@ c
          logical         endit
          common /it1/    t0_norm,endit
 c
-         integer         i0
-         logical         fix_depth
          logical         fix_surface
-         common /srfc/   fix_surface,fix_depth,i0
+         common /srfc/   fix_surface
 c
+         logical         fix_depth
          logical         fix_x
          logical         fix_y
          logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
+         common /fix_mode/ fix_depth,fix_x,fix_y,fix_otime
 c
-         real*8          c(4,4)
-         real*8          b(4)
-         real*8          det
-         real*8          scale(4)
+         real*8          c(4,4)        !Hessian matrix resp. inv. Hess. m.
+         real*8          b(4)          !vector of right side
+         real*8          det           !determinant of matrix c
+         real*8          scale(4)      !scale vector for Hessian matrix
          common /it2/    c,b,det,scale
 c
          integer         nrec
@@ -124,6 +123,11 @@ c
 
          logical         ee_nan(4)
          common /nan/    ee_nan
+
+         logical      ee3          !flag controlling error estimation 
+         real         model_error
+         real         reading_error
+         common /err/ model_error,reading_error,ee3
 
 c
 c  functions
@@ -266,8 +270,7 @@ c ===========================================================================
 c 2019-05-31 pz v10.75
          if (endit) then
 c
-c            if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
-            if (fix_surface) then
+            if (fix_surface .or. (fix_depth .and. .not. ee3 )) then
                do i=1,4
                   c(3,i)=0.0
                   c(i,3)=0.0

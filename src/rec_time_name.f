@@ -125,9 +125,8 @@ c
          real            z0
          common /centr/  x0,y0,z0
 c
-         logical         fix_surface
          logical         fix_depth
-         common /srfc/   fix_surface,fix_depth
+         common /fix_mode/ fix_depth
 c
          integer year
          integer month

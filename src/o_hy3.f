@@ -100,11 +100,10 @@ c
 c
 c  global variables
 c
-         real         model_error            !estimated error of model
-                                             !in miliseconds
-         real         reading_error          !estimated reading error in ms
-                                             !(two sample intervals)
-         common /err/ model_error,reading_error
+         logical      ee3                    !full error elipsoid
+         real         model_error            !estimated error of model [ms]
+         real         reading_error          !estimated reading error [ms]
+         common /err/ model_error,reading_error,ee3
 c
          integer             key(nrec_max)   !key field
          common /stmod/      key
@@ -139,10 +138,10 @@ c
          character*1         phase(nrec_max)
          common /chrec/      phase
 c
-         real                co(4,4)
          real                rmsres
          real                rmsres_co
-         common /cov/        co,rmsres,rmsres_co
+         real                co(4,4)
+         common /cov/        rmsres,rmsres_co,co
 c
          logical             hyr
          real                trec(nrec_max)
@@ -164,11 +163,6 @@ c
          real                avm
          common /mag/        xmag,avm,sdm
 c
-         logical             fix_surface
-         logical             fix_depth
-         integer             i0
-         common /srfc/       fix_surface,fix_depth,i0
-c
          real                x_start
          real                y_start
          real                z_start
@@ -184,10 +178,17 @@ c
          common /origin/     t_orig,year_orig,month_orig,day_orig,
      >                              hour_orig, minute_orig
 c
+         integer             i0
+         common /citer/      i0
+c
+         logical             fix_surface
+         common /srfc/       fix_surface
+c
+         logical         fix_depth
          logical         fix_x
          logical         fix_y
          logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
+         common /fix_mode/ fix_depth,fix_x,fix_y,fix_otime
 c
          real            nangle
          common /nangl/  nangle
@@ -263,8 +264,7 @@ c In the case of coordinate fixation, the calculation of the error ell
 c is not reduced, except in the following cases:
 
 c modify for fixed coordinates
-c         if (fix_surface .or. (fix_depth .and. z0 < 0.01 )) then
-         if (fix_surface) then
+         if (fix_surface .or. (fix_depth .and. .not. ee3 )) then
             dzer=0.0
          endif
 

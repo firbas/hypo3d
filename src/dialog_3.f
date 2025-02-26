@@ -91,14 +91,13 @@ c
      >                   start_otime,end_otime,step_otime
 c
          logical         fix_surface
-         logical         fix_depth
-         integer         i0            !no. of iter. cycle
-         common /srfc/   fix_surface,fix_depth,i0
+         common /srfc/   fix_surface
 c
+         logical         fix_depth
          logical         fix_x
          logical         fix_y
          logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
+         common /fix_mode/ fix_depth,fix_x,fix_y,fix_otime
 c
          character*1     symbol_x
          character*1     symbol_y
@@ -714,9 +713,7 @@ c
 c
 c=============================================================================
 c
-c
 c no fixed coordinate
-c
 c
 c=============================================================================
 c
@@ -747,9 +744,7 @@ c
 c
 c=============================================================================
 c
-c
 c  end of menu
-c
 c
 c=============================================================================
 c

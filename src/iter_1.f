@@ -91,20 +91,18 @@ c
          logical         endit
          common /it1/    t0_norm,endit,no_valid_arrivals
 c
-         integer         i0
-         logical         fix_depth
-         logical         fix_surface
-         common /srfc/   fix_surface,fix_depth,i0
+         integer             i0
+         common /citer/      i0
+cc
+c         logical         fix_depth
+c         logical         fix_x
+c         logical         fix_y
+c         logical         fix_otime
+c         common /fix_mode/ fix_depth,fix_x,fix_y,fix_otime
 c
-         logical         fix_x
-         logical         fix_y
-         logical         fix_otime
-         common /f_mode/ fix_x,fix_y,fix_otime
-c
-         real            co(4,4)
          real            rmsres
          real            rmsres_co
-         common /cov/    co,rmsres,rmsres_co
+         common /cov/    rmsres,rmsres_co
 c
          real            x_start
          real            y_start

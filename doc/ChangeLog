@@ -1,3 +1,12 @@
+2025-02-26 pz v10.81
+
+1) param.fi
+Set the maximum number of stations to 180,
+set the maximum number of recorded arrivals to 180.
+2) The keyword "--ee3" sets the error estimation mode.
+3) Shorten the list of variables in common blocks /srfc/, /fix_mode/,
+   /cov/, /it1/, /it2/.  New common block /citer/.
+========================================================================
 2025-01-21 pz (v10.80)
 
 1) README.md

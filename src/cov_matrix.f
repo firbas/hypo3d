@@ -59,16 +59,13 @@ c
 c
 c  global variables
 c
-         real*8          c(4,4)        !Hessian matrix resp. inv. Hess. m.
-         real*8          b(4)          !vector of right side
-         real*8          det           !determinant of matrix c
-         real*8          scale(4)      !scale vector for Hessian matrix
-         common /it2/    c,b,det,scale
+         real*8          c(4,4)        !inversion of Hessian matrix
+         common /it2/    c
 c
-         real            co(4,4)
          real            rmsres
          real            rmsres_co
-         common /cov/    co,rmsres,rmsres_co
+         real            co(4,4)
+         common /cov/    rmsres,rmsres_co,co
 c
          logical         hyr
          real            trec (nrec_max)
@@ -90,6 +87,7 @@ c  *******************
 c  end of declarations
 c  *******************
 c
+c         write(*,'(1x,I5,"c:",4F14.8)') (i,c(:,i), i=1,4)
 c=============================================================================
          if (hyr) then
 c
@@ -138,5 +136,6 @@ c ---------------------------------------------------------------------
 c
          endif    !hyr
 c ---------------------------------------------------------------------
+c         write(*,'(1x,I5,"co:",4F14.8)') (i,co(:,i), i=1,4)
          return
       end subroutine cov_matrix
