@@ -143,8 +143,8 @@ c
          real*8          c(4,4)              !Hessian matrix resp. inv. Hess. m.
          real*8          b(4)                !vector of right side
          real*8          det                 !determinant of matrix c
-         real*8          scale(4)            !scale vector for Hessian matrix
-         common /it2/    c,b,det,scale
+         real*8          scaling(4)          !scale vector for Hessian matrix
+         common /it2/    c,b,det,scaling
 c
 c  common for scan depth mode
 c
@@ -847,12 +847,13 @@ c
 c
 c  estimated error of model ... model_error
 c
-                  rmsres_co=rmsres_co+model_error**2
+               rmsres_co=rmsres_co+model_error**2
+               call eel
 c
 c  compute covariance matrix  co: (A+&)INV * A * (A+&)INV
 c   & ... damping
 c
-               call cov_matrix
+c               call cov_matrix
 c
             go to 155
          else
@@ -867,7 +868,7 @@ c
 c
 c  for scaled matrix C
 c
-               d(i)=real(sum8/scale(i),4)
+               d(i)=real(sum8/scaling(i),4)
             end do
          endif
 c
@@ -1069,14 +1070,24 @@ c
       end program HYPO
 
       subroutine runstrinf
+      include 'pname.fi'
+      write(*,*) 'Hypo3D - 3D hypocenter location program'
+      write(*,'(1x,a)') prog_name2
+      write(*,*) ''
+      write(*,*) 'Usage:'
       write(*,*)
-     >      'Usage: hypo3d [--split_ray] -i<input> -o<output> -m<model>'
-      write(*,*) 'Example: hypo3d -ia001.hyp -oa001.hy3 -mkra_3d_a.mod'
+     >  'hypo3d [--split_ray] [--ee3] -i <input> -o <output> -m <model>'
+      write(*,*) 'Command line arguments:'
+      write(*,*) '-i <input>    path/name of input hypfile'
+      write(*,*) '-o <output>   path/name of output hy3file'
+      write(*,*) '-m <model>    path/name of crustal model file'
+      write(*,*) '--split_ray   flag for independent ray tracing'
+      write(*,*) '--ee3         flag for error estimation mode'
+      write(*,*) ''
       write(*,*) 'Keyword "--split_ray" sets, that the rays are traced'
       write(*,*) 'in both velocity models for v_p and v_s independetly.'
       write(*,*) 'The keyword "--ee3" sets the error estimation mode'
       write(*,*) 'in which the entire error ellipsoid is calculated'
-c      write(*,*) 'even if some hypocenter coordinate is fixed.'
       write(*,*) 'even if hypocenter depth coordinate is fixed.'
       call exit
       end subroutine runstrinf

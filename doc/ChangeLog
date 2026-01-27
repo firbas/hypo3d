@@ -1,3 +1,17 @@
+2026-01-27 pz v10.82
+
+1) o_hy3.f: Update the error ellipse axis calculation from covariance
+   matrix. Use simpler formulas.
+   Simplify the format statements for printing error estimates
+   using constants for NaN and Inf values.
+   In the case of coordinate fixation, print 0.0 for error estimates.
+2) iter_2.f: Remove that part of the code that is executed with only
+   the 'endit' flag set.
+3) cov_matrix.f: Remove. The covariance matrix is calculated
+   in eel.f.
+4) eel.f: Calculate the covariance matrix and error ellipse
+   parameters here. Use SVD for normal matrix inversion.
+========================================================================
 2025-02-26 pz v10.81
 
 1) param.fi

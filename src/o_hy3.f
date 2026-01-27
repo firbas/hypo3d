@@ -75,8 +75,6 @@ c
          integer isec,msec
 c
          real    dtemp
-         real    deter
-         real    d11,d21,d22
          real    theta, az_theta
          real    al,bl
          real    l1,l2,tl
@@ -208,6 +206,13 @@ c
          integer time
          real mconvergence
 c
+c  constants
+         integer NaN_int, INFP_int, INFM_int
+         real NaN, INFP, INFM
+         data NaN_int /z'7FC00000'/, INFP_int /z'7F800000'/, INFM_int /z'FF800000'/
+         NaN = transfer(NaN_int, NaN)
+         INFP = transfer(INFP_int, INFP)
+         INFM = transfer(INFM_int, INFM)
 c
 c  *******************
 c  end of declarations
@@ -220,19 +225,16 @@ c
 c --------------------------------------------------------------------
 c
 c error ellipse for epicenter
-c computed in local coordinates
-         deter=co(1,1)*co(2,2)-co(1,2)*co(2,1)
-         d11=co(2,2)/deter
-         d22=co(1,1)/deter
-         d21=-co(2,1)/deter
-         theta=0.5*atan( 2.*d21/(d11-d22) )
-         al=d11*cos(theta)**2 + 2.*d21*cos(theta)*sin(theta) +
-     >   d22*sin(theta)**2
-         bl=d11*sin(theta)**2 - 2.*d21*cos(theta)*sin(theta) +
-     >   d22*cos(theta)**2
-c
-         l1=sqrt(1./al)
-         l2=sqrt(1./bl)
+c orientation of the ellipse in local coordinates
+         theta=0.5*atan2( co(1,2)+co(2,1),  co(1,1)-co(2,2) ) 
+c eigenvalues of the covariance matrix
+         al=0.5*(co(1,1)+co(2,2)) + 0.5*sqrt( (co(1,1)-co(2,2))**2 +
+     >                                        4.0*co(1,2)*co(2,1) )
+         bl=0.5*(co(1,1)+co(2,2)) - 0.5*sqrt( (co(1,1)-co(2,2))**2 +
+     >                                        4.0*co(1,2)*co(2,1) )
+c lengths of semi-axes of the error ellipse
+         l1=sqrt(abs(al))
+         l2=sqrt(abs(bl))
 c
 c theta is the angle from x-axis to the semi-major axis of the error ellipse
 c
@@ -260,16 +262,42 @@ c ====================================================================
          dzer=sqrt(abs(co(3,3)))
          dter=sqrt(abs(co(4,4)))
 c --------------------------------------------------------------------
-c In the case of coordinate fixation, the calculation of the error ell
-c is not reduced, except in the following cases:
+c set NaN for unavailable errors
+         if (ee_nan(1) .or. ee_nan(2)) then
+            dxer=INFP
+            dyer=INFP
+            l1=NaN
+            l2=NaN
+            theta=NaN
+            az_theta=NaN
+         endif
+         if (ee_nan(1)) dxer=INFP
+         if (ee_nan(2)) dyer=INFP
+         if (ee_nan(3)) dzer=INFP
+         if (ee_nan(4)) dter=NaN
 
 c modify for fixed coordinates
-         if (fix_surface .or. (fix_depth .and. .not. ee3 )) then
-            dzer=0.0
-         endif
-
          if (fix_otime) then
             dter=0.0
+         endif
+         
+         if (ee3) then
+            if (fix_surface) then
+               dzer=0.0
+            endif
+         else
+            if (fix_depth .or. fix_surface) then
+               dzer=0.0
+            endif
+            if (fix_x .or. fix_y) then
+               dxer=0.0
+               dyer=0.0
+               l1=0.0
+               l2=0.0
+               ! theta is not a number
+               theta=NaN
+               az_theta=NaN
+            endif
          endif
 c --------------------------------------------------------------------
 c hypocenter to Krovak
@@ -321,7 +349,7 @@ c
          end do
 c
 c --------------------------------------------------------------------
-c provedeme transformaci data do tvaru rr-mm-dd  hh:mm:ss.ss
+c prepare origin time string yy-mm-dd  HH:MM:SS.ss
 c
          isec=int(t_orig)
          msec=int((t_orig-isec)*1000.0)
@@ -466,31 +494,15 @@ c
 
       write(lulist,'(//,"hypocenter data:",/,"----------------")')
       write(lulist,'("origin time          t:",2x,a22,$)') whole_date
-      if (ee_nan(4)) then
-         write(lulist,'(1x,"+-    NaN")')
-      else
-         write(lulist,'(1x,"+-",1x,f6.3)') dter
-      endif
+      write(lulist,'(1x,"+-",1x,f6.3)') dter
       write(lulist,'("x-coordinate         x:",2x,f7.2,$)') xp
-      if (ee_nan(1)) then
-         write(lulist,'(1x,"+-    NaN   km",$)')
-      else
-         write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dxer
-      endif
+      write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dxer
       write(lulist,'(7x,"(fi:",f10.6," deg)")') fi
       write(lulist,'("y-coordinate         y:",2x,f7.2,$)') yp
-      if (ee_nan(2)) then
-         write(lulist,'(1x,"+-    NaN   km",$)')
-      else
-         write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dyer
-      endif
+      write(lulist,'(1x,"+-",1x,f6.2,3x,"km",$)') dyer
       write(lulist,'(3x,"(lambda:",f10.6," deg)")') rla
       write(lulist,'("depth                z:",2x,f7.2,$)') zp
-      if (ee_nan(3)) then
-         write(lulist,'(1x,"+-    NaN   km")')
-      else
-         write(lulist,'(1x,"+-",1x,f6.2,3x,"km")') dzer
-      endif
+      write(lulist,'(1x,"+-",1x,f6.2,3x,"km")') dzer
       write(lulist,
      >        '("magnitude           ml:",2x,f7.2,1x,"+-",1x,f6.2)')
      >         avm, sdm
@@ -499,39 +511,26 @@ c
       write(lulist,'("angular gap           :",11x,i3,8x,"deg")')
      >        int(gap+0.5)
       write(lulist,'("number of iterations  :",11x,i3)') i0
-      if(ee_nan(1) .or. ee_nan(2)) then
-         write(lulist,'("error ellipse axis l1 :",10x," NaN",8x,"km")')
-         write(lulist,'("              axis l2 :",10x," NaN",8x,"km")')
-      else
-         write(lulist,'("error ellipse axis l1 :",8x,f6.2,8x,"km")') l1
-         write(lulist,'("              axis l2 :",8x,f6.2,8x,"km")') l2
-      endif
-c      write(lulist,'("              theta   :",8x,f6.1,9x,"deg")') az_theta
-      if(ee_nan(1) .or. ee_nan(2)) then
-         write(lulist,
-     >      '("              theta   :",2x,"NaN deg (to grid)",$)')
-         write(lulist,'(4x,"(azimuth:",2x,"NaN deg)")')
-      else
-         write(lulist,
+      write(lulist,'("error ellipse axis l1 :",8x,f6.2,8x,"km")') l1
+      write(lulist,'("              axis l2 :",8x,f6.2,8x,"km")') l2
+      write(lulist,
      >      '("              theta   :",2x,f6.1," deg (to grid)",$)')
      >      theta
-         write(lulist,'(4x,"(azimuth:",f6.1," deg)")') az_theta
-      endif
+      write(lulist,'(4x,"(azimuth:",f6.1," deg)")') az_theta
 c
          return
       end subroutine o_hy3
 c
 
-
       real function mconvergence(X, Y)
+c     compute meridian convergence for Krovak projection
+c formal parameters:
+c X,Y [km] ... coordinates in Krovak projection
 c
-c X,Y [km]
-c
-         real X
-         real Y
+      real X
+      real Y
 
-
-         mconvergence = 0.008257*Y+2.373*Y/X
-         return
+      mconvergence = 0.008257*Y+2.373*Y/X
+      return
 
       end function mconvergence

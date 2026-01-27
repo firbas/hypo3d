@@ -1,7 +1,6 @@
 
 FC=gfortran
 
-#FFLAGS=-g -O0 -Wall -c -ffixed-line-length-170 -fd-lines-as-comments
 FFLAGS=-g -O0 -Wall -c -ffixed-line-length-120
 LDFLAGS=
 
@@ -14,7 +13,8 @@ OBJ= trans.o    \
  read_model.o \
  dialog_1.o dialog_2.o dialog_2_1.o   \
  dialog_3.o rec_time_name.o \
- iter_1.o iter_2.o cov_matrix.o rms_net_1.o rms_net_2.o spline_value.o   \
+ iter_1.o iter_2.o eel.o \
+ rms_net_1.o rms_net_2.o spline_value.o   \
  eigen.o minv.o \
  surfb.o xy2fl.o
 
@@ -95,8 +95,8 @@ iter_1.o: iter_1.f param.fi pname.fi
 iter_2.o: iter_2.f param.fi
 	$(FC) $(FFLAGS) iter_2.f
 
-cov_matrix.o: cov_matrix.f param.fi
-	$(FC) $(FFLAGS) cov_matrix.f
+eel.o: eel.f param.fi
+	$(FC) $(FFLAGS) eel.f
 rms_net_1.o: rms_net_1.f pname.fi list.fi 
 	$(FC) $(FFLAGS) rms_net_1.f
 rms_net_2.o: rms_net_2.f pname.fi list.fi 
