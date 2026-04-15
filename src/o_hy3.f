@@ -326,7 +326,9 @@ c  az(i) ... angle between x-axis and recorder to source direction minus
 c            angle between x-axis and north
 c
             temp2=real(atan2(dy,dx)*RAD2DEG,4)
-c                   az(i) = mod(720.0-nangle+temp2,360.0)
+c            az(i) = mod(720.0-nangle+temp2,360.0)
+c           replace nangle with p_fi + 180 + meridian_con,
+c           to allow for variable meridian convergence
             az(i) = mod(720.0+temp2-180.0-meridian_con+p_fi,360.0)
 c
             if (wt(i).gt.0.0) then
@@ -427,7 +429,7 @@ c
      *      '("------------------------------------------------------",
      *  "---------------------")')
             write (lulist,'(" sta   |obs. t.|cal. t.|res. |amplitude"
-     *,"|freq|   w | epi |hypo |azm|ain|xmag")')
+     *,"|freq|   w | epi |hypo |baz|toa|xmag")')
             write(lulist, '("       |  [s]  |  [s]  | [s] |  [m/s]  "
      *,"|[Hz]| [ms]|[km] |[km] |[o]|[o]|    ")')
             write (lulist,
@@ -438,14 +440,16 @@ c
      *      '("------------------------------------------------------",
      *  "-----------------")')
             write (lulist,'(" sta   |obs. t.|cal. t.|res. |amplitude"
-     *,"|freq|w| epi |hypo |azm|ain|xmag")')
+     *,"|freq|w| epi |hypo |baz|toa|xmag")')
             write(lulist, '("       |  [s]  |  [s]  | [s] |  [m/s]  "
      *,"|[Hz]| |[km] |[km] |[o]|[o]|    ")')
             write (lulist,
      *      '("------------------------------------------------------",
      *  "-----------------")')
          endif
-c
+c az(i) is backazimuth from station to source, label "baz".
+c toa(i) is take-off angle, label "toa".
+
 c cycle for writing station distances,etc.
 c
          do i=1,nrec

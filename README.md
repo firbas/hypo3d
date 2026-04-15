@@ -114,9 +114,9 @@ on code clarity and bug fixes.
 Further upgrades enhanced functionality, addressing issues such as coordinate
 consistency and model limitations.
 
-1. To streamline the code, approximately 9,000 lines of program code were removed.
-   Removing unreachable or redundant code had no impact on functionality.
-2. Originally, the parameter reading_error was hardcoded.
+1. Approximately 9,000 lines of code were removed to streamline the code.
+   The removal of unusable or redundant code had no impact on functionality.
+2. Originally, the parameter `reading_error` was hardcoded.
    Now, its default value can be overridden as a second optional argument
    in the velocity model file (line number 5).
    (v10.50)
@@ -156,6 +156,9 @@ consistency and model limitations.
 10. Station corrections can be entered separately for both P-wave and S-wave
    seismic phases.
    (v10.80)
+11. Optional argument "--ee3" sets the error estimation mode.
+   The maximum number of stations and phase arrivals has been increased to 180.
+   (v10.81)
 
 
 ## Installation

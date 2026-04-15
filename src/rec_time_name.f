@@ -113,8 +113,7 @@ c
          common /hyp/    hyr,trec,wt
 c
          real*8          datum8(nrec_max)
-         integer         ichan(nrec_max)
-         common /dat8/   datum8,ichan
+         common /dat8/   datum8
 c
          real            amp(nrec_max)
          real            freq(nrec_max)
@@ -216,7 +215,6 @@ c
                do l = j,nrec-1
                   rec_name(l) = rec_name(l+1)
                   phase(l) = phase(l+1)
-                  ichan(l) = ichan(l+1)
                   trec(l) = trec(l+1)
                   wt1(l) = wt1(l+1)
                   wt(l) = wt(l+1)

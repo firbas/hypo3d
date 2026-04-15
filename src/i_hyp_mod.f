@@ -72,8 +72,7 @@ c
          common /ampli/      amp,freq
 c
          real*8              datum8(nrec_max)
-         integer             ichan (nrec_max)
-         common /dat8/       datum8,ichan
+         common /dat8/       datum8
 c
          logical             hyr
          real                trec(nrec_max)
@@ -95,9 +94,13 @@ c  local variables
 c
          integer     i
          integer     j
-         integer     psign
          integer     ios
+c dummy variables for reading of hypfile
+         integer     ichan
+         integer     psign
+         real        ampcon
          integer     micros
+c time variables for reading of hypfile
          integer     msec
          integer     isec
          integer     minute
@@ -105,8 +108,8 @@ c
          integer     day
          integer     month
          integer     year
-         real        ampcon
          real        period
+c
          character*255 line
          character*255 surname
 
@@ -209,8 +212,11 @@ c decode read in line: chars 1 to 5 are station name(5chars)
 c decode read in line: arrival data in free format
             read (line(6:),*,iostat=ios,err=86,end=86)
      >      ph,
-     >      ichan(i),year,month,day,hour,minute,isec,msec,micros,
+     >      ichan,year,month,day,hour,minute,isec,msec,micros,
      >      pwt,ampcon,psign,amp(i),period
+c ichan, psign, ampcon, micros are dummy variables
+            write(*,*) line
+            write(*,*) '-',ph,'-',ichan
 c decode read in line: arrival phase
             if (ph(1:1) .eq. 'P' .or. ph(1:1) .eq. 'p') then
                phase(i) = 'P'
